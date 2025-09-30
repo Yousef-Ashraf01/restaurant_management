@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:restaurant_management/core/constants/app_colors.dart';
 
 class AppTextFormField extends StatefulWidget {
   final String label;
@@ -39,7 +40,11 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
       children: [
         Text(
           widget.label,
-          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500),
+          style: TextStyle(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w500,
+            color: AppColors.text,
+          ),
         ),
         SizedBox(height: 6.h),
         TextFormField(
@@ -50,6 +55,7 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
           cursorColor: Colors.blue,
           decoration: InputDecoration(
             hintText: widget.hint,
+            hintStyle: TextStyle(color: AppColors.text),
             filled: true,
             fillColor: Colors.grey[200],
             border: OutlineInputBorder(

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_management/config/routes/app_routes.dart';
 import 'package:restaurant_management/features/auth/screens/login_screen.dart';
+import 'package:restaurant_management/features/auth/screens/new_password_screen.dart';
+import 'package:restaurant_management/features/auth/screens/otp_verification_code_screen.dart';
 import 'package:restaurant_management/features/auth/screens/sign_up__screen.dart';
+import 'package:restaurant_management/features/main/screens/main_screen.dart';
+import 'package:restaurant_management/features/profile/screens/profile_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
@@ -11,6 +15,37 @@ class RouteGenerator {
 
       case AppRoutes.signUpRoute:
         return MaterialPageRoute(builder: (_) => const SignUpScreen());
+
+      case AppRoutes.mainRoute:
+        return MaterialPageRoute(builder: (_) => const MainScreen());
+
+      case AppRoutes.newPasswordRoute:
+        return MaterialPageRoute(builder: (_) => const NewPasswordScreen());
+
+      case AppRoutes.otpVerificatonCodeRoute:
+        return MaterialPageRoute(
+          builder: (_) => const OtpVerificationCodeScreen(),
+        );
+
+      case AppRoutes.progileRoute:
+        final args = settings.arguments as Map<String, dynamic>?;
+
+        if (args == null ||
+            !args.containsKey('userId') ||
+            !args.containsKey('token')) {
+          return MaterialPageRoute(
+            builder:
+                (_) => const Scaffold(
+                  body: Center(child: Text("User ID or token missing")),
+                ),
+          );
+        }
+
+        return MaterialPageRoute(
+          builder:
+              (_) =>
+                  ProfileScreen(userId: args['userId'], token: args['token']),
+        );
 
       default:
         return _unDefinedRoute();

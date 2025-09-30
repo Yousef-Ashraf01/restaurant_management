@@ -9,6 +9,7 @@ class AppButton extends StatelessWidget {
   final double borderRadius;
   final double fontSize;
   final FontWeight fontWeight;
+  final ButtonStyle? style;
 
   const AppButton({
     super.key,
@@ -19,20 +20,18 @@ class AppButton extends StatelessWidget {
     this.borderRadius = 10,
     this.fontSize = 20,
     this.fontWeight = FontWeight.bold,
+    this.style,
   });
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.symmetric(vertical: 12.h),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(borderRadius),
-        ),
-        backgroundColor: backgroundColor,
-        foregroundColor: textColor,
-      ),
+      style:
+          style ??
+          ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(vertical: 12.h),
+          ),
       child: Text(
         text,
         style: TextStyle(fontSize: fontSize.sp, fontWeight: fontWeight),

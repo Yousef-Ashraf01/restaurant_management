@@ -9,7 +9,7 @@ class AuthHeader extends StatelessWidget {
   const AuthHeader({
     super.key,
     required this.title,
-    this.imagePath = 'assets/images/logo1_copy.jpg',
+    this.imagePath = 'assets/images/logo1_copy.png',
     this.imageWidth = 200,
   });
 
@@ -18,7 +18,13 @@ class AuthHeader extends StatelessWidget {
     return Column(
       children: [
         SizedBox(height: 45.h),
-        Image.asset(imagePath, width: imageWidth.w),
+        ColorFiltered(
+          colorFilter: ColorFilter.mode(
+            Theme.of(context).scaffoldBackgroundColor,
+            BlendMode.dstOver,
+          ),
+          child: Image.asset(imagePath, width: imageWidth.w),
+        ),
         SizedBox(height: 25.h),
         Text(
           title,
