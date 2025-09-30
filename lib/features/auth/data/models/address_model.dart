@@ -41,10 +41,10 @@ class AddressModel {
     fullAddress: json['fullAddress'],
     isPrimary: json['isPrimary'],
     street: json['street'],
-    userId: json['userId'],
+    userId: json['userId'] as String?,
     additionalDirections: json['additionalDirections'],
-    latitude: (json['latitude'] as num).toDouble(),
-    longitude: (json['longitude'] as num).toDouble(),
+    latitude: (json['latitude'] as num?)?.toDouble(),
+    longitude: (json['longitude'] as num?)?.toDouble(),
     isActive: json['isActive'],
   );
 

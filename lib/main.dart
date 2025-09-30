@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // ✅ import localization
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restaurant_management/config/routes/routes_generator.dart';
 import 'package:restaurant_management/core/constants/app_theme.dart';
@@ -12,6 +13,7 @@ import 'package:restaurant_management/features/auth/domain/repositories/address_
 import 'package:restaurant_management/features/auth/domain/repositories/auth_repository_impl.dart';
 import 'package:restaurant_management/features/auth/domain/repositories/profile_repository.dart';
 import 'package:restaurant_management/features/auth/state/auth_cubit.dart';
+import 'package:restaurant_management/features/auth/state/local_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'config/routes/app_routes.dart';
@@ -52,6 +54,12 @@ void main() async {
                   context.read<ProfileRepository>(),
                 ),
           ),
+          BlocProvider<LocaleCubit>(
+            create:
+                (_) =>
+                    LocaleCubit()
+                      ..loadLocale(), // 👈 يجيب اللغة من SharedPreferences
+          ),
         ],
         child: const MyApp(),
       ),
@@ -69,14 +77,24 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.lightTheme,
-          onGenerateRoute: RouteGenerator.getRoute,
-          initialRoute: AppRoutes.loginRoute,
-          builder: (context, widget) {
-            ScreenUtil.ensureScreenSize();
-            return widget!;
+        return BlocBuilder<LocaleCubit, Locale>(
+          builder: (context, locale) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: AppTheme.lightTheme,
+              onGenerateRoute: RouteGenerator.getRoute,
+              initialRoute: AppRoutes.loginRoute,
+
+              // ✅ Localization settings
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              locale: locale, // 👈 دلوقتي Dynamic من Cubit
+
+              builder: (context, widget) {
+                ScreenUtil.ensureScreenSize();
+                return widget!;
+              },
+            );
           },
         );
       },

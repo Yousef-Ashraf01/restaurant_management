@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:restaurant_management/core/constants/app_colors.dart';
 import 'package:restaurant_management/features/auth/state/address_cubit.dart';
 import 'package:restaurant_management/features/auth/state/address_state.dart';
 import 'package:restaurant_management/features/profile/widgets/add_address_bottom_sheet.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class AddressList extends StatelessWidget {
   final String userId;
@@ -33,44 +36,93 @@ class AddressList extends StatelessWidget {
                 state.addresses.map((address) {
                   return Card(
                     margin: EdgeInsets.symmetric(
-                      vertical: 5.h,
-                      horizontal: 25.w,
+                      vertical: 8.h,
+                      horizontal: 20.w,
                     ),
-                    child: ListTile(
-                      title: Text("${address.street}, ${address.city}"),
-                      subtitle: Text(
-                        "Label: ${address.addressLabel} - Floor: ${address.floor}",
-                      ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    elevation: 3,
+                    child: Padding(
+                      padding: EdgeInsets.all(12.w),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          IconButton(
-                            icon: Icon(Icons.edit, color: Colors.blue[800]),
-                            onPressed:
-                                () => AddAddressBottomSheet.show(
+                          // 👇 الأيقونة على الشمال
+                          Icon(
+                            Icons.location_on,
+                            color: AppColors.accent,
+                            size: 28.sp,
+                          ),
+
+                          SizedBox(width: 12.w),
+
+                          // 👇 النصوص
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Label
+                                Text(
+                                  address.addressLabel ?? "No Label",
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.accent,
+                                  ),
+                                ),
+                                SizedBox(height: 4.h),
+
+                                // Street + City
+                                Text(
+                                  "${address.street ?? '-'}, ${address.city ?? '-'}",
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                SizedBox(height: 4.h),
+
+                                // Floor + Apartment
+                                Text(
+                                  "Floor: ${address.floor ?? '-'}, Apartment: ${address.apartmentNo ?? '-'}",
+                                  style: TextStyle(
+                                    fontSize: 13.sp,
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // 👇 الأزرار
+                          // 👇 الأزرار
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.edit, color: Colors.blue[800], size: 22.sp),
+                                onPressed: () => AddAddressBottomSheet.show(
                                   context,
                                   userId,
                                   address: address,
                                 ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () async {
-                              final confirm = await showDialog<bool>(
-                                context: context,
-                                builder:
-                                    (_) => AlertDialog(
-                                      title: const Text("Confirm Delete"),
-                                      content: const Text(
-                                        "Are you sure you want to delete this address?",
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.delete_rounded, color: Colors.red, size: 22.sp),
+                                onPressed: () async {
+                                  final confirm = await showDialog<bool>(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                      title: Text(AppLocalizations.of(context)!.confirm_delete_title),
+                                      content: Text(
+                                        AppLocalizations.of(context)!.confirm_delete_content,
                                       ),
                                       actions: [
                                         TextButton(
-                                          onPressed:
-                                              () =>
-                                                  Navigator.pop(context, false),
+                                          onPressed: () => Navigator.pop(context, false),
                                           child: Text(
-                                            "No",
+                                            AppLocalizations.of(context)!.confirm_no,
                                             style: TextStyle(
                                               fontSize: 14.sp,
                                               color: Colors.grey[400],
@@ -78,11 +130,9 @@ class AddressList extends StatelessWidget {
                                           ),
                                         ),
                                         TextButton(
-                                          onPressed:
-                                              () =>
-                                                  Navigator.pop(context, true),
+                                          onPressed: () => Navigator.pop(context, true),
                                           child: Text(
-                                            "Yes",
+                                            AppLocalizations.of(context)!.confirm_yes,
                                             style: TextStyle(
                                               fontSize: 15.sp,
                                               color: Colors.red,
@@ -91,14 +141,16 @@ class AddressList extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                              );
-                              if (confirm == true) {
-                                context.read<AddressCubit>().deleteAddress(
-                                  address.id!,
-                                  userId,
-                                );
-                              }
-                            },
+                                  );
+                                  if (confirm == true) {
+                                    context.read<AddressCubit>().deleteAddress(
+                                      address.id!,
+                                      userId,
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
                           ),
                         ],
                       ),

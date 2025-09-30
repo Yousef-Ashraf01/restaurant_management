@@ -4,6 +4,7 @@ import 'package:restaurant_management/features/auth/screens/login_screen.dart';
 import 'package:restaurant_management/features/auth/screens/new_password_screen.dart';
 import 'package:restaurant_management/features/auth/screens/otp_verification_code_screen.dart';
 import 'package:restaurant_management/features/auth/screens/sign_up__screen.dart';
+import 'package:restaurant_management/features/language/screens/language_screen.dart';
 import 'package:restaurant_management/features/main/screens/main_screen.dart';
 import 'package:restaurant_management/features/profile/screens/profile_screen.dart';
 
@@ -26,6 +27,8 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => const OtpVerificationCodeScreen(),
         );
+      case AppRoutes.languageRoute:
+        return MaterialPageRoute(builder: (_) => const LanguageScreen());
 
       case AppRoutes.progileRoute:
         final args = settings.arguments as Map<String, dynamic>?;
