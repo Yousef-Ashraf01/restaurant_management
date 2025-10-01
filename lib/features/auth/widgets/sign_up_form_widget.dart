@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restaurant_management/config/routes/app_routes.dart';
 import 'package:restaurant_management/core/constants/app_colors.dart';
@@ -10,7 +11,6 @@ import 'package:restaurant_management/core/widgets/app_text_form_field.dart';
 import 'package:restaurant_management/features/auth/data/models/register_response_model.dart';
 import 'package:restaurant_management/features/auth/state/auth_cubit.dart';
 import 'package:restaurant_management/features/auth/state/auth_state.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignUpFormWidget extends StatefulWidget {
   const SignUpFormWidget({super.key});
@@ -73,11 +73,12 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
                 hint: AppLocalizations.of(context)!.enterFirstName,
                 keyboardType: TextInputType.text,
                 controller: _firstNameController,
-                validator: (value) => Validators.requiredField(
-                  context,
-                  value,
-                  AppLocalizations.of(context)!.firstName,
-                ),
+                validator:
+                    (value) => Validators.requiredField(
+                      context,
+                      value,
+                      AppLocalizations.of(context)!.firstName,
+                    ),
               ),
               SizedBox(height: 20.h),
 
@@ -86,11 +87,12 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
                 hint: AppLocalizations.of(context)!.enterLastName,
                 keyboardType: TextInputType.text,
                 controller: _lastNameController,
-                validator: (value) => Validators.requiredField(
-                  context,
-                  value,
-                  AppLocalizations.of(context)!.lastName,
-                ),
+                validator:
+                    (value) => Validators.requiredField(
+                      context,
+                      value,
+                      AppLocalizations.of(context)!.lastName,
+                    ),
               ),
               SizedBox(height: 20.h),
 
@@ -137,17 +139,21 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
                 isPassword: true,
                 keyboardType: TextInputType.visiblePassword,
                 controller: _confirmPasswordController,
-                validator: (value) => Validators.confirmPassword(
-                  context,
-                  value,
-                  _passwordController.text,
-                ),
+                validator:
+                    (value) => Validators.confirmPassword(
+                      context,
+                      value,
+                      _passwordController.text,
+                    ),
               ),
               SizedBox(height: 30.h),
 
               isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : AppButton(text: AppLocalizations.of(context)!.createAccount, onPressed: _onCreateAccount),
+                  : AppButton(
+                    text: AppLocalizations.of(context)!.createAccount,
+                    onPressed: _onCreateAccount,
+                  ),
 
               SizedBox(height: 12.h),
 
@@ -157,7 +163,10 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
                   children: [
                     TextSpan(
                       text: AppLocalizations.of(context)!.haveAccount,
-                      style: TextStyle(color: Colors.grey[700], fontSize: 13.sp),
+                      style: TextStyle(
+                        color: Colors.grey[700],
+                        fontSize: 13.sp,
+                      ),
                     ),
                     WidgetSpan(child: SizedBox(width: 5.w)),
                     TextSpan(
@@ -167,10 +176,14 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
                         fontWeight: FontWeight.bold,
                         fontSize: 13.sp,
                       ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          Navigator.pushNamed(context, AppRoutes.loginRoute);
-                        },
+                      recognizer:
+                          TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.loginRoute,
+                              );
+                            },
                     ),
                   ],
                 ),

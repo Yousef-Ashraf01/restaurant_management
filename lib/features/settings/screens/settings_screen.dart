@@ -32,10 +32,7 @@ class SettingScreen extends StatelessWidget {
               ListTileWidget(
                 onTap: () {
                   final tokenStorage =
-                      context
-                          .read<AuthCubit>()
-                          .repository
-                          .tokenStorage;
+                      context.read<AuthCubit>().repository.tokenStorage;
                   final userId = tokenStorage.getUserId();
                   final token = tokenStorage.getAccessToken();
                   print("$tokenStorage $userId $token");
@@ -68,19 +65,28 @@ class SettingScreen extends StatelessWidget {
                 icon: Icons.restaurant,
                 title: AppLocalizations.of(context)!.aboutTheRestaurant,
               ),
+              SizedBox(height: 25.h),
+              ListTileWidget(
+                onTap: () {
+                  Navigator.pushNamed(context, AppRoutes.changePsswordRoute);
+                },
+                icon: Icons.password,
+                title: AppLocalizations.of(context)!.changePassword,
+              ),
               const Spacer(),
               ListTileWidget(
                 onTap: () async {
                   final confirm = await showDialog<bool>(
                     context: context,
                     builder:
-                        (ctx) =>
-                        AlertDialog(
-                          title: Text(AppLocalizations.of(context)!
-                              .confirm_delete_title),
+                        (ctx) => AlertDialog(
+                          title: Text(
+                            AppLocalizations.of(context)!.confirm_delete_title,
+                          ),
                           content: Text(
-                            AppLocalizations.of(context)!
-                                .confirm_delete_content,
+                            AppLocalizations.of(
+                              context,
+                            )!.confirm_delete_content,
                           ),
                           actions: [
                             TextButton(
@@ -116,13 +122,13 @@ class SettingScreen extends StatelessWidget {
                   if (confirm == true) {
                     final authCubit = context.read<AuthCubit>();
                     final userId =
-                    authCubit.repository.tokenStorage.getUserId();
+                        authCubit.repository.tokenStorage.getUserId();
                     if (userId != null) {
                       await authCubit.logout(userId);
                       Navigator.pushNamedAndRemoveUntil(
                         context,
                         AppRoutes.loginRoute,
-                            (route) => false,
+                        (route) => false,
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(

@@ -105,7 +105,7 @@ class SignUpScreen extends StatelessWidget {
                     BlocConsumer<AuthCubit, AuthState>(
                       listener: (context, state) {
                         if (state is AuthRegisterSuccess) {
-                          Navigator.pushNamed(context, AppRoutes.loginRoute);
+                          Navigator.pushNamed(context, AppRoutes.mainRoute);
                         } else if (state is AuthError) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(state.message)),

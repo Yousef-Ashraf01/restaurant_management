@@ -66,5 +66,6 @@
   "passwordsNotMatch": "Passwords do not match",
   "forgotPassword": "Forgot Password?",
   "signUp" : "Sign Up",
-  "loginn" : "Log in"
+  "loginn" : "Log in",
+  "changePassword": "Change Password"
 }
