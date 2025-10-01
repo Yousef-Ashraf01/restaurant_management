@@ -63,5 +63,8 @@
   "passwordMin": "Password must be at least 6 characters",
   "passwordRequired": "Password is required",
   "confirmPasswordRequired": "Confirm password is required",
-  "passwordsNotMatch": "Passwords do not match"
+  "passwordsNotMatch": "Passwords do not match",
+  "forgotPassword": "Forgot Password?",
+  "signUp" : "Sign Up",
+  "loginn" : "Log in"
 }

@@ -63,5 +63,8 @@
   "passwordMin": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
   "passwordRequired": "كلمة المرور مطلوبة",
   "confirmPasswordRequired": "تأكيد كلمة المرور مطلوب",
-  "passwordsNotMatch": "كلمتا المرور غير متطابقتين"
+  "passwordsNotMatch": "كلمتا المرور غير متطابقتين",
+  "forgotPassword": "هل نسيت الباسورد؟",
+  "signUp" : "انشاء حساب",
+  "loginn" : "تسجيل الدخول"
 }

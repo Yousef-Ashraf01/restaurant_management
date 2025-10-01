@@ -14,6 +14,8 @@ import 'package:restaurant_management/features/auth/state/auth_cubit.dart';
 import 'package:restaurant_management/features/auth/state/auth_state.dart';
 import 'package:restaurant_management/features/auth/widgets/sign_up_form_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // ✅ import localization
+
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
@@ -98,7 +100,7 @@ class SignUpScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    AuthHeader(title: "Sign Up"),
+                    AuthHeader(title: AppLocalizations.of(context)!.signUp),
                     SizedBox(height: 30.h),
                     BlocConsumer<AuthCubit, AuthState>(
                       listener: (context, state) {

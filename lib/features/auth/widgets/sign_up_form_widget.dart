@@ -10,6 +10,7 @@ import 'package:restaurant_management/core/widgets/app_text_form_field.dart';
 import 'package:restaurant_management/features/auth/data/models/register_response_model.dart';
 import 'package:restaurant_management/features/auth/state/auth_cubit.dart';
 import 'package:restaurant_management/features/auth/state/auth_state.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignUpFormWidget extends StatefulWidget {
   const SignUpFormWidget({super.key});
@@ -68,75 +69,85 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               AppTextFormField(
-                label: "First Name",
-                hint: "Enter your first name",
+                label: AppLocalizations.of(context)!.firstName,
+                hint: AppLocalizations.of(context)!.enterFirstName,
                 keyboardType: TextInputType.text,
                 controller: _firstNameController,
-                validator: (value) => Validators.requiredField(value, "First name"),
+                validator: (value) => Validators.requiredField(
+                  context,
+                  value,
+                  AppLocalizations.of(context)!.firstName,
+                ),
               ),
               SizedBox(height: 20.h),
 
               AppTextFormField(
-                label: "Last Name",
-                hint: "Enter your last name",
+                label: AppLocalizations.of(context)!.lastName,
+                hint: AppLocalizations.of(context)!.enterLastName,
                 keyboardType: TextInputType.text,
                 controller: _lastNameController,
-                validator: (value) => Validators.requiredField(value, "Last name"),
+                validator: (value) => Validators.requiredField(
+                  context,
+                  value,
+                  AppLocalizations.of(context)!.lastName,
+                ),
               ),
               SizedBox(height: 20.h),
 
               AppTextFormField(
-                label: "User Name",
-                hint: "Enter your user name",
+                label: AppLocalizations.of(context)!.userName,
+                hint: AppLocalizations.of(context)!.enterUserName,
                 keyboardType: TextInputType.text,
                 controller: _usernameController,
-                validator: (value) => Validators.username(value),
+                validator: (value) => Validators.username(context, value),
               ),
               SizedBox(height: 20.h),
 
               AppTextFormField(
-                label: "Email",
-                hint: "Enter your email",
+                label: AppLocalizations.of(context)!.email,
+                hint: AppLocalizations.of(context)!.enterEmail,
                 keyboardType: TextInputType.emailAddress,
                 controller: _emailController,
-                validator: (value) => Validators.email(value),
+                validator: (value) => Validators.email(context, value),
               ),
               SizedBox(height: 20.h),
 
               AppTextFormField(
-                label: "Phone Number",
-                hint: "Enter your phone number",
+                label: AppLocalizations.of(context)!.phoneNumber,
+                hint: AppLocalizations.of(context)!.enterPhoneNumber,
                 keyboardType: TextInputType.phone,
                 controller: _phoneController,
-                validator: (value) => Validators.phone(value),
+                validator: (value) => Validators.phone(context, value),
               ),
               SizedBox(height: 20.h),
 
               AppTextFormField(
-                label: "Password",
-                hint: "Enter your password",
+                label: AppLocalizations.of(context)!.password,
+                hint: AppLocalizations.of(context)!.enterPassword,
                 isPassword: true,
                 keyboardType: TextInputType.visiblePassword,
                 controller: _passwordController,
-                validator: (value) => Validators.password(value),
+                validator: (value) => Validators.password(context, value),
               ),
               SizedBox(height: 20.h),
 
               AppTextFormField(
-                label: "Confirm Password",
-                hint: "Re-enter your password",
+                label: AppLocalizations.of(context)!.confirmPassword,
+                hint: AppLocalizations.of(context)!.reEnterPassword,
                 isPassword: true,
                 keyboardType: TextInputType.visiblePassword,
                 controller: _confirmPasswordController,
-                validator: (value) =>
-                    Validators.confirmPassword(value, _passwordController.text),
+                validator: (value) => Validators.confirmPassword(
+                  context,
+                  value,
+                  _passwordController.text,
+                ),
               ),
               SizedBox(height: 30.h),
 
-              // الزرار أو Loading
               isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : AppButton(text: "Create Account", onPressed: _onCreateAccount),
+                  : AppButton(text: AppLocalizations.of(context)!.createAccount, onPressed: _onCreateAccount),
 
               SizedBox(height: 12.h),
 
@@ -145,12 +156,12 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
                 text: TextSpan(
                   children: [
                     TextSpan(
-                      text: "Do you have an account ?",
+                      text: AppLocalizations.of(context)!.haveAccount,
                       style: TextStyle(color: Colors.grey[700], fontSize: 13.sp),
                     ),
                     WidgetSpan(child: SizedBox(width: 5.w)),
                     TextSpan(
-                      text: "Log in",
+                      text: AppLocalizations.of(context)!.loginn,
                       style: TextStyle(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,

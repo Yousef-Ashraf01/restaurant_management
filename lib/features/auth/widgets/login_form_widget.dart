@@ -7,7 +7,7 @@ import 'package:restaurant_management/core/constants/app_colors.dart';
 import 'package:restaurant_management/core/utils/validators.dart';
 import 'package:restaurant_management/core/widgets/app_button.dart';
 import 'package:restaurant_management/core/widgets/app_text_form_field.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../data/models/login_request_model.dart';
 import '../state/auth_cubit.dart';
 import '../state/auth_state.dart';
@@ -41,7 +41,6 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
@@ -62,20 +61,20 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               AppTextFormField(
-                label: "Email",
-                hint: "Enter your email",
+                label: AppLocalizations.of(context)!.email,
+                hint: AppLocalizations.of(context)!.enterEmail,
                 keyboardType: TextInputType.emailAddress,
                 controller: _emailController,
-                validator: (value) => Validators.email(value),
+                validator: (value) => Validators.email(context, value),
               ),
               SizedBox(height: 20.h),
               AppTextFormField(
-                label: "Password",
-                hint: "Enter your password",
+                label: AppLocalizations.of(context)!.password,
+                hint: AppLocalizations.of(context)!.enterPassword,
                 isPassword: true,
                 keyboardType: TextInputType.visiblePassword,
                 controller: _passwordController,
-                validator: (value) => Validators.password(value),
+                validator: (value) => Validators.password(context, value),
               ),
               SizedBox(height: 5.h),
               Align(
@@ -85,7 +84,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                     Navigator.pushNamed(context, AppRoutes.newPasswordRoute);
                   },
                   child: Text(
-                    "Forgot Password?",
+                    AppLocalizations.of(context)!.forgotPassword,
                     style: TextStyle(fontSize: 14.sp, color: AppColors.text),
                   ),
                 ),
@@ -93,14 +92,14 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
               SizedBox(height: 25.h),
               isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : AppButton(text: "Login", onPressed: _onLogin),
+                  : AppButton(text: AppLocalizations.of(context)!.login, onPressed: _onLogin),
               SizedBox(height: 12.h),
               RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
                   children: [
                     TextSpan(
-                      text: "Don't you have an account ?",
+                      text: AppLocalizations.of(context)!.noAccount,
                       style: TextStyle(
                         color: Colors.grey[700],
                         fontSize: 13.sp,
@@ -108,7 +107,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                     ),
                     WidgetSpan(child: SizedBox(width: 5.w)),
                     TextSpan(
-                      text: "Create a new account",
+                      text: AppLocalizations.of(context)!.createNewAccount,
                       style: TextStyle(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,

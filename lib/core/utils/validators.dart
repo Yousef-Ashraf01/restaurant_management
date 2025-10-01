@@ -1,73 +1,72 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class Validators {
-  // Required field (generic)
-  static String? requiredField(String? value, String fieldName) {
+  // Required Field (generic)
+  static String? requiredField(BuildContext context, String? value, String fieldNameKey) {
     if (value == null || value.trim().isEmpty) {
-      return "$fieldName is required";
+      return "$fieldNameKey ${AppLocalizations.of(context)!.is_required}";
     }
     return null;
   }
 
   // Username
-  static String? username(String? value) {
+  static String? username(BuildContext context, String? value) {
     if (value == null || value.trim().isEmpty) {
-      return "User name is required";
+      return AppLocalizations.of(context)!.userNameRequired;
     }
     if (value.length < 3) {
-      return "User name must be at least 3 characters";
+      return AppLocalizations.of(context)!.userNameMin;
     }
     return null;
   }
 
   // Email
-  static String? email(String? value) {
+  static String? email(BuildContext context, String? value) {
     if (value == null || value.trim().isEmpty) {
-      return "Email is required";
+      return AppLocalizations.of(context)!.emailRequired;
     }
     if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-      return "Enter a valid email";
+      return AppLocalizations.of(context)!.enterValidEmail;
     }
     return null;
   }
 
   // Phone Number
-  static String? phone(String? value) {
+  static String? phone(BuildContext context, String? value) {
     if (value == null || value.trim().isEmpty) {
-      return "Phone number is required";
+      return AppLocalizations.of(context)!.phoneRequired;
     }
-
     if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-      return "Phone number must contain only digits";
+      return AppLocalizations.of(context)!.phoneDigitsOnly;
     }
-
     if (value.length != 11) {
-      return "Phone number must be 11 digits";
+      return AppLocalizations.of(context)!.phoneLength;
     }
-
     if (!RegExp(r'^(010|011|012|015)[0-9]{8}$').hasMatch(value)) {
-      return "Invalid phone number";
+      return AppLocalizations.of(context)!.invalidPhone;
     }
-
     return null;
   }
 
   // Password
-  static String? password(String? value) {
+  static String? password(BuildContext context, String? value) {
     if (value == null || value.trim().isEmpty) {
-      return "Password is required";
+      return AppLocalizations.of(context)!.passwordRequired;
     }
     if (value.length < 6) {
-      return "Password must be at least 6 characters";
+      return AppLocalizations.of(context)!.passwordMin;
     }
     return null;
   }
 
   // Confirm Password
-  static String? confirmPassword(String? value, String password) {
+  static String? confirmPassword(BuildContext context, String? value, String password) {
     if (value == null || value.trim().isEmpty) {
-      return "Confirm password is required";
+      return AppLocalizations.of(context)!.confirmPasswordRequired;
     }
     if (value != password) {
-      return "Passwords do not match";
+      return AppLocalizations.of(context)!.passwordsNotMatch;
     }
     return null;
   }

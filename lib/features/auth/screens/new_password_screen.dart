@@ -4,6 +4,7 @@ import 'package:restaurant_management/core/utils/validators.dart';
 import 'package:restaurant_management/core/widgets/app_button.dart';
 import 'package:restaurant_management/core/widgets/app_text_form_field.dart';
 import 'package:restaurant_management/core/widgets/app_un_focus_wrapper.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NewPasswordScreen extends StatefulWidget {
   const NewPasswordScreen({super.key});
@@ -18,6 +19,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
+  @override
   void dispose() {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -31,8 +33,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
         body: SafeArea(
           child: SingleChildScrollView(
             child: SizedBox(
-              height:
-                  MediaQuery.of(context).size.height -
+              height: MediaQuery.of(context).size.height -
                   MediaQuery.of(context).padding.top,
               width: double.infinity,
               child: Padding(
@@ -51,46 +52,55 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                         ),
                         children: [
                           TextSpan(
-                            text: "Mail ownership has been confirmed\n",
+                            text: AppLocalizations.of(context)!.mailConfirmed + "\n",
                             style: TextStyle(fontSize: 20.sp),
                           ),
-                          TextSpan(text: "choose a new password"),
+                          TextSpan(
+                            text: AppLocalizations.of(context)!.chooseNewPassword,
+                          ),
                         ],
                       ),
                     ),
-                    SizedBox(height: 30.h,),
+                    SizedBox(height: 30.h),
                     Form(
                       key: _formKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           AppTextFormField(
-                            label: "Password",
-                            hint: "Enter your password",
+                            label: AppLocalizations.of(context)!.password,
+                            hint: AppLocalizations.of(context)!.enterPassword,
                             isPassword: true,
                             keyboardType: TextInputType.visiblePassword,
                             controller: _passwordController,
-                            validator: (value) => Validators.password(value),
+                            validator: (value) =>
+                                Validators.password(context, value),
                           ),
                           SizedBox(height: 20.h),
                           AppTextFormField(
-                            label: "Confirm Password",
-                            hint: "Re-enter your password",
+                            label: AppLocalizations.of(context)!.confirmPassword,
+                            hint: AppLocalizations.of(context)!.reEnterPassword,
                             isPassword: true,
                             keyboardType: TextInputType.visiblePassword,
                             controller: _confirmPasswordController,
-                            validator:
-                                (value) => Validators.confirmPassword(
-                                  value,
-                                  _passwordController.text,
-                                ),
+                            validator: (value) => Validators.confirmPassword(
+                              context,
+                              value,
+                              _passwordController.text,
+                            ),
                           ),
                           SizedBox(height: 35.h),
-                          AppButton(text: "Confirm", onPressed: () {}),
+                          AppButton(
+                            text: AppLocalizations.of(context)!.confirm,
+                            onPressed: () {
+                            },
+                          ),
                           SizedBox(height: 17.h),
                           AppButton(
-                            text: "Cancel",
-                            onPressed: () {},
+                            text: AppLocalizations.of(context)!.cancel,
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.grey[500],
                             ),

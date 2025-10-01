@@ -1,4 +1,3 @@
-// login_screen.dart
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +14,7 @@ import 'package:restaurant_management/features/auth/state/auth_cubit.dart';
 import 'package:restaurant_management/features/auth/state/auth_state.dart';
 import 'package:restaurant_management/features/auth/widgets/login_form_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -22,18 +22,19 @@ class LoginScreen extends StatelessWidget {
   Future<Map<String, dynamic>> _initRepositories() async {
     final prefs = await SharedPreferences.getInstance();
     final dio = Dio(
-      BaseOptions(
-        baseUrl: "https://restaurantmanagementsystem.runasp.net",
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
-      ),
-    )..interceptors.add(
-      LogInterceptor(
-        requestBody: true,
-        responseBody: true,
-        logPrint: (obj) => debugPrint(obj.toString()),
-      ),
-    );
+        BaseOptions(
+          baseUrl: "https://restaurantmanagementsystem.runasp.net",
+          connectTimeout: const Duration(seconds: 10),
+          receiveTimeout: const Duration(seconds: 10),
+        ),
+      )
+      ..interceptors.add(
+        LogInterceptor(
+          requestBody: true,
+          responseBody: true,
+          logPrint: (obj) => debugPrint(obj.toString()),
+        ),
+      );
 
     final authRemote = AuthRemoteDataSourceImpl(dio);
     final profileRemote = ProfileRemoteDataSourceImpl(dio);
@@ -81,8 +82,10 @@ class LoginScreen extends StatelessWidget {
           );
         }
 
-        final authRepository = snapshot.data!["authRepository"] as AuthRepositoryImpl;
-        final profileRepository = snapshot.data!["profileRepository"] as ProfileRepository;
+        final authRepository =
+            snapshot.data!["authRepository"] as AuthRepositoryImpl;
+        final profileRepository =
+            snapshot.data!["profileRepository"] as ProfileRepository;
 
         return BlocProvider(
           create: (_) => AuthCubit(authRepository, profileRepository),
@@ -92,12 +95,15 @@ class LoginScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 20.h),
                 child: Column(
                   children: [
-                    AuthHeader(title: "Login"),
+                    AuthHeader(title: AppLocalizations.of(context)!.login),
                     SizedBox(height: 30.h),
                     BlocConsumer<AuthCubit, AuthState>(
                       listener: (context, state) {
                         if (state is AuthLoginSuccess) {
-                          Navigator.pushReplacementNamed(context, AppRoutes.mainRoute);
+                          Navigator.pushReplacementNamed(
+                            context,
+                            AppRoutes.mainRoute,
+                          );
                         } else if (state is AuthError) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(state.message)),
