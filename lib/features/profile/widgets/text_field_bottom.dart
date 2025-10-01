@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class TextFieldBottom extends StatelessWidget {
   final TextEditingController controller;
@@ -19,7 +21,7 @@ class TextFieldBottom extends StatelessWidget {
       keyboardType: isNumber ? TextInputType.number : TextInputType.text,
       validator:
           (value) =>
-              value == null || value.isEmpty ? "$label is required" : null,
+              value == null || value.isEmpty ? "$label ${AppLocalizations.of(context)!.is_required}" : null,
       decoration: InputDecoration(
         labelText: label,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),

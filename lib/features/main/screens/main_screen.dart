@@ -6,6 +6,8 @@ import 'package:restaurant_management/features/cart/screens/cart_screen.dart';
 import 'package:restaurant_management/features/home/screens/home_screen.dart';
 import 'package:restaurant_management/features/search/screens/search_screen.dart';
 import 'package:restaurant_management/features/settings/screens/settings_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -52,11 +54,11 @@ class _MainScreenState extends State<MainScreen> {
               padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
               duration: const Duration(milliseconds: 400),
               tabBackgroundColor: AppColors.primary,
-              tabs: const [
-                GButton(icon: Icons.home, text: 'Home'),
-                GButton(icon: Icons.search, text: 'Search'),
-                GButton(icon: Icons.shopping_cart, text: 'Cart'),
-                GButton(icon: Icons.settings, text: 'Settings'),
+              tabs: [
+                GButton(icon: Icons.home, text:  AppLocalizations.of(context)!.home),
+                GButton(icon: Icons.search, text:  AppLocalizations.of(context)!.search),
+                GButton(icon: Icons.shopping_cart, text:  AppLocalizations.of(context)!.cart),
+                GButton(icon: Icons.settings, text:  AppLocalizations.of(context)!.settings),
               ],
               selectedIndex: _selectedIndex,
               onTabChange: (index) {

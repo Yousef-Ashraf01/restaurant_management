@@ -7,9 +7,11 @@ import 'package:restaurant_management/features/auth/state/profile_cubit.dart';
 import 'package:restaurant_management/features/auth/state/profile_state.dart';
 import 'package:restaurant_management/features/profile/widgets/address_header.dart';
 import 'package:restaurant_management/features/profile/widgets/address_list.dart';
-import 'package:restaurant_management/features/profile/widgets/header.dart';
 import 'package:restaurant_management/features/profile/widgets/label.dart';
 import 'package:restaurant_management/features/profile/widgets/read_only_field.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+
 
 class ProfileScreen extends StatelessWidget {
   final String userId;
@@ -31,6 +33,8 @@ class ProfileScreen extends StatelessWidget {
       ],
       child: AppUnfocusWrapper(
         child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          appBar: AppBar(title: Text(AppLocalizations.of(context)!.profile), centerTitle: true),
           body: BlocBuilder<ProfileCubit, ProfileState>(
             builder: (context, state) {
               if (state is ProfileLoading) {
@@ -43,8 +47,6 @@ class ProfileScreen extends StatelessWidget {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        SizedBox(height: 15.h),
-                        const Header(),
                         SizedBox(height: 25.h),
                         CircleAvatar(
                           backgroundColor: Colors.blue,
@@ -52,10 +54,10 @@ class ProfileScreen extends StatelessWidget {
                           child: const Icon(Icons.person, size: 50),
                         ),
                         SizedBox(height: 20.h),
-                        const Label("User Name"),
+                        Label(AppLocalizations.of(context)!.userName),
                         ReadOnlyField(profile.userName),
                         SizedBox(height: 20.h),
-                        const Label("Email"),
+                        Label(AppLocalizations.of(context)!.email),
                         ReadOnlyField(profile.email),
                         SizedBox(height: 30.h),
                         AddressesHeader(userId: userId),

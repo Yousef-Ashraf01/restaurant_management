@@ -5,13 +5,14 @@ import 'package:restaurant_management/features/auth/data/models/address_model.da
 import 'package:restaurant_management/features/auth/state/address_cubit.dart';
 import 'package:restaurant_management/features/auth/state/address_state.dart';
 import 'package:restaurant_management/features/profile/widgets/text_field_bottom.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddAddressBottomSheet {
   static void show(
-    BuildContext context,
-    String userId, {
-    AddressModel? address,
-  }) {
+      BuildContext context,
+      String userId, {
+        AddressModel? address,
+      }) {
     final cubit = context.read<AddressCubit>();
     final formKey = GlobalKey<FormState>();
 
@@ -23,6 +24,10 @@ class AddAddressBottomSheet {
     );
     final floorCtrl = TextEditingController(
       text: address?.floor?.toString() ?? "",
+    );
+    // 👇 Building Name controller
+    final buildingNameCtrl = TextEditingController(
+      text: address?.buildingName ?? "",
     );
 
     showModalBottomSheet(
@@ -57,11 +62,11 @@ class AddAddressBottomSheet {
                   builder: (context, state) {
                     final isLoading = state is AddressLoading;
                     return Column(
-                      mainAxisSize: MainAxisSize.max,
+                      mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
-                          address == null ? "Add New Address" : "Edit Address",
+                          address == null ? AppLocalizations.of(context)!.add_address : AppLocalizations.of(context)!.update_address,
                           style: TextStyle(
                             fontSize: 20.sp,
                             fontWeight: FontWeight.bold,
@@ -71,70 +76,77 @@ class AddAddressBottomSheet {
                         SizedBox(height: 15.h),
                         TextFieldBottom(
                           controller: labelCtrl,
-                          label: "Address Label",
+                          label: AppLocalizations.of(context)!.address_label,
                         ),
                         SizedBox(height: 10.h),
                         TextFieldBottom(
                           controller: streetCtrl,
-                          label: "Street",
+                          label: AppLocalizations.of(context)!.street,
                         ),
                         SizedBox(height: 10.h),
-                        TextFieldBottom(controller: cityCtrl, label: "City"),
+                        TextFieldBottom(controller: cityCtrl, label: AppLocalizations.of(context)!.city),
+                        SizedBox(height: 10.h),
                         SizedBox(height: 10.h),
                         TextFieldBottom(
-                          controller: aptCtrl,
-                          label: "Apartment No",
-                          isNumber: true,
+                          controller: buildingNameCtrl,
+                          label: AppLocalizations.of(context)!.building_name,
                         ),
                         SizedBox(height: 10.h),
                         TextFieldBottom(
                           controller: floorCtrl,
-                          label: "Floor",
+                          label: AppLocalizations.of(context)!.floor,
+                          isNumber: true,
+                        ),
+                        SizedBox(height: 10.h),
+                        TextFieldBottom(
+                          controller: aptCtrl,
+                          label: AppLocalizations.of(context)!.apartment_no,
                           isNumber: true,
                         ),
                         SizedBox(height: 20.h),
                         ElevatedButton(
                           onPressed:
-                              isLoading
-                                  ? null
-                                  : () {
-                                    if (formKey.currentState!.validate()) {
-                                      final newAddress = AddressModel(
-                                        id: address?.id,
-                                        addressLabel: labelCtrl.text,
-                                        street: streetCtrl.text,
-                                        city: cityCtrl.text,
-                                        apartmentNo:
-                                            int.tryParse(aptCtrl.text) ?? 0,
-                                        floor:
-                                            int.tryParse(floorCtrl.text) ?? 0,
-                                        fullAddress:
-                                            "${streetCtrl.text}, ${cityCtrl.text}",
-                                        userId: userId,
-                                        isPrimary: true,
-                                        latitude: 30.06263,
-                                        longitude: 31.24967,
-                                        isActive: true,
-                                        additionalDirections: "test",
-                                        buildingName: "test",
-                                      );
-                                      if (address == null) {
-                                        context.read<AddressCubit>().addAddress(
-                                          newAddress,
-                                        );
-                                      } else {
-                                        context
-                                            .read<AddressCubit>()
-                                            .updateAddress(newAddress, userId);
-                                      }
-                                    }
-                                  },
+                          isLoading
+                              ? null
+                              : () {
+                            if (formKey.currentState!.validate()) {
+                              final newAddress = AddressModel(
+                                id: address?.id,
+                                addressLabel: labelCtrl.text,
+                                street: streetCtrl.text,
+                                city: cityCtrl.text,
+                                apartmentNo:
+                                int.tryParse(aptCtrl.text) ?? 0,
+                                floor:
+                                int.tryParse(floorCtrl.text) ?? 0,
+                                fullAddress:
+                                "${streetCtrl.text}, ${cityCtrl.text}",
+                                userId: userId,
+                                isPrimary: true,
+                                latitude: 30.06263,
+                                longitude: 31.24967,
+                                isActive: true,
+                                additionalDirections: "test",
+                                buildingName:
+                                buildingNameCtrl.text, // 👈 هنا
+                              );
+                              if (address == null) {
+                                context.read<AddressCubit>().addAddress(
+                                  newAddress,
+                                );
+                              } else {
+                                context
+                                    .read<AddressCubit>()
+                                    .updateAddress(newAddress, userId);
+                              }
+                            }
+                          },
                           child: Text(
                             isLoading
-                                ? "Loading..."
+                                ? AppLocalizations.of(context)!.loading
                                 : (address == null
-                                    ? "Add Address"
-                                    : "Update Address"),
+                                ? AppLocalizations.of(context)!.add_address
+                                : AppLocalizations.of(context)!.update_address),
                           ),
                         ),
                       ],

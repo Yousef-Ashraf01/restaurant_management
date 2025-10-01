@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restaurant_management/config/routes/app_routes.dart';
 import 'package:restaurant_management/features/auth/state/auth_cubit.dart';
@@ -22,13 +23,19 @@ class SettingScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 50.h,
                 color: Colors.white,
-                child: Text("Settings", style: TextStyle(fontSize: 22.sp)),
+                child: Text(
+                  AppLocalizations.of(context)!.settings,
+                  style: TextStyle(fontSize: 22.sp),
+                ),
               ),
               SizedBox(height: 25.h),
               ListTileWidget(
                 onTap: () {
                   final tokenStorage =
-                      context.read<AuthCubit>().repository.tokenStorage;
+                      context
+                          .read<AuthCubit>()
+                          .repository
+                          .tokenStorage;
                   final userId = tokenStorage.getUserId();
                   final token = tokenStorage.getAccessToken();
                   print("$tokenStorage $userId $token");
@@ -45,21 +52,21 @@ class SettingScreen extends StatelessWidget {
                   }
                 },
                 icon: Icons.person,
-                title: "Profile",
+                title: AppLocalizations.of(context)!.profile,
               ),
               SizedBox(height: 25.h),
               ListTileWidget(
                 onTap: () {
-                  print("App Language");
+                  Navigator.pushNamed(context, AppRoutes.languageRoute);
                 },
                 icon: Icons.language,
-                title: "App Language",
+                title: AppLocalizations.of(context)!.chooseLanguage,
               ),
               SizedBox(height: 25.h),
               ListTileWidget(
                 onTap: () {},
                 icon: Icons.restaurant,
-                title: "About the restaurant",
+                title: AppLocalizations.of(context)!.aboutTheRestaurant,
               ),
               const Spacer(),
               ListTileWidget(
@@ -67,16 +74,19 @@ class SettingScreen extends StatelessWidget {
                   final confirm = await showDialog<bool>(
                     context: context,
                     builder:
-                        (ctx) => AlertDialog(
-                          title: const Text("Confirm Logout"),
-                          content: const Text(
-                            "Are you sure you want to sign out?",
+                        (ctx) =>
+                        AlertDialog(
+                          title: Text(AppLocalizations.of(context)!
+                              .confirm_delete_title),
+                          content: Text(
+                            AppLocalizations.of(context)!
+                                .confirm_delete_content,
                           ),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.of(ctx).pop(false),
                               child: Text(
-                                "Cancel",
+                                AppLocalizations.of(context)!.cancel,
                                 style: TextStyle(
                                   color: Colors.grey[500],
                                   fontSize: 14.sp,
@@ -86,7 +96,7 @@ class SettingScreen extends StatelessWidget {
                             TextButton(
                               onPressed: () => Navigator.of(ctx).pop(true),
                               child: Text(
-                                "Logout",
+                                AppLocalizations.of(context)!.logout,
                                 style: TextStyle(
                                   color: Colors.red,
                                   fontSize: 15.sp,
@@ -106,13 +116,13 @@ class SettingScreen extends StatelessWidget {
                   if (confirm == true) {
                     final authCubit = context.read<AuthCubit>();
                     final userId =
-                        authCubit.repository.tokenStorage.getUserId();
+                    authCubit.repository.tokenStorage.getUserId();
                     if (userId != null) {
                       await authCubit.logout(userId);
                       Navigator.pushNamedAndRemoveUntil(
                         context,
                         AppRoutes.loginRoute,
-                        (route) => false,
+                            (route) => false,
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -122,7 +132,7 @@ class SettingScreen extends StatelessWidget {
                   }
                 },
                 icon: Icons.logout,
-                title: "Logout",
+                title: AppLocalizations.of(context)!.logout,
                 iconColor: Colors.red[600],
                 backgroundAvatar: Colors.red[100],
               ),

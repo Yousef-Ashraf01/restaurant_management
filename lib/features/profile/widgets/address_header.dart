@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restaurant_management/core/constants/app_colors.dart';
 import 'package:restaurant_management/features/profile/widgets/add_address_bottom_sheet.dart';
@@ -14,10 +15,7 @@ class AddressesHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            "Addresses",
-            style: TextStyle(fontSize: 22.sp, color: Colors.blue),
-          ),
+          Text(AppLocalizations.of(context)!.addresses, style: TextStyle(fontSize: 22.sp, color: Colors.blue)),
           CircleAvatar(
             backgroundColor: AppColors.accent,
             radius: 18.r,
