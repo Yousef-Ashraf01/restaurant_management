@@ -22,7 +22,7 @@ class AddressModel {
     this.apartmentNo,
     this.floor,
     this.fullAddress,
-    this.userId,
+    required this.userId,
     this.isPrimary,
     this.latitude,
     this.longitude,
@@ -57,7 +57,7 @@ class AddressModel {
       "apartmentNo": apartmentNo,
       "floor": floor,
       "fullAddress": fullAddress,
-      "userId": userId, // دايمًا يتبعت
+      "userId": userId,
       "isPrimary": isPrimary,
       "latitude": latitude,
       "longitude": longitude,

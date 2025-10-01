@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:restaurant_management/core/constants/app_colors.dart';
 import 'package:restaurant_management/features/cart/screens/cart_screen.dart';
@@ -25,7 +26,7 @@ class _MainScreenState extends State<MainScreen> {
       HomeScreen(),
       SearchScreen(),
       CartScreen(),
-      SettingScreen(), // هنا مباشرة الـ Screen بدون أي Provider
+      SettingScreen(),
     ];
   }
 
@@ -42,14 +43,13 @@ class _MainScreenState extends State<MainScreen> {
         ),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 8.h),
             child: GNav(
               gap: 8,
               activeColor: Colors.white,
               color: Colors.grey[600],
               iconSize: 24,
-              padding:
-              const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
               duration: const Duration(milliseconds: 400),
               tabBackgroundColor: AppColors.primary,
               tabs: const [

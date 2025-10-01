@@ -11,20 +11,30 @@ class AddressCubit extends Cubit<AddressState> {
     emit(AddressLoading());
     try {
       final addresses = await repository.fetchAddresses(userId);
+      print("🏠 Fetched ${addresses.length} addresses for userId $userId");
       emit(AddressLoaded(addresses));
     } catch (e) {
+      print("❌ Error fetching addresses: $e");
       emit(AddressError(e.toString()));
     }
   }
 
   Future<void> addAddress(AddressModel address) async {
+    if (address.userId == null || address.userId!.isEmpty) {
+      emit(AddressError("Cannot add address: userId is null or empty"));
+      return;
+    }
+
+    emit(AddressLoading());
     try {
-      await repository.addAddress(address); // إضافة على الـ backend
-      final updatedAddresses = await repository.fetchAddresses(
-        address.userId.toString(),
-      );
+      final newAddress = await repository.addAddress(address);
+      print("✅ Added address: ${newAddress.id}");
+
+      // جلب العناوين بعد الإضافة للتأكد من التحديث
+      final updatedAddresses = await repository.fetchAddresses(address.userId!);
       emit(AddressLoaded(updatedAddresses));
     } catch (e) {
+      print("❌ Failed to add address: $e");
       emit(AddressError(e.toString()));
     }
   }
@@ -35,44 +45,44 @@ class AddressCubit extends Cubit<AddressState> {
         (state as AddressLoaded).addresses,
       );
 
-      // شيل العنوان من الليست محليًا
       currentAddresses.removeWhere((address) => address.id == addressId);
       emit(AddressLoaded(currentAddresses));
 
       try {
         await repository.deleteAddress(addressId, userId);
-
-        // بعد ما يتم الحذف من السيرفر نجيب نسخة حديثة
         final updatedAddresses = await repository.fetchAddresses(userId);
         emit(AddressLoaded(updatedAddresses));
       } catch (e) {
-        // لو حصل error نرجع العناوين القديمة
+        print("❌ Failed to delete address: $e");
         emit(AddressError("Failed to delete: ${e.toString()}"));
-        emit(AddressLoaded((state as AddressLoaded).addresses));
+        emit(AddressLoaded(currentAddresses)); // ارجع الليست القديمة
       }
     }
   }
 
   Future<void> updateAddress(AddressModel address, String userId) async {
+    if (address.id == null || address.userId == null) {
+      emit(AddressError("Cannot update address: id or userId is null"));
+      return;
+    }
+
     emit(AddressLoading());
     try {
       final updatedAddress = await repository.updateAddress(address, userId);
+      print("✅ Updated address: ${updatedAddress.id}");
 
-      // هات اللي موجود دلوقتي
-      final currentState = state;
-      if (currentState is AddressLoaded) {
+      if (state is AddressLoaded) {
         final updatedList =
-            currentState.addresses.map((a) {
+            (state as AddressLoaded).addresses.map((a) {
               return a.id == updatedAddress.id ? updatedAddress : a;
             }).toList();
-
         emit(AddressLoaded(updatedList));
       } else {
-        // fallback: لو مش في AddressLoaded رجع كل العناوين
         final updatedAddresses = await repository.fetchAddresses(userId);
         emit(AddressLoaded(updatedAddresses));
       }
     } catch (e) {
+      print("❌ Failed to update address: $e");
       emit(AddressError("Failed to update address: ${e.toString()}"));
     }
   }
