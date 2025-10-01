@@ -63,7 +63,12 @@ class SettingScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 25.h),
                   ListTileWidget(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.restaurantInfoRoute,
+                      );
+                    },
                     icon: Icons.restaurant,
                     title: AppLocalizations.of(context)!.aboutTheRestaurant,
                   ),

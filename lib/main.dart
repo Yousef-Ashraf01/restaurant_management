@@ -9,11 +9,14 @@ import 'package:restaurant_management/core/network/token_storage.dart';
 import 'package:restaurant_management/features/auth/data/datasources/address_remote_data_source.dart';
 import 'package:restaurant_management/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:restaurant_management/features/auth/data/datasources/profile_remote_data_source.dart';
+import 'package:restaurant_management/features/auth/data/datasources/restaurant_remote_data_source.dart';
 import 'package:restaurant_management/features/auth/domain/repositories/address_repository.dart';
 import 'package:restaurant_management/features/auth/domain/repositories/auth_repository_impl.dart';
 import 'package:restaurant_management/features/auth/domain/repositories/profile_repository.dart';
+import 'package:restaurant_management/features/auth/domain/repositories/restaurant_repository.dart';
 import 'package:restaurant_management/features/auth/state/auth_cubit.dart';
 import 'package:restaurant_management/features/auth/state/local_cubit.dart';
+import 'package:restaurant_management/features/auth/state/restaurant_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'config/routes/app_routes.dart';
@@ -29,6 +32,7 @@ void main() async {
   final authRemote = AuthRemoteDataSourceImpl(apiClient);
   final profileRemote = ProfileRemoteDataSourceImpl(apiClient);
   final addressRemote = AddressRemoteDataSourceImpl(apiClient);
+  final restaurantInfoRemote = RestaurantRemoteDataSourceImpl(apiClient);
 
   // Repositories
   final authRepository = AuthRepositoryImpl(
@@ -37,6 +41,9 @@ void main() async {
   );
   final profileRepository = ProfileRepository(profileRemote);
   final addressRepository = AddressRepositoryImpl(addressRemote);
+  final restaurantInfoRepository = RestaurantRepositoryImpl(
+    restaurantInfoRemote,
+  );
 
   runApp(
     MultiRepositoryProvider(
@@ -44,6 +51,9 @@ void main() async {
         RepositoryProvider<AuthRepositoryImpl>.value(value: authRepository),
         RepositoryProvider<ProfileRepository>.value(value: profileRepository),
         RepositoryProvider<AddressRepository>.value(value: addressRepository),
+        RepositoryProvider<RestaurantRepository>.value(
+          value: restaurantInfoRepository,
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -59,6 +69,11 @@ void main() async {
                 (_) =>
                     LocaleCubit()
                       ..loadLocale(), // 👈 يجيب اللغة من SharedPreferences
+          ),
+          BlocProvider<RestaurantCubit>(
+            create:
+                (context) =>
+                    RestaurantCubit(context.read<RestaurantRepository>()),
           ),
         ],
         child: const MyApp(),
