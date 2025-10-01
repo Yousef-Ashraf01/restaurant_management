@@ -3,7 +3,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Validators {
   // Required Field (generic)
-  static String? requiredField(BuildContext context, String? value, String fieldNameKey) {
+  static String? requiredField(
+    BuildContext context,
+    String? value,
+    String fieldNameKey,
+  ) {
     if (value == null || value.trim().isEmpty) {
       return "$fieldNameKey ${AppLocalizations.of(context)!.is_required}";
     }
@@ -60,8 +64,28 @@ class Validators {
     return null;
   }
 
+  static String? oldPassword(
+    BuildContext context,
+    String? value,
+    String? savedPassword,
+  ) {
+    if (value == null || value.trim().isEmpty) {
+      return AppLocalizations.of(context)!.oldPasswordRequired;
+    }
+
+    if (savedPassword != null && value.trim() != savedPassword) {
+      return AppLocalizations.of(context)!.oldPasswordNotMatch;
+    }
+
+    return null;
+  }
+
   // Confirm Password
-  static String? confirmPassword(BuildContext context, String? value, String password) {
+  static String? confirmPassword(
+    BuildContext context,
+    String? value,
+    String password,
+  ) {
     if (value == null || value.trim().isEmpty) {
       return AppLocalizations.of(context)!.confirmPasswordRequired;
     }

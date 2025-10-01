@@ -13,68 +13,79 @@ class SettingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SizedBox(
-          width: double.infinity,
-          child: Column(
-            children: [
-              SizedBox(height: 15.h),
-              Container(
-                alignment: Alignment.center,
-                width: double.infinity,
-                height: 50.h,
-                color: Colors.white,
-                child: Text(
-                  AppLocalizations.of(context)!.settings,
-                  style: TextStyle(fontSize: 22.sp),
-                ),
+        child: Column(
+          children: [
+            SizedBox(height: 15.h),
+            Container(
+              alignment: Alignment.center,
+              width: double.infinity,
+              height: 50.h,
+              color: Colors.white,
+              child: Text(
+                AppLocalizations.of(context)!.settings,
+                style: TextStyle(fontSize: 22.sp),
               ),
-              SizedBox(height: 25.h),
-              ListTileWidget(
-                onTap: () {
-                  final tokenStorage =
-                      context.read<AuthCubit>().repository.tokenStorage;
-                  final userId = tokenStorage.getUserId();
-                  final token = tokenStorage.getAccessToken();
-                  print("$tokenStorage $userId $token");
-                  if (userId != null && token != null) {
-                    Navigator.pushNamed(
-                      context,
-                      AppRoutes.progileRoute,
-                      arguments: {'userId': userId, 'token': token},
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("User not logged in")),
-                    );
-                  }
-                },
-                icon: Icons.person,
-                title: AppLocalizations.of(context)!.profile,
+            ),
+            SizedBox(height: 15.h),
+
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.symmetric(vertical: 10.h),
+                children: [
+                  ListTileWidget(
+                    onTap: () {
+                      final tokenStorage =
+                          context.read<AuthCubit>().repository.tokenStorage;
+                      final userId = tokenStorage.getUserId();
+                      final token = tokenStorage.getAccessToken();
+                      if (userId != null && token != null) {
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.progileRoute,
+                          arguments: {'userId': userId, 'token': token},
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("User not logged in")),
+                        );
+                      }
+                    },
+                    icon: Icons.person,
+                    title: AppLocalizations.of(context)!.profile,
+                  ),
+                  SizedBox(height: 25.h),
+                  ListTileWidget(
+                    onTap: () {
+                      Navigator.pushNamed(context, AppRoutes.languageRoute);
+                    },
+                    icon: Icons.language,
+                    title: AppLocalizations.of(context)!.chooseLanguage,
+                  ),
+                  SizedBox(height: 25.h),
+                  ListTileWidget(
+                    onTap: () {},
+                    icon: Icons.restaurant,
+                    title: AppLocalizations.of(context)!.aboutTheRestaurant,
+                  ),
+                  SizedBox(height: 25.h),
+                  ListTileWidget(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.changePsswordRoute,
+                      );
+                    },
+                    icon: Icons.password,
+                    title: AppLocalizations.of(context)!.changePassword,
+                  ),
+                ],
               ),
-              SizedBox(height: 25.h),
-              ListTileWidget(
-                onTap: () {
-                  Navigator.pushNamed(context, AppRoutes.languageRoute);
-                },
-                icon: Icons.language,
-                title: AppLocalizations.of(context)!.chooseLanguage,
-              ),
-              SizedBox(height: 25.h),
-              ListTileWidget(
-                onTap: () {},
-                icon: Icons.restaurant,
-                title: AppLocalizations.of(context)!.aboutTheRestaurant,
-              ),
-              SizedBox(height: 25.h),
-              ListTileWidget(
-                onTap: () {
-                  Navigator.pushNamed(context, AppRoutes.changePsswordRoute);
-                },
-                icon: Icons.password,
-                title: AppLocalizations.of(context)!.changePassword,
-              ),
-              const Spacer(),
-              ListTileWidget(
+            ),
+
+            // الـ Logout ثابت تحت
+            Padding(
+              padding: EdgeInsets.only(bottom: 20.h),
+              child: ListTileWidget(
                 onTap: () async {
                   final confirm = await showDialog<bool>(
                     context: context,
@@ -142,9 +153,8 @@ class SettingScreen extends StatelessWidget {
                 iconColor: Colors.red[600],
                 backgroundAvatar: Colors.red[100],
               ),
-              SizedBox(height: 25.h),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

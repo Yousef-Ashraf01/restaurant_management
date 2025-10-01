@@ -39,6 +39,8 @@ class AuthCubit extends Cubit<AuthState> {
         );
         await repository.tokenStorage.saveUserId(response.data!.id!);
 
+        await repository.tokenStorage.savePassword(body.password);
+
         // جلب البروفايل بدون الانتظار (Background)
         profileRepository.getUserProfile(
           response.data!.id!,

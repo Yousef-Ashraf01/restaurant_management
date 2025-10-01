@@ -38,7 +38,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   Widget build(BuildContext context) {
     return AppUnfocusWrapper(
       child: Scaffold(
-        appBar: AppBar(title: const Text("Change Password"), centerTitle: true),
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.changePassword),
+          centerTitle: true,
+        ),
         body: SafeArea(
           child: BlocConsumer<AuthCubit, AuthState>(
             listener: (context, state) {
@@ -70,14 +74,30 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               AppTextFormField(
-                                label: "Old Password",
-                                hint: 'Enter the old password',
+                                label:
+                                    AppLocalizations.of(context)!.oldPassword,
+                                hint:
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.enterTheOldPassword,
                                 isPassword: true,
                                 keyboardType: TextInputType.visiblePassword,
                                 controller: _oldPasswordController,
-                                validator:
-                                    (value) =>
-                                        Validators.password(context, value),
+                                validator: (value) {
+                                  final tokenStorage =
+                                      context
+                                          .read<AuthCubit>()
+                                          .repository
+                                          .tokenStorage;
+                                  final savedPassword =
+                                      tokenStorage
+                                          .getPassword(); // خده من TokenStorage
+                                  return Validators.oldPassword(
+                                    context,
+                                    value,
+                                    savedPassword,
+                                  );
+                                },
                               ),
                               SizedBox(height: 20.h),
                               AppTextFormField(
