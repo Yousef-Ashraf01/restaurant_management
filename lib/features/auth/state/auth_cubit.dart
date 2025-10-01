@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaurant_management/features/auth/data/models/change_password_request_model.dart';
 import 'package:restaurant_management/features/auth/domain/repositories/profile_repository.dart';
 
 import '../data/models/login_request_model.dart';
@@ -65,6 +66,20 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthLoggedOut());
     } else {
       emit(AuthError("Logout failed"));
+    }
+  }
+
+  Future<void> changePassword(ChangePasswordRequestModel req) async {
+    emit(AuthLoading());
+    try {
+      final success = await repository.changePassword(req);
+      if (success) {
+        emit(AuthChangePasswordSuccess("Password changed successfully ✅"));
+      } else {
+        emit(AuthError("Change password failed"));
+      }
+    } catch (e) {
+      emit(AuthError(e.toString()));
     }
   }
 }

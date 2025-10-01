@@ -4,6 +4,7 @@ import 'package:restaurant_management/features/auth/screens/login_screen.dart';
 import 'package:restaurant_management/features/auth/screens/new_password_screen.dart';
 import 'package:restaurant_management/features/auth/screens/otp_verification_code_screen.dart';
 import 'package:restaurant_management/features/auth/screens/sign_up__screen.dart';
+import 'package:restaurant_management/features/changePassword/screens/change_password_screen.dart';
 import 'package:restaurant_management/features/language/screens/language_screen.dart';
 import 'package:restaurant_management/features/main/screens/main_screen.dart';
 import 'package:restaurant_management/features/profile/screens/profile_screen.dart';
@@ -49,6 +50,9 @@ class RouteGenerator {
               (_) =>
                   ProfileScreen(userId: args['userId'], token: args['token']),
         );
+
+      case AppRoutes.changePsswordRoute:
+        return MaterialPageRoute(builder: (_) => const ChangePasswordScreen());
 
       default:
         return _unDefinedRoute();

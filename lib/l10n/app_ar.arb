@@ -66,5 +66,6 @@
   "passwordsNotMatch": "كلمتا المرور غير متطابقتين",
   "forgotPassword": "هل نسيت الباسورد؟",
   "signUp" : "انشاء حساب",
-  "loginn" : "تسجيل الدخول"
+  "loginn" : "تسجيل الدخول",
+  "changePassword": "تغيير كلمه السر"
 }

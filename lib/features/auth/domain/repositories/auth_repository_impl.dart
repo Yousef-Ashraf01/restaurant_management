@@ -1,5 +1,6 @@
 import 'package:restaurant_management/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:restaurant_management/features/auth/data/models/auth_response_model.dart';
+import 'package:restaurant_management/features/auth/data/models/change_password_request_model.dart';
 import 'package:restaurant_management/features/auth/data/models/login_request_model.dart';
 import 'package:restaurant_management/features/auth/data/models/register_response_model.dart';
 import 'package:restaurant_management/features/auth/domain/repositories/auth_repository.dart';
@@ -50,6 +51,15 @@ class AuthRepositoryImpl implements AuthRepository {
       return false;
     } catch (e) {
       return false;
+    }
+  }
+
+  Future<bool> changePassword(ChangePasswordRequestModel model) async {
+    try {
+      final resp = await remote.changePassword(model.toJson());
+      return resp == true || resp["success"] == true; // حسب API
+    } catch (e) {
+      throw Exception(e.toString());
     }
   }
 }

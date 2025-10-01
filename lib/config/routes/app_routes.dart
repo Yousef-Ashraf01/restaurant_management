@@ -6,4 +6,5 @@ class AppRoutes {
   static const String otpVerificatonCodeRoute = '/otpVerificatonCodeRoute';
   static const String progileRoute = '/progileRoute';
   static const String languageRoute = '/languageRoute';
+  static const String changePsswordRoute = '/changePsswordRoute';
 }
