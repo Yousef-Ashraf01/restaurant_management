@@ -8,6 +8,7 @@ import 'package:restaurant_management/features/changePassword/screens/change_pas
 import 'package:restaurant_management/features/language/screens/language_screen.dart';
 import 'package:restaurant_management/features/main/screens/main_screen.dart';
 import 'package:restaurant_management/features/profile/screens/profile_screen.dart';
+import 'package:restaurant_management/features/restaurant_info/screens/restaurant_info_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
@@ -53,6 +54,9 @@ class RouteGenerator {
 
       case AppRoutes.changePsswordRoute:
         return MaterialPageRoute(builder: (_) => const ChangePasswordScreen());
+
+      case AppRoutes.restaurantInfoRoute:
+        return MaterialPageRoute(builder: (_) => const RestaurantInfoScreen());
 
       default:
         return _unDefinedRoute();
