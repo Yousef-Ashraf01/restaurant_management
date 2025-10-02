@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // ✅ import localization
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restaurant_management/config/routes/app_routes.dart';
 import 'package:restaurant_management/core/network/token_storage.dart';
@@ -12,10 +13,9 @@ import 'package:restaurant_management/features/auth/domain/repositories/auth_rep
 import 'package:restaurant_management/features/auth/domain/repositories/profile_repository.dart';
 import 'package:restaurant_management/features/auth/state/auth_cubit.dart';
 import 'package:restaurant_management/features/auth/state/auth_state.dart';
+import 'package:restaurant_management/features/auth/widgets/language_dropdown.dart';
 import 'package:restaurant_management/features/auth/widgets/sign_up_form_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // ✅ import localization
-
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
@@ -27,18 +27,19 @@ class SignUpScreen extends StatelessWidget {
     debugPrint("✅ SharedPreferences initialized");
 
     final dio = Dio(
-      BaseOptions(
-        baseUrl: "https://restaurantmanagementsystem.runasp.net",
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
-      ),
-    )..interceptors.add(
-      LogInterceptor(
-        requestBody: true,
-        responseBody: true,
-        logPrint: (obj) => debugPrint(obj.toString()),
-      ),
-    );
+        BaseOptions(
+          baseUrl: "https://restaurantmanagementsystem.runasp.net",
+          connectTimeout: const Duration(seconds: 10),
+          receiveTimeout: const Duration(seconds: 10),
+        ),
+      )
+      ..interceptors.add(
+        LogInterceptor(
+          requestBody: true,
+          responseBody: true,
+          logPrint: (obj) => debugPrint(obj.toString()),
+        ),
+      );
 
     final authRemote = AuthRemoteDataSourceImpl(dio);
     final profileRemote = ProfileRemoteDataSourceImpl(dio);
@@ -88,8 +89,10 @@ class SignUpScreen extends StatelessWidget {
           );
         }
 
-        final authRepository = snapshot.data!["authRepository"] as AuthRepositoryImpl;
-        final profileRepository = snapshot.data!["profileRepository"] as ProfileRepository;
+        final authRepository =
+            snapshot.data!["authRepository"] as AuthRepositoryImpl;
+        final profileRepository =
+            snapshot.data!["profileRepository"] as ProfileRepository;
 
         return BlocProvider(
           create: (_) => AuthCubit(authRepository, profileRepository),
@@ -98,8 +101,10 @@ class SignUpScreen extends StatelessWidget {
               body: SingleChildScrollView(
                 padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 20.h),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    SizedBox(height: 40),
+                    const LanguageDropdown(),
                     AuthHeader(title: AppLocalizations.of(context)!.signUp),
                     SizedBox(height: 30.h),
                     BlocConsumer<AuthCubit, AuthState>(

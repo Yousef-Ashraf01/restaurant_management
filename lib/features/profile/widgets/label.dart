@@ -9,13 +9,7 @@ class Label extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 25.w),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Text(
-          text,
-          style: TextStyle(fontSize: 20.sp, color: Colors.blue),
-        ),
-      ),
+      child: Text(text, style: TextStyle(fontSize: 20.sp, color: Colors.blue)),
     );
   }
 }

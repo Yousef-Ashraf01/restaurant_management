@@ -17,18 +17,20 @@ class AuthHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 45.h),
-        ColorFiltered(
-          colorFilter: ColorFilter.mode(
-            Theme.of(context).scaffoldBackgroundColor,
-            BlendMode.dstOver,
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [Image.asset(imagePath, width: imageWidth.w)],
           ),
-          child: Image.asset(imagePath, width: imageWidth.w),
         ),
         SizedBox(height: 25.h),
-        Text(
-          title,
-          style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.bold),
+        Align(
+          alignment: Alignment.center,
+          child: Text(
+            title,
+            style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.bold),
+          ),
         ),
       ],
     );

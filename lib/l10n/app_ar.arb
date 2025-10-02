@@ -67,5 +67,9 @@
   "forgotPassword": "هل نسيت الباسورد؟",
   "signUp" : "انشاء حساب",
   "loginn" : "تسجيل الدخول",
-  "changePassword": "تغيير كلمه السر"
+  "changePassword": "تغيير كلمه السر",
+  "oldPassword": "كلمه المرور القديمه",
+  "enterTheOldPassword": "أدخل كلمه المرور القديمه",
+  "oldPasswordRequired": "كلمه المرور القديمه مطلوبه",
+  "oldPasswordNotMatch": "كلمة المرور القديمة غير صحيحة"
 }

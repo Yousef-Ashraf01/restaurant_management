@@ -1,20 +1,22 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restaurant_management/config/routes/app_routes.dart';
 import 'package:restaurant_management/core/network/token_storage.dart';
 import 'package:restaurant_management/core/widgets/app_un_focus_wrapper.dart';
-import 'package:restaurant_management/core/widgets/auth_header.dart';
 import 'package:restaurant_management/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:restaurant_management/features/auth/data/datasources/profile_remote_data_source.dart';
 import 'package:restaurant_management/features/auth/domain/repositories/auth_repository_impl.dart';
 import 'package:restaurant_management/features/auth/domain/repositories/profile_repository.dart';
 import 'package:restaurant_management/features/auth/state/auth_cubit.dart';
 import 'package:restaurant_management/features/auth/state/auth_state.dart';
+import 'package:restaurant_management/features/auth/widgets/language_dropdown.dart';
 import 'package:restaurant_management/features/auth/widgets/login_form_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../../core/widgets/auth_header.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -94,7 +96,10 @@ class LoginScreen extends StatelessWidget {
               body: SingleChildScrollView(
                 padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 20.h),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    SizedBox(height: 40),
+                    const LanguageDropdown(),
                     AuthHeader(title: AppLocalizations.of(context)!.login),
                     SizedBox(height: 30.h),
                     BlocConsumer<AuthCubit, AuthState>(

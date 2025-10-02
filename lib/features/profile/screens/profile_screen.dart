@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restaurant_management/core/widgets/app_un_focus_wrapper.dart';
 import 'package:restaurant_management/features/auth/state/address_cubit.dart';
@@ -9,9 +10,6 @@ import 'package:restaurant_management/features/profile/widgets/address_header.da
 import 'package:restaurant_management/features/profile/widgets/address_list.dart';
 import 'package:restaurant_management/features/profile/widgets/label.dart';
 import 'package:restaurant_management/features/profile/widgets/read_only_field.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-
 
 class ProfileScreen extends StatelessWidget {
   final String userId;
@@ -34,7 +32,10 @@ class ProfileScreen extends StatelessWidget {
       child: AppUnfocusWrapper(
         child: Scaffold(
           resizeToAvoidBottomInset: true,
-          appBar: AppBar(title: Text(AppLocalizations.of(context)!.profile), centerTitle: true),
+          appBar: AppBar(
+            title: Text(AppLocalizations.of(context)!.profile),
+            centerTitle: true,
+          ),
           body: BlocBuilder<ProfileCubit, ProfileState>(
             builder: (context, state) {
               if (state is ProfileLoading) {
@@ -46,12 +47,16 @@ class ProfileScreen extends StatelessWidget {
                 return SafeArea(
                   child: SingleChildScrollView(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: 25.h),
-                        CircleAvatar(
-                          backgroundColor: Colors.blue,
-                          radius: 50.r,
-                          child: const Icon(Icons.person, size: 50),
+                        Align(
+                          alignment: Alignment.center,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.blue,
+                            radius: 50.r,
+                            child: const Icon(Icons.person, size: 50),
+                          ),
                         ),
                         SizedBox(height: 20.h),
                         Label(AppLocalizations.of(context)!.userName),

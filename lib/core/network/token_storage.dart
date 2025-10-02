@@ -8,6 +8,7 @@ class TokenStorage {
   static const _accessKey = "access_token";
   static const _refreshKey = "refresh_token";
   static const _userIdKey = "user_id"; // ✨ اضفنا المفتاح هنا
+  static const _passwordKey = 'user_password';
 
   Future<void> saveAccessToken(String access) async {
     await prefs.setString(_accessKey, access);
@@ -21,6 +22,12 @@ class TokenStorage {
   Future<void> saveUserId(String userId) async {
     await prefs.setString(_userIdKey, userId);
   }
+
+  Future<void> savePassword(String password) async {
+    await prefs.setString(_passwordKey, password);
+  }
+
+  String? getPassword() => prefs.getString(_passwordKey);
 
   // ✨ Method جديدة لاسترجاع userId
   String? getUserId() => prefs.getString(_userIdKey);
