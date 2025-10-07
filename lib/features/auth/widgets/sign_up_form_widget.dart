@@ -8,7 +8,7 @@ import 'package:restaurant_management/core/constants/app_colors.dart';
 import 'package:restaurant_management/core/utils/validators.dart';
 import 'package:restaurant_management/core/widgets/app_button.dart';
 import 'package:restaurant_management/core/widgets/app_text_form_field.dart';
-import 'package:restaurant_management/features/auth/data/models/register_response_model.dart';
+import 'package:restaurant_management/features/auth/data/models/register_request_model.dart';
 import 'package:restaurant_management/features/auth/state/auth_cubit.dart';
 import 'package:restaurant_management/features/auth/state/auth_state.dart';
 
@@ -53,7 +53,7 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
         userName: _usernameController.text.trim(),
       );
 
-      context.read<AuthCubit>().register(body);
+      context.read<AuthCubit>().register(body, context);
     }
   }
 
@@ -69,6 +69,7 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               AppTextFormField(
+                isRequired: true,
                 label: AppLocalizations.of(context)!.firstName,
                 hint: AppLocalizations.of(context)!.enterFirstName,
                 keyboardType: TextInputType.text,
@@ -83,6 +84,7 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
               SizedBox(height: 20.h),
 
               AppTextFormField(
+                isRequired: true,
                 label: AppLocalizations.of(context)!.lastName,
                 hint: AppLocalizations.of(context)!.enterLastName,
                 keyboardType: TextInputType.text,
@@ -97,6 +99,7 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
               SizedBox(height: 20.h),
 
               AppTextFormField(
+                isRequired: true,
                 label: AppLocalizations.of(context)!.userName,
                 hint: AppLocalizations.of(context)!.enterUserName,
                 keyboardType: TextInputType.text,
@@ -106,6 +109,7 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
               SizedBox(height: 20.h),
 
               AppTextFormField(
+                isRequired: true,
                 label: AppLocalizations.of(context)!.email,
                 hint: AppLocalizations.of(context)!.enterEmail,
                 keyboardType: TextInputType.emailAddress,
@@ -115,6 +119,7 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
               SizedBox(height: 20.h),
 
               AppTextFormField(
+                isRequired: true,
                 label: AppLocalizations.of(context)!.phoneNumber,
                 hint: AppLocalizations.of(context)!.enterPhoneNumber,
                 keyboardType: TextInputType.phone,
@@ -124,6 +129,7 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
               SizedBox(height: 20.h),
 
               AppTextFormField(
+                isRequired: true,
                 label: AppLocalizations.of(context)!.password,
                 hint: AppLocalizations.of(context)!.enterPassword,
                 isPassword: true,
@@ -134,6 +140,7 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
               SizedBox(height: 20.h),
 
               AppTextFormField(
+                isRequired: true,
                 label: AppLocalizations.of(context)!.confirmPassword,
                 hint: AppLocalizations.of(context)!.reEnterPassword,
                 isPassword: true,

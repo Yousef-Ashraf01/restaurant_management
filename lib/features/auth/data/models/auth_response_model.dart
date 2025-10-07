@@ -27,10 +27,10 @@ class AuthResponseModel {
 class AuthDataModel {
   final String? id;
   final String? accessToken;
-  final int? expiresIn;
-  final bool? isAuthinticated;
+  final DateTime? expiresIn; // ⬅️ بقت DateTime
+  final bool? isAuthenticated;
   final String? refreshToken;
-  final String? refreshTokenExpiration;
+  final DateTime? refreshTokenExpiration; // ⬅️ بقت DateTime
   final List<String>? roles;
   final String? firstName;
   final String? lastName;
@@ -42,7 +42,7 @@ class AuthDataModel {
     this.id,
     this.accessToken,
     this.expiresIn,
-    this.isAuthinticated,
+    this.isAuthenticated,
     this.refreshToken,
     this.refreshTokenExpiration,
     this.roles,
@@ -57,15 +57,22 @@ class AuthDataModel {
     return AuthDataModel(
       id: json['id'] as String?,
       accessToken: json['accessToken'] as String?,
-      expiresIn: json['expiresIn'] is int
-          ? json['expiresIn']
-          : int.tryParse(json['expiresIn'].toString()),
-      isAuthinticated: json['isAuthinticated'] as bool?,
+      expiresIn:
+          json['expiresIn'] != null
+              ? DateTime.tryParse(json['expiresIn'].toString())
+              : null,
+      isAuthenticated:
+          json['isAuthinticated']
+              as bool?, // ممكن تحتفظ بالكلمة زي ما هي لو السيرفر رجعها غلط
       refreshToken: json['refreshToken'] as String?,
-      refreshTokenExpiration: json['refreshTokenExpiration'] as String?,
-      roles: json['roles'] != null
-          ? List<String>.from(json['roles'] as List<dynamic>)
-          : null,
+      refreshTokenExpiration:
+          json['refreshTokenExpiration'] != null
+              ? DateTime.tryParse(json['refreshTokenExpiration'].toString())
+              : null,
+      roles:
+          json['roles'] != null
+              ? List<String>.from(json['roles'] as List<dynamic>)
+              : null,
       firstName: json['firstName'] as String?,
       lastName: json['lastName'] as String?,
       userName: json['userName'] as String?,
@@ -73,5 +80,4 @@ class AuthDataModel {
       phoneNumber: json['phoneNumber'] as String?,
     );
   }
-
 }

@@ -38,7 +38,7 @@ class AddressList extends StatelessWidget {
                   return Card(
                     margin: EdgeInsets.symmetric(
                       vertical: 8.h,
-                      horizontal: 20.w,
+                      horizontal: 10.w,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),

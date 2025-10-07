@@ -5,6 +5,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LocaleCubit extends Cubit<Locale> {
   LocaleCubit() : super(const Locale('en')); // default English
 
+  static Future<LocaleCubit> create() async {
+    final cubit = LocaleCubit();
+    await cubit.loadLocale();
+    return cubit;
+  }
+
   Future<void> loadLocale() async {
     final prefs = await SharedPreferences.getInstance();
     final langCode = prefs.getString('locale') ?? 'en';

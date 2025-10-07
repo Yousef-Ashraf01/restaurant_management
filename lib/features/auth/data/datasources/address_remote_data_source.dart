@@ -1,24 +1,21 @@
-import 'package:dio/dio.dart';
+import 'package:restaurant_management/core/network/dio_client.dart';
 import 'package:restaurant_management/features/auth/data/models/address_model.dart';
 
 abstract class AddressRemoteDataSource {
   Future<List<AddressModel>> getAddresses(String userId);
-
   Future<AddressModel> addAddress(AddressModel address);
-
   Future<void> deleteAddress(String addressId, String userId);
-
   Future<AddressModel> updateAddress(AddressModel address, String userId);
 }
 
 class AddressRemoteDataSourceImpl implements AddressRemoteDataSource {
-  final Dio client;
+  final DioClient dioClient;
 
-  AddressRemoteDataSourceImpl(this.client);
+  AddressRemoteDataSourceImpl(this.dioClient);
 
   @override
   Future<List<AddressModel>> getAddresses(String userId) async {
-    final response = await client.get('/api/Users/addresses/$userId');
+    final response = await dioClient.get('/api/Users/addresses/$userId');
 
     if (response.data['success'] == true) {
       final addressesJson = response.data['data'] as List;
@@ -30,7 +27,7 @@ class AddressRemoteDataSourceImpl implements AddressRemoteDataSource {
 
   @override
   Future<AddressModel> addAddress(AddressModel address) async {
-    final response = await client.post(
+    final response = await dioClient.post(
       "/api/Users/addresses",
       data: address.toJson(),
     );
@@ -44,7 +41,7 @@ class AddressRemoteDataSourceImpl implements AddressRemoteDataSource {
 
   @override
   Future<void> deleteAddress(String addressId, String userId) async {
-    final response = await client.delete(
+    final response = await dioClient.delete(
       "/api/Users/addresses",
       data: {"addressId": addressId, "userId": userId},
     );
@@ -60,14 +57,12 @@ class AddressRemoteDataSourceImpl implements AddressRemoteDataSource {
     String userId,
   ) async {
     try {
-      final response = await client.put(
+      final response = await dioClient.put(
         "/api/Users/addresses/UpdateAddress/${address.id}",
         data: address.toJson(),
       );
 
-      print(
-        "🔵 Update response raw: ${response.data}",
-      ); // اطبع اللي راجع من السيرفر
+      print("🔵 Update response raw: ${response.data}");
 
       if (response.data['success'] == true) {
         print("🟢 Updated address from server: ${response.data['data']}");
@@ -75,17 +70,9 @@ class AddressRemoteDataSourceImpl implements AddressRemoteDataSource {
       } else {
         throw Exception(response.data['message'] ?? "Failed to update address");
       }
-    } on DioException catch (e) {
-      if (e.response != null) {
-        print("🔴 DioException response: ${e.response?.data}");
-        throw Exception(
-          "Failed to update address: ${e.response?.data['message'] ?? e.response?.statusMessage}",
-        );
-      } else {
-        throw Exception("Network error: ${e.message}");
-      }
     } catch (e) {
-      throw Exception("Unexpected error: $e");
+      print("🔴 Error updating address: $e");
+      rethrow;
     }
   }
 }

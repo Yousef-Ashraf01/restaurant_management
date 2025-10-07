@@ -23,6 +23,14 @@ class AuthError extends AuthState {
   AuthError(this.message);
 }
 
+class AuthTokenRefreshed extends AuthState {
+  final String message;
+  AuthTokenRefreshed(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
 class AuthChangePasswordSuccess extends AuthState {
   final String message;
   AuthChangePasswordSuccess(this.message);

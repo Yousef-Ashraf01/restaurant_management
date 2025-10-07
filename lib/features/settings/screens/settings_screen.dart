@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -33,11 +34,14 @@ class SettingScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 10.h),
                 children: [
                   ListTileWidget(
-                    onTap: () {
+                    onTap: () async {
                       final tokenStorage =
                           context.read<AuthCubit>().repository.tokenStorage;
-                      final userId = tokenStorage.getUserId();
-                      final token = tokenStorage.getAccessToken();
+
+                      // جلب البيانات بشكل async
+                      final userId = await tokenStorage.getUserId();
+                      final token = await tokenStorage.getAccessToken();
+
                       if (userId != null && token != null) {
                         Navigator.pushNamed(
                           context,
@@ -45,14 +49,17 @@ class SettingScreen extends StatelessWidget {
                           arguments: {'userId': userId, 'token': token},
                         );
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("User not logged in")),
-                        );
+                        SchedulerBinding.instance.addPostFrameCallback((_) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("User not logged in")),
+                          );
+                        });
                       }
                     },
                     icon: Icons.person,
                     title: AppLocalizations.of(context)!.profile,
                   ),
+
                   SizedBox(height: 25.h),
                   ListTileWidget(
                     onTap: () {
@@ -87,7 +94,6 @@ class SettingScreen extends StatelessWidget {
               ),
             ),
 
-            // الـ Logout ثابت تحت
             Padding(
               padding: EdgeInsets.only(bottom: 20.h),
               child: ListTileWidget(
@@ -97,12 +103,12 @@ class SettingScreen extends StatelessWidget {
                     builder:
                         (ctx) => AlertDialog(
                           title: Text(
-                            AppLocalizations.of(context)!.confirm_delete_title,
+                            AppLocalizations.of(context)!.confirm_logout_title,
                           ),
                           content: Text(
                             AppLocalizations.of(
                               context,
-                            )!.confirm_delete_content,
+                            )!.confirm_logout_content,
                           ),
                           actions: [
                             TextButton(
@@ -137,20 +143,12 @@ class SettingScreen extends StatelessWidget {
                   );
                   if (confirm == true) {
                     final authCubit = context.read<AuthCubit>();
-                    final userId =
-                        authCubit.repository.tokenStorage.getUserId();
-                    if (userId != null) {
-                      await authCubit.logout(userId);
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        AppRoutes.loginRoute,
-                        (route) => false,
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("User not logged in")),
-                      );
-                    }
+                    await authCubit.logout();
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      AppRoutes.loginRoute,
+                      (route) => false,
+                    );
                   }
                 },
                 icon: Icons.logout,

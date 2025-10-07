@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+import 'package:restaurant_management/core/network/dio_client.dart';
 import 'package:restaurant_management/features/auth/data/models/restaurantInfoResponse.dart';
 
 abstract class RestaurantRemoteDataSource {
@@ -6,7 +6,7 @@ abstract class RestaurantRemoteDataSource {
 }
 
 class RestaurantRemoteDataSourceImpl implements RestaurantRemoteDataSource {
-  final Dio client;
+  final DioClient client;
   RestaurantRemoteDataSourceImpl(this.client);
 
   @override

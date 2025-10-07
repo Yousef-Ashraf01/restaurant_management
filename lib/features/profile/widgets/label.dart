@@ -7,9 +7,6 @@ class Label extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25.w),
-      child: Text(text, style: TextStyle(fontSize: 20.sp, color: Colors.blue)),
-    );
+    return Text(text, style: TextStyle(fontSize: 20.sp, color: Colors.blue));
   }
 }

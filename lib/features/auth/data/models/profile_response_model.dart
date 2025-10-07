@@ -30,6 +30,10 @@ class ProfileData {
   final String fullName;
   final String phoneNumber;
   final List<String> roles;
+  final bool? isActive;
+  final List<dynamic>? addresses;
+  final dynamic primaryAddress;
+  final int? addressCount;
 
   ProfileData({
     required this.id,
@@ -40,6 +44,10 @@ class ProfileData {
     required this.fullName,
     required this.phoneNumber,
     required this.roles,
+    this.isActive,
+    this.addresses,
+    this.primaryAddress,
+    this.addressCount,
   });
 
   factory ProfileData.fromJson(Map<String, dynamic> json) {
@@ -52,6 +60,19 @@ class ProfileData {
       fullName: json['fullName'],
       phoneNumber: json['phoneNumber'],
       roles: List<String>.from(json['roles'] ?? []),
+      isActive: json['isActive'],
+      addresses: json['addresses'],
+      primaryAddress: json['primaryAddress'],
+      addressCount: json['addressCount'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "firstName": firstName,
+      "lastName": lastName,
+      "phoneNumber": phoneNumber,
+    };
   }
 }

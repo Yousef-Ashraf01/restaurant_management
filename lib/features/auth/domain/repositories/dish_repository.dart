@@ -1,0 +1,18 @@
+import 'package:restaurant_management/features/auth/data/datasources/dish_remote_data_source.dart';
+import 'package:restaurant_management/features/auth/data/models/dish_model.dart';
+
+
+abstract class DishRepository {
+  Future<List<DishModel>> fetchDishes();
+}
+
+class DishRepositoryImpl implements DishRepository {
+  final DishRemoteDataSource remote;
+
+  DishRepositoryImpl(this.remote);
+
+  @override
+  Future<List<DishModel>> fetchDishes() {
+    return remote.getDishes();
+  }
+}

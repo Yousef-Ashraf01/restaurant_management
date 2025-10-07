@@ -10,22 +10,22 @@ class AddressesHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25.w),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(AppLocalizations.of(context)!.addresses, style: TextStyle(fontSize: 22.sp, color: Colors.blue)),
-          CircleAvatar(
-            backgroundColor: AppColors.accent,
-            radius: 18.r,
-            child: IconButton(
-              icon: const Icon(Icons.add, color: Colors.white),
-              onPressed: () => AddAddressBottomSheet.show(context, userId),
-            ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          AppLocalizations.of(context)!.addresses,
+          style: TextStyle(fontSize: 22.sp, color: Colors.blue),
+        ),
+        CircleAvatar(
+          backgroundColor: AppColors.accent,
+          radius: 19.r,
+          child: IconButton(
+            icon: const Icon(Icons.add, color: Colors.white),
+            onPressed: () => AddAddressBottomSheet.show(context, userId),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
