@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
+import 'package:restaurant_management/core/utils/show_snack_bar.dart';
+import 'package:restaurant_management/features/auth/state/connectivity_cubit.dart';
 import 'package:restaurant_management/features/auth/state/local_cubit.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 
 class LanguageScreen extends StatelessWidget {
   const LanguageScreen({super.key});
@@ -14,29 +16,61 @@ class LanguageScreen extends StatelessWidget {
     final currentLocale = context.watch<LocaleCubit>().state.languageCode;
 
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.chooseLanguage,), centerTitle: true),
-      body: Padding(
-        padding: EdgeInsets.all(20.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildLanguageOption(
-              context,
-              title: "العربية",
-              langCode: "ar",
-              isSelected: currentLocale == "ar",
-              flagAsset: 'assets/svg/flagSaudiArabia.svg',
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.chooseLanguage),
+        centerTitle: true,
+      ),
+      body: BlocBuilder<ConnectivityCubit, bool>(
+        builder: (context, isConnected) {
+          if (!isConnected) {
+            // المستخدم أوفلاين
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: 180,
+                    height: 180,
+                    child: Lottie.asset(
+                      'assets/animations/noInternetConnection.json',
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'No internet connection\nPlease connect to the internet',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          // المستخدم أونلاين
+          return Padding(
+            padding: EdgeInsets.all(20.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildLanguageOption(
+                  context,
+                  title: "العربية",
+                  langCode: "ar",
+                  isSelected: currentLocale == "ar",
+                  flagAsset: 'assets/svg/flagSaudiArabia.svg',
+                ),
+                SizedBox(height: 20.h),
+                _buildLanguageOption(
+                  context,
+                  title: "English",
+                  langCode: "en",
+                  isSelected: currentLocale == "en",
+                  flagAsset: 'assets/svg/flagUsSvgRepo.svg',
+                ),
+              ],
             ),
-            SizedBox(height: 20.h),
-            _buildLanguageOption(
-              context,
-              title: "English",
-              langCode: "en",
-              isSelected: currentLocale == "en",
-              flagAsset: 'assets/svg/flagUsSvgRepo.svg',
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -50,7 +84,24 @@ class LanguageScreen extends StatelessWidget {
   }) {
     return InkWell(
       onTap: () async {
-        await context.read<LocaleCubit>().changeLocale(langCode);
+        final isConnected = context.read<ConnectivityCubit>().state;
+        if (isConnected) {
+          await context.read<LocaleCubit>().changeLocale(langCode);
+
+          showAppSnackBar(
+            context,
+            message: AppLocalizations.of(context)!.languageChangedSuccessfully,
+            type: SnackBarType.success,
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("No internet connection"),
+              duration: Duration(seconds: 2),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 16.w),

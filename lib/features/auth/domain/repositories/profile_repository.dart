@@ -6,10 +6,11 @@ class ProfileRepository {
 
   ProfileRepository(this.remote);
 
-  Future<ProfileResponseModel> getUserProfile(
-    String userId,
-    String token,
-  ) async {
-    return await remote.getUserProfile(userId, token);
+  Future<ProfileResponseModel> getUserProfile(String userId) async {
+    return await remote.getUserProfile(userId);
+  }
+
+  Future<ProfileResponseModel> updateUserProfile(ProfileData data) async {
+    return await remote.updateUserProfile(data);
   }
 }

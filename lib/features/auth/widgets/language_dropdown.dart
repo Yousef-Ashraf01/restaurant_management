@@ -17,10 +17,7 @@ class LanguageDropdown extends StatelessWidget {
             value: langCode,
             dropdownColor: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(12.r),
-            icon: Padding(
-              padding: EdgeInsets.only(left: 8.w),
-              child: Icon(Icons.language, color: Colors.grey[700]),
-            ),
+            icon: SizedBox.shrink(),
             items: [
               DropdownMenuItem(
                 value: 'ar',
@@ -37,6 +34,7 @@ class LanguageDropdown extends StatelessWidget {
                       'العربية',
                       style: TextStyle(
                         fontSize: 14.sp,
+                        fontWeight: FontWeight.bold,
                         color: Colors.grey[700],
                       ),
                     ),
@@ -59,6 +57,7 @@ class LanguageDropdown extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14.sp,
                         color: Colors.grey[700],
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
@@ -81,7 +80,13 @@ class LanguageDropdown extends StatelessWidget {
                         height: 16.h,
                       ),
                       SizedBox(width: 8.w),
-                      Text(' العربية', style: TextStyle(fontSize: 14.sp)),
+                      Text(
+                        ' العربية',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   );
                 } else {
@@ -93,7 +98,13 @@ class LanguageDropdown extends StatelessWidget {
                         height: 16.h,
                       ),
                       SizedBox(width: 8.w),
-                      Text('English', style: TextStyle(fontSize: 14.sp)),
+                      Text(
+                        'English',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   );
                 }

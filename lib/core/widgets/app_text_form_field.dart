@@ -6,6 +6,7 @@ class AppTextFormField extends StatefulWidget {
   final String label;
   final String hint;
   final bool isPassword;
+  final bool isRequired; // ✅ جديد
   final TextEditingController? controller;
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
@@ -15,6 +16,7 @@ class AppTextFormField extends StatefulWidget {
     required this.label,
     required this.hint,
     this.isPassword = false,
+    this.isRequired = false, // ✅ default false
     this.controller,
     this.keyboardType,
     required this.validator,
@@ -38,13 +40,24 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.label,
-          style: TextStyle(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w500,
-            color: AppColors.text,
-          ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              widget.label,
+              style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w500,
+                color: AppColors.text,
+              ),
+            ),
+            SizedBox(width: 3.w,),
+            if (widget.isRequired)
+              const Text(
+                " *",
+                style: TextStyle(color: Colors.red, fontSize: 18),
+              ),
+          ],
         ),
         SizedBox(height: 6.h),
         TextFormField(
@@ -67,20 +80,19 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
             focusedBorder: const OutlineInputBorder(
               borderSide: BorderSide(color: Colors.blue, width: 2),
             ),
-            suffixIcon:
-                widget.isPassword
-                    ? IconButton(
-                      icon: Icon(
-                        _obscureText ? Icons.visibility_off : Icons.visibility,
-                        color: Colors.grey,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _obscureText = !_obscureText;
-                        });
-                      },
-                    )
-                    : null,
+            suffixIcon: widget.isPassword
+                ? IconButton(
+              icon: Icon(
+                _obscureText ? Icons.visibility_off : Icons.visibility,
+                color: Colors.grey,
+              ),
+              onPressed: () {
+                setState(() {
+                  _obscureText = !_obscureText;
+                });
+              },
+            )
+                : null,
           ),
         ),
       ],

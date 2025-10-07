@@ -1,34 +1,42 @@
 import 'package:dio/dio.dart';
+import 'package:restaurant_management/core/network/dio_client.dart';
 
 import '../models/profile_response_model.dart';
 
 abstract class ProfileRemoteDataSource {
-  Future<ProfileResponseModel> getUserProfile(String userId, String token);
+  Future<ProfileResponseModel> getUserProfile(String userId);
+  Future<ProfileResponseModel> updateUserProfile(ProfileData data);
 }
 
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
-  final Dio client;
+  final DioClient dioClient;
 
-  ProfileRemoteDataSourceImpl(this.client);
+  ProfileRemoteDataSourceImpl(this.dioClient);
 
   @override
-  Future<ProfileResponseModel> getUserProfile(
-    String userId,
-    String token,
-  ) async {
+  Future<ProfileResponseModel> getUserProfile(String userId) async {
     try {
-      final response = await client.get(
-        '/api/Users/profile/$userId',
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Content-Type': 'application/json',
-          },
-        ),
+      final response = await dioClient.get('/api/Users/profile/$userId');
+      return ProfileResponseModel.fromJson(response.data);
+    } on DioException catch (e) {
+      print("🔥 Error in getUserProfile: ${e.response?.statusCode}");
+      throw Exception(e.response?.data['message'] ?? "Failed to load profile");
+    }
+  }
+
+  @override
+  Future<ProfileResponseModel> updateUserProfile(ProfileData data) async {
+    try {
+      final response = await dioClient.put(
+        '/api/Users/profile',
+        data: data.toJson(),
       );
       return ProfileResponseModel.fromJson(response.data);
     } on DioException catch (e) {
-      throw Exception(e.response?.data['message'] ?? "Failed to load profile");
+      print("🔥 Error in updateUserProfile: ${e.response?.statusCode}");
+      throw Exception(
+        e.response?.data['message'] ?? "Failed to update profile",
+      );
     }
   }
 }

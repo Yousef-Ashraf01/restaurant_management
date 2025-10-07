@@ -7,9 +7,7 @@ class ReadOnlyField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25.w),
-      child: TextFormField(
+    return TextFormField(
         readOnly: true,
         initialValue: value,
         decoration: InputDecoration(
@@ -30,7 +28,6 @@ class ReadOnlyField extends StatelessWidget {
             vertical: 14.h,
           ),
         ),
-      ),
     );
   }
 }

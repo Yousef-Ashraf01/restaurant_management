@@ -1,13 +1,14 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restaurant_management/config/routes/app_routes.dart';
 import 'package:restaurant_management/core/constants/app_colors.dart';
 import 'package:restaurant_management/core/utils/validators.dart';
 import 'package:restaurant_management/core/widgets/app_button.dart';
 import 'package:restaurant_management/core/widgets/app_text_form_field.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../data/models/login_request_model.dart';
 import '../state/auth_cubit.dart';
 import '../state/auth_state.dart';
@@ -37,24 +38,16 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      context.read<AuthCubit>().login(body);
+      context.read<AuthCubit>().login(body, context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthCubit, AuthState>(
-      listener: (context, state) {
-        if (state is AuthLoginSuccess) {
-          Navigator.pushReplacementNamed(context, AppRoutes.mainRoute);
-        } else if (state is AuthError) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.message)));
-        }
-      },
+    return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         final isLoading = state is AuthLoading;
+
         return Form(
           key: _formKey,
           child: Column(
@@ -92,7 +85,10 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
               SizedBox(height: 25.h),
               isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : AppButton(text: AppLocalizations.of(context)!.login, onPressed: _onLogin),
+                  : AppButton(
+                    text: AppLocalizations.of(context)!.login,
+                    onPressed: _onLogin,
+                  ),
               SizedBox(height: 12.h),
               RichText(
                 textAlign: TextAlign.center,

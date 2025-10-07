@@ -1,80 +1,105 @@
 import 'package:dio/dio.dart';
+import 'package:restaurant_management/core/network/dio_client.dart';
+import 'package:restaurant_management/features/auth/data/models/auth_response_model.dart';
 import 'package:restaurant_management/features/auth/data/models/login_request_model.dart';
-import 'package:restaurant_management/features/auth/data/models/register_response_model.dart';
-
-import '../models/auth_response_model.dart';
+import 'package:restaurant_management/features/auth/data/models/register_request_model.dart';
 
 abstract class AuthRemoteDataSource {
   Future<AuthResponseModel> register(RegisterRequestModel model);
   Future<AuthResponseModel> login(LoginRequestModel model);
   Future<dynamic> logout(String userId);
   Future<dynamic> changePassword(Map<String, dynamic> body);
+  Future<AuthResponseModel> refreshToken(String refreshToken);
+  Future<dynamic> revokeToken(Map<String, dynamic> body);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
-  final Dio client;
+  final DioClient dioClient;
 
-  AuthRemoteDataSourceImpl(this.client);
+  AuthRemoteDataSourceImpl(this.dioClient);
 
   @override
   Future<AuthResponseModel> register(RegisterRequestModel model) async {
     try {
-      final response = await client.post(
+      final response = await dioClient.post(
         '/api/Auth/Register',
         data: model.toJson(),
-        options: Options(headers: {'Content-Type': 'application/json'}),
       );
       return AuthResponseModel.fromJson(response.data);
-    } on DioException catch (e) {
-      // اطبع التفاصيل عشان تعرف المشكلة
-      print("❌ Dio error: ${e.response?.statusCode} -> ${e.response?.data}");
-      throw Exception(
-        e.response?.data["message"] ?? "Unexpected error occurred",
-      );
+    } catch (e) {
+      print("❌ Register DioClient error: $e");
+      rethrow;
     }
   }
 
+  @override
   Future<AuthResponseModel> login(LoginRequestModel model) async {
     try {
-      final response = await client.post(
+      final response = await dioClient.post(
         '/api/Auth/GetToken',
         data: model.toJson(),
-        options: Options(headers: {'Content-Type': 'application/json'}),
       );
+      print(response.data);
       return AuthResponseModel.fromJson(response.data);
-    } on DioException catch (e) {
-      // اطبع التفاصيل عشان تعرف المشكلة
-      print("❌ Dio error: ${e.response?.statusCode} -> ${e.response?.data}");
-      throw Exception(
-        e.response?.data["message"] ?? "Unexpected error occurred",
-      );
+    } catch (e) {
+      print("❌ Login DioClient error: $e");
+      rethrow;
     }
   }
 
+  @override
   Future<dynamic> logout(String userId) async {
-    final response = await client.post(
-      "/Auth/Logout",
-      data: {"userId": userId},
-    );
-    return response.data;
+    try {
+      final response = await dioClient.post(
+        '/api/Auth/Logout',
+        data: {"userId": userId},
+      );
+      return response.data;
+    } catch (e) {
+      print("❌ Logout DioClient error: $e");
+      rethrow;
+    }
   }
 
   @override
   Future<dynamic> changePassword(Map<String, dynamic> body) async {
     try {
-      final response = await client.post(
+      final response = await dioClient.post(
         '/api/Users/changePassword',
         data: body,
-        options: Options(headers: {'Content-Type': 'application/json'}),
       );
       return response.data;
-    } on DioException catch (e) {
-      print(
-        "❌ ChangePassword Dio error: ${e.response?.statusCode} -> ${e.response?.data}",
+    } catch (e) {
+      print("❌ ChangePassword DioClient error: $e");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<AuthResponseModel> refreshToken(String refreshToken) async {
+    try {
+      final response = await dioClient.get(
+        '/api/Auth/refreshToken',
+        options: Options(headers: {'Authorization': 'Bearer $refreshToken'}),
       );
-      throw Exception(
-        e.response?.data["message"] ?? "Unexpected error occurred",
+      return AuthResponseModel.fromJson(response.data);
+    } catch (e) {
+      print("❌ RefreshToken DioClient error: $e");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<dynamic> revokeToken(Map<String, dynamic> body) async {
+    try {
+      final response = await dioClient.post(
+        '/api/Auth/revokeToken',
+        data: body,
       );
+      return response.data;
+    } catch (e) {
+      print("❌ RevokeToken DioClient error: $e");
+      rethrow;
     }
   }
 }
