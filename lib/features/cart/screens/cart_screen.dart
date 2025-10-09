@@ -573,14 +573,6 @@ class _CartScreenState extends State<CartScreen> {
                                               selected.additionalDirections ??
                                               "";
                                         },
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return AppLocalizations.of(
-                                              context,
-                                            )!.required;
-                                          }
-                                          return null;
-                                        },
                                       ),
                                     SizedBox(height: 10.h),
                                     Row(

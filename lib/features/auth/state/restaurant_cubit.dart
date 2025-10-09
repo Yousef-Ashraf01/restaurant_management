@@ -10,7 +10,6 @@ class RestaurantCubit extends Cubit<RestaurantState> {
   Future<void> getRestaurantInfo() async {
     emit(RestaurantLoading());
     try {
-      // انتظر النت يرجع قبل ما تبعت الطلب
       final isConnected = await Connectivity().checkConnectivity();
       if (isConnected == ConnectivityResult.none) {
         throw Exception("No internet connection");

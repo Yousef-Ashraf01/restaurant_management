@@ -1,9 +1,19 @@
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TokenStorage {
-  final SharedPreferences prefs;
+  static final TokenStorage _instance = TokenStorage._internal();
+  late SharedPreferences _prefs;
 
-  TokenStorage(this.prefs);
+  factory TokenStorage() => _instance;
+
+  TokenStorage._internal();
+
+  /// Call this once in main() before runApp()
+  Future<void> init() async {
+    _prefs = await SharedPreferences.getInstance();
+    debugPrint("🧩 TokenStorage initialized with prefs: $_prefs");
+  }
 
   static const _accessKey = "access_token";
   static const _refreshKey = "refresh_token";
@@ -12,59 +22,55 @@ class TokenStorage {
   static const _userIdKey = "user_id";
   static const _passwordKey = "user_password";
 
-  // Save
+  // Save methods
   Future<void> saveAccessToken(String token) async =>
-      await prefs.setString(_accessKey, token);
+      await _prefs.setString(_accessKey, token);
 
   Future<void> saveRefreshToken(String token) async =>
-      await prefs.setString(_refreshKey, token);
+      await _prefs.setString(_refreshKey, token);
 
-  Future<void> saveAccessExpiry(DateTime expiry) async => await prefs.setInt(
-    _accessExpiryKey,
-    expiry.toUtc().millisecondsSinceEpoch,
-  );
+  Future<void> saveAccessExpiry(DateTime? expiry) async {
+    if (expiry != null) {
+      await _prefs.setString(_accessExpiryKey, expiry.toIso8601String());
+    }
+  }
 
-  Future<void> saveRefreshExpiry(DateTime expiry) async => await prefs.setInt(
-    _refreshExpiryKey,
-    expiry.toUtc().millisecondsSinceEpoch,
-  );
+  Future<void> saveRefreshExpiry(DateTime? expiry) async {
+    if (expiry != null) {
+      await _prefs.setString(_refreshExpiryKey, expiry.toIso8601String());
+    }
+  }
 
   Future<void> saveUserId(String userId) async =>
-      await prefs.setString(_userIdKey, userId);
+      await _prefs.setString(_userIdKey, userId);
 
   Future<void> savePassword(String password) async =>
-      await prefs.setString(_passwordKey, password);
+      await _prefs.setString(_passwordKey, password);
 
-  // Get
-  String? getAccessToken() => prefs.getString(_accessKey);
-
-  String? getRefreshToken() => prefs.getString(_refreshKey);
+  // Get methods
+  String? getAccessToken() => _prefs.getString(_accessKey);
+  String? getRefreshToken() => _prefs.getString(_refreshKey);
 
   DateTime? getAccessExpiry() {
-    final v = prefs.getInt(_accessExpiryKey);
-    return v != null
-        ? DateTime.fromMillisecondsSinceEpoch(v, isUtc: true)
-        : null;
+    final v = _prefs.getString(_accessExpiryKey);
+    return v != null ? DateTime.parse(v).toUtc() : null;
   }
 
   DateTime? getRefreshExpiry() {
-    final v = prefs.getInt(_refreshExpiryKey);
-    return v != null
-        ? DateTime.fromMillisecondsSinceEpoch(v, isUtc: true)
-        : null;
+    final v = _prefs.getString(_refreshExpiryKey);
+    return v != null ? DateTime.parse(v).toUtc() : null;
   }
 
-  String? getUserId() => prefs.getString(_userIdKey);
-
-  String? getPassword() => prefs.getString(_passwordKey);
+  String? getUserId() => _prefs.getString(_userIdKey);
+  String? getPassword() => _prefs.getString(_passwordKey);
 
   // Clear all
   Future<void> clear() async {
-    await prefs.remove(_accessKey);
-    await prefs.remove(_refreshKey);
-    await prefs.remove(_accessExpiryKey);
-    await prefs.remove(_refreshExpiryKey);
-    await prefs.remove(_userIdKey);
-    await prefs.remove(_passwordKey);
+    await _prefs.remove(_accessKey);
+    await _prefs.remove(_refreshKey);
+    await _prefs.remove(_accessExpiryKey);
+    await _prefs.remove(_refreshExpiryKey);
+    await _prefs.remove(_userIdKey);
+    await _prefs.remove(_passwordKey);
   }
 }

@@ -10,10 +10,10 @@ class DishDetailsCubit extends Cubit<DishDetailsState> {
     : super(
         DishDetailsState(
           selectedOptions: {},
-          totalPrice: dish.basePrice, // 👈 السعر الأساسي
+          totalPrice: dish.basePrice,
           isSizeSelected:
               dish.optionGroups.where((g) => g.isRequired == true).isEmpty,
-          quantity: 1, // 👈 ابدأ بواحد
+          quantity: 1,
         ),
       );
 
@@ -44,7 +44,6 @@ class DishDetailsCubit extends Cubit<DishDetailsState> {
     );
   }
 
-  // 👇 دوال التحكم في الكمية
   void incrementQuantity() {
     final newQuantity = state.quantity + 1;
     emit(
@@ -68,7 +67,7 @@ class DishDetailsCubit extends Cubit<DishDetailsState> {
   }
 
   double _calculateTotal(Map<int, dynamic> options, int quantity) {
-    double total = dish.basePrice; // 👈 نبدأ بسعر الطبق الأساسي
+    double total = dish.basePrice;
     options.forEach((key, value) {
       if (value is List) {
         total += value.fold(0, (sum, o) => sum + o.price);
@@ -76,7 +75,7 @@ class DishDetailsCubit extends Cubit<DishDetailsState> {
         total += value.price;
       }
     });
-    return total * quantity; // 👈 ضرب في الكمية
+    return total * quantity;
   }
 
   bool _checkRequired(Map<int, dynamic> options) {

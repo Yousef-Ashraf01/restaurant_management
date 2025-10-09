@@ -27,7 +27,6 @@ class AuthRepositoryImpl implements AuthRepository {
     return resp;
   }
 
-  // ✅ Logout (server + clear local tokens)
   Future<bool> logout(String userId) async {
     try {
       final response = await remote.logout(userId);
@@ -41,46 +40,25 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-  // ✅ Change Password
-  // ✅ Change Password
   Future<bool> changePassword(ChangePasswordRequestModel model) async {
     try {
       final resp = await remote.changePassword(model.toJson());
 
-      // الريسبونس دايمًا Map<String, dynamic>
       if (resp is Map<String, dynamic>) {
         final success = resp['success'] == true;
         final serverMessage = resp['errors']?['message'] ?? resp['message'];
 
         if (success) return true;
 
-        // لو فشل نرمي Exception بالرسالة
         throw Exception(serverMessage ?? "Change password failed");
       }
 
-      // fallback لأي نوع غير متوقع
       throw Exception("Unexpected response type");
     } catch (e) {
       throw Exception("Change password failed: $e");
     }
   }
 
-  // ✅ Refresh Token
-  Future<bool> refreshToken() async {
-    try {
-      final refresh = tokenStorage.getRefreshToken();
-      if (refresh == null) return false;
-
-      final resp = await remote.refreshToken(refresh);
-      await _saveTokens(resp);
-      return true;
-    } catch (_) {
-      await tokenStorage.clear();
-      return false;
-    }
-  }
-
-  // ✅ Revoke Token
   Future<bool> revokeToken() async {
     try {
       final refresh = tokenStorage.getRefreshToken();
@@ -97,7 +75,6 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-  // 🔐 Helper: Save tokens in local storage
   Future<void> _saveTokens(AuthResponseModel resp) async {
     if (resp.data?.accessToken != null) {
       await tokenStorage.saveAccessToken(resp.data!.accessToken!);

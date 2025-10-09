@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -7,7 +8,6 @@ import 'package:restaurant_management/features/cart/screens/cart_screen.dart';
 import 'package:restaurant_management/features/home/screens/home_screen.dart';
 import 'package:restaurant_management/features/orders/screens/orders_screen.dart';
 import 'package:restaurant_management/features/settings/screens/settings_screen.dart';
-import 'package:flutter/services.dart'; // ✅ علشان نستخدم SystemNavigator.pop()
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -18,7 +18,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
-  final List<int> _navigationStack = [0]; // نبدأ بالـ Home
+  final List<int> _navigationStack = [0];
 
   late final List<Widget> _pages;
 
@@ -35,16 +35,14 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<bool> _onWillPop() async {
     if (_navigationStack.length > 1) {
-      // 🔙 نرجع للتاب اللي قبله
       setState(() {
         _navigationStack.removeLast();
         _selectedIndex =
-        _navigationStack.isNotEmpty ? _navigationStack.last : 0;
+            _navigationStack.isNotEmpty ? _navigationStack.last : 0;
       });
       return false;
     } else {
-      // 🏁 لو في الـ Home → نخرج من الأبلكيشن
-      SystemNavigator.pop(); // ✅ كده هيقفل الأبلكيشن مش يرجع للـ login
+      SystemNavigator.pop();
       return false;
     }
   }

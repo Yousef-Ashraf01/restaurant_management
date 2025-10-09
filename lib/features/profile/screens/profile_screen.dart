@@ -53,7 +53,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _initCubits = _initializeCubits();
   }
 
-
   Future<void> _initializeCubits() async {
     _profileCubit.fetchProfile(widget.userId, widget.token);
     _addressCubit.getUserAddresses(widget.userId);
@@ -103,41 +102,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   if (isConnected) {
                     _profileCubit.fetchProfile(widget.userId, widget.token);
                     _addressCubit.getUserAddresses(widget.userId);
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Back online, fetching data...'),
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
                   }
                 },
                 child: BlocConsumer<ProfileCubit, ProfileState>(
                   listener: (context, state) {
                     if (state is ProfileError) {
-                      _isUpdating = false;
+                      setState(() => _isUpdating = false);
                       showAppSnackBar(
                         context,
                         message: state.message,
                         type: SnackBarType.error,
                       );
                     } else if (state is ProfileUpdateSuccess) {
-                      _isUpdating = false;
+                      setState(() => _isUpdating = false);
                       showAppSnackBar(
                         context,
                         message:
                             AppLocalizations.of(context)!.profileUpdatedSuccess,
                         type: SnackBarType.success,
                       );
+                      _profileCubit.fetchProfile(widget.userId, widget.token);
                     } else if (state is ProfileLoading) {
-                      _isUpdating = true; // أثناء التحديث
+                      setState(() => _isUpdating = true);
                     }
                   },
                   builder: (context, state) {
-                    if (state is ProfileLoading && !_fieldsPopulated) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
                     if (state is ProfileSuccess) {
                       final profile = state.profile.data!;
 
@@ -146,214 +135,224 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         _fieldsPopulated = true;
                       }
 
-                      return SafeArea(
-                        child: SingleChildScrollView(
-                          padding: EdgeInsets.symmetric(horizontal: 15.w),
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 15.h),
-                                Center(
-                                  child: CircleAvatar(
-                                    radius: 50.r,
-                                    backgroundColor: Colors.blue,
-                                    child: const Icon(Icons.person, size: 50),
-                                  ),
-                                ),
-                                SizedBox(height: 10.h),
-                                Center(
-                                  child: Text(
-                                    "${_firstNameController.text} ${_lastNameController.text}",
-                                    style: TextStyle(
-                                      fontSize: 18.sp,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 20.h),
-
-                                // أول و آخـر الاسم
-                                Row(
+                      return Stack(
+                        children: [
+                          SafeArea(
+                            child: SingleChildScrollView(
+                              padding: EdgeInsets.symmetric(horizontal: 15.w),
+                              child: Form(
+                                key: _formKey,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Label(
-                                            AppLocalizations.of(
-                                              context,
-                                            )!.firstName,
-                                          ),
-                                          buildTextFormField(
-                                            controller: _firstNameController,
-                                            hintText:
+                                    SizedBox(height: 15.h),
+                                    Center(
+                                      child: CircleAvatar(
+                                        radius: 50.r,
+                                        backgroundColor: Colors.blue,
+                                        child: const Icon(
+                                          Icons.person,
+                                          size: 50,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 10.h),
+                                    Center(
+                                      child: Text(
+                                        "${_firstNameController.text} ${_lastNameController.text}",
+                                        style: TextStyle(
+                                          fontSize: 18.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 20.h),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Label(
                                                 AppLocalizations.of(
                                                   context,
                                                 )!.firstName,
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.trim().isEmpty) {
-                                                return "First name cannot be empty";
-                                              }
-                                              if (value.trim().length < 2) {
-                                                return "First name is too short";
-                                              }
-                                              return null;
-                                            },
+                                              ),
+                                              buildTextFormField(
+                                                controller:
+                                                    _firstNameController,
+                                                hintText:
+                                                    AppLocalizations.of(
+                                                      context,
+                                                    )!.firstName,
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.trim().isEmpty) {
+                                                    return "First name cannot be empty";
+                                                  }
+                                                  if (value.trim().length < 2) {
+                                                    return "First name is too short";
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(width: 15.w),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Label(
-                                            AppLocalizations.of(
-                                              context,
-                                            )!.lastName,
-                                          ),
-                                          buildTextFormField(
-                                            controller: _lastNameController,
-                                            hintText:
+                                        ),
+                                        SizedBox(width: 15.w),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Label(
                                                 AppLocalizations.of(
                                                   context,
                                                 )!.lastName,
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.trim().isEmpty) {
-                                                return "Last name cannot be empty";
-                                              }
-                                              if (value.trim().length < 2) {
-                                                return "Last name is too short";
-                                              }
-                                              return null;
-                                            },
+                                              ),
+                                              buildTextFormField(
+                                                controller: _lastNameController,
+                                                hintText:
+                                                    AppLocalizations.of(
+                                                      context,
+                                                    )!.lastName,
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.trim().isEmpty) {
+                                                    return "Last name cannot be empty";
+                                                  }
+                                                  if (value.trim().length < 2) {
+                                                    return "Last name is too short";
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                                SizedBox(height: 20.h),
-
-                                // البريد و اسم المستخدم
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Label(
-                                            AppLocalizations.of(
-                                              context,
-                                            )!.userName,
-                                          ),
-                                          ReadOnlyField(profile.userName),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(width: 15.w),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Label(
-                                            AppLocalizations.of(context)!.email,
-                                          ),
-                                          ReadOnlyField(profile.email),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 20.h),
-
-                                Label(
-                                  AppLocalizations.of(context)!.phoneNumber,
-                                ),
-                                buildTextFormField(
-                                  controller: _phoneController,
-                                  hintText:
-                                      AppLocalizations.of(context)!.phoneNumber,
-                                  keyboardType: TextInputType.phone,
-                                  validator: (value) {
-                                    if (value == null || value.trim().isEmpty) {
-                                      return AppLocalizations.of(
-                                        context,
-                                      )!.phoneNumberEmpty;
-                                    }
-                                    if (!RegExp(
-                                      r'^\d{11}$',
-                                    ).hasMatch(value.trim())) {
-                                      return AppLocalizations.of(
-                                        context,
-                                      )!.phoneNumberLength;
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                SizedBox(height: 30.h),
-
-                                // زر التحديث
-                                Center(
-                                  child: SizedBox(
-                                    width: 200.w,
-                                    child:
-                                        _isUpdating
-                                            ? const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            )
-                                            : ElevatedButton(
-                                              onPressed: () {
-                                                if (_formKey.currentState!
-                                                    .validate()) {
-                                                  _profileCubit.updateProfile(
-                                                    profile.copyWith(
-                                                      firstName:
-                                                          _firstNameController
-                                                              .text
-                                                              .trim(),
-                                                      lastName:
-                                                          _lastNameController
-                                                              .text
-                                                              .trim(),
-                                                      phoneNumber:
-                                                          _phoneController.text
-                                                              .trim(),
-                                                    ),
-                                                    widget.token,
-                                                  );
-                                                }
-                                              },
-                                              child: Text(
+                                    SizedBox(height: 20.h),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Label(
                                                 AppLocalizations.of(
                                                   context,
-                                                )!.updateProfile,
+                                                )!.userName,
                                               ),
-                                            ),
-                                  ),
+                                              ReadOnlyField(profile.userName),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(width: 15.w),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Label(
+                                                AppLocalizations.of(
+                                                  context,
+                                                )!.email,
+                                              ),
+                                              ReadOnlyField(profile.email),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 20.h),
+                                    Label(
+                                      AppLocalizations.of(context)!.phoneNumber,
+                                    ),
+                                    buildTextFormField(
+                                      controller: _phoneController,
+                                      hintText:
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.phoneNumber,
+                                      keyboardType: TextInputType.phone,
+                                      validator: (value) {
+                                        if (value == null ||
+                                            value.trim().isEmpty) {
+                                          return AppLocalizations.of(
+                                            context,
+                                          )!.phoneNumberEmpty;
+                                        }
+                                        if (!RegExp(
+                                          r'^\d{11}$',
+                                        ).hasMatch(value.trim())) {
+                                          return AppLocalizations.of(
+                                            context,
+                                          )!.phoneNumberLength;
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    SizedBox(height: 30.h),
+                                    Center(
+                                      child: SizedBox(
+                                        width: 200.w,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              _profileCubit.updateProfile(
+                                                profile.copyWith(
+                                                  firstName:
+                                                      _firstNameController.text
+                                                          .trim(),
+                                                  lastName:
+                                                      _lastNameController.text
+                                                          .trim(),
+                                                  phoneNumber:
+                                                      _phoneController.text
+                                                          .trim(),
+                                                ),
+                                                widget.token,
+                                              );
+                                            }
+                                          },
+                                          child: Text(
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.updateProfile,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 30.h),
+                                    AddressesHeader(userId: widget.userId),
+                                    SizedBox(height: 10.h),
+                                    AddressList(userId: widget.userId),
+                                    SizedBox(height: 20.h),
+                                  ],
                                 ),
-                                SizedBox(height: 30.h),
-
-                                // العناوين
-                                AddressesHeader(userId: widget.userId),
-                                SizedBox(height: 10.h),
-                                AddressList(userId: widget.userId),
-                                SizedBox(height: 20.h),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
+
+                          // ✅ Overlay التحميل الشفاف فوق الصفحة بالكامل
+                          if (state is ProfileLoading)
+                            Container(
+                              color: Colors.black.withOpacity(0.3),
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                        ],
                       );
+                    }
+
+                    // أول تحميل للبيانات
+                    if (state is ProfileLoading && !_fieldsPopulated) {
+                      return const Center(child: CircularProgressIndicator());
                     }
 
                     return const SizedBox();

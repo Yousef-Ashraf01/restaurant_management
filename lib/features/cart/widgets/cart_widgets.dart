@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restaurant_management/core/constants/app_colors.dart';
-import 'package:restaurant_management/features/auth/state/cart_cubit.dart';
-import 'package:restaurant_management/features/auth/data/models/cart_item_model.dart';
-
 import 'package:restaurant_management/core/utils/image_utils.dart';
+import 'package:restaurant_management/features/auth/data/models/cart_item_model.dart';
+import 'package:restaurant_management/features/auth/state/cart_cubit.dart';
 
 class CartWidgets {
-  // 🔴 Delete Button
   static Widget deleteButton(BuildContext context, CartItemModel item) {
     return IconButton(
       icon: const Icon(Icons.delete_forever_rounded, color: Colors.redAccent),
@@ -50,7 +48,6 @@ class CartWidgets {
     );
   }
 
-  // ➖➕ Quantity Controls
   static Widget quantityControls(
     BuildContext context,
     CartItemModel item,
@@ -97,7 +94,6 @@ class CartWidgets {
     );
   }
 
-  // 🛒 Cart Footer
   static Widget cartFooter(BuildContext context, cart) {
     return Container(
       margin: EdgeInsets.only(bottom: 20.h, left: 15.w, right: 15.w),
@@ -132,9 +128,7 @@ class CartWidgets {
                 borderRadius: BorderRadius.circular(16),
               ),
             ),
-            onPressed: () async {
-              // هنا ممكن تحط كل اللوجيك بتاع الطلب
-            },
+            onPressed: () async {},
             child: const Text(
               "Order",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -145,7 +139,6 @@ class CartWidgets {
     );
   }
 
-  // ✏️ Generic TextField Builder
   static Widget buildTextField(
     String label,
     TextEditingController controller, {
@@ -162,7 +155,6 @@ class CartWidgets {
     );
   }
 
-  // 📦 Cart Item Widget
   static Widget cartItem(
     BuildContext context,
     CartItemModel item,

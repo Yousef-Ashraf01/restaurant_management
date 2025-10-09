@@ -9,7 +9,6 @@ abstract class AuthRemoteDataSource {
   Future<AuthResponseModel> login(LoginRequestModel model);
   Future<dynamic> logout(String userId);
   Future<dynamic> changePassword(Map<String, dynamic> body);
-  Future<AuthResponseModel> refreshToken(String refreshToken);
   Future<dynamic> revokeToken(Map<String, dynamic> body);
 }
 
@@ -76,25 +75,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<AuthResponseModel> refreshToken(String refreshToken) async {
-    try {
-      final response = await dioClient.get(
-        '/api/Auth/refreshToken',
-        options: Options(headers: {'Authorization': 'Bearer $refreshToken'}),
-      );
-      return AuthResponseModel.fromJson(response.data);
-    } catch (e) {
-      print("❌ RefreshToken DioClient error: $e");
-      rethrow;
-    }
-  }
-
-  @override
   Future<dynamic> revokeToken(Map<String, dynamic> body) async {
     try {
       final response = await dioClient.post(
         '/api/Auth/revokeToken',
         data: body,
+        options: Options(headers: {'Authorization': null}),
       );
       return response.data;
     } catch (e) {

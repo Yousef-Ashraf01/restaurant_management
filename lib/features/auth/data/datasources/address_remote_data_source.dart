@@ -16,6 +16,8 @@ class AddressRemoteDataSourceImpl implements AddressRemoteDataSource {
   @override
   Future<List<AddressModel>> getAddresses(String userId) async {
     final response = await dioClient.get('/api/Users/addresses/$userId');
+    print("🔍 Response status: ${response.statusCode}");
+    print("🔍 Response data: ${response.data}");
 
     if (response.data['success'] == true) {
       final addressesJson = response.data['data'] as List;

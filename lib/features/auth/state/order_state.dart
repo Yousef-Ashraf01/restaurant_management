@@ -1,3 +1,4 @@
+import 'package:restaurant_management/features/auth/data/models/order_details_model.dart';
 import 'package:restaurant_management/features/auth/data/models/order_model.dart';
 
 abstract class OrderState {}
@@ -21,4 +22,16 @@ class OrderListSuccess extends OrderState {
 class OrderCreated extends OrderState {
   final String message;
   OrderCreated(this.message);
+}
+
+class OrderDetailsLoading extends OrderState {}
+
+class OrderDetailsSuccess extends OrderState {
+  final OrderDetailsModel order;
+  OrderDetailsSuccess(this.order);
+}
+
+class OrderDetailsFailure extends OrderState {
+  final String message;
+  OrderDetailsFailure(this.message);
 }

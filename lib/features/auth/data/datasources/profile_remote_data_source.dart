@@ -17,6 +17,8 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   Future<ProfileResponseModel> getUserProfile(String userId) async {
     try {
       final response = await dioClient.get('/api/Users/profile/$userId');
+      print("🔍 Response status: ${response.statusCode}");
+      print("🔍 Response data: ${response.data}");
       return ProfileResponseModel.fromJson(response.data);
     } on DioException catch (e) {
       print("🔥 Error in getUserProfile: ${e.response?.statusCode}");

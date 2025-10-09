@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
-import 'package:restaurant_management/features/auth/state/connectivity_cubit.dart'; // اختياري
+import 'package:restaurant_management/features/auth/state/connectivity_cubit.dart';
 
 class NetworkListener extends StatefulWidget {
   final Widget child;
@@ -23,10 +23,10 @@ class _NetworkListenerState extends State<NetworkListener> {
   Widget build(BuildContext context) {
     return BlocListener<ConnectivityCubit, bool>(
       listener: (context, connected) async {
-        final messenger = ScaffoldMessenger.of(context);
+        final messenger = ScaffoldMessenger.maybeOf(context);
+        if (messenger == null) return; // لو مفيش Scaffold، مانعملش حاجة
 
         if (!connected) {
-          // أظهر MaterialBanner ثابت
           messenger.showMaterialBanner(
             MaterialBanner(
               content: const Text(
@@ -46,10 +46,8 @@ class _NetworkListenerState extends State<NetworkListener> {
             ),
           );
 
-          // اختياري: عرض Lottie dialog مرة واحدة
           if (widget.showLottieDialogIfOffline && !_lottieShown) {
             _lottieShown = true;
-            // showDialog returns future; بعد اغلاقه نعيد المؤشر
             showDialog(
               context: context,
               barrierDismissible: true,
@@ -65,7 +63,6 @@ class _NetworkListenerState extends State<NetworkListener> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // استخدم المسار بتاع ملف اللوتي في assets
                           Lottie.asset(
                             'assets/animations/noInternetConnection.json',
                             width: 140,
@@ -88,7 +85,6 @@ class _NetworkListenerState extends State<NetworkListener> {
             ).then((_) => _lottieShown = false);
           }
         } else {
-          // لما يرجع النت: إخفاء الـ banner واظهار Snack قصير
           messenger.hideCurrentMaterialBanner();
           messenger.clearSnackBars();
           messenger.showSnackBar(

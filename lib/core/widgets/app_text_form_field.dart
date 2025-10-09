@@ -6,7 +6,7 @@ class AppTextFormField extends StatefulWidget {
   final String label;
   final String hint;
   final bool isPassword;
-  final bool isRequired; // ✅ جديد
+  final bool isRequired;
   final TextEditingController? controller;
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
@@ -16,7 +16,7 @@ class AppTextFormField extends StatefulWidget {
     required this.label,
     required this.hint,
     this.isPassword = false,
-    this.isRequired = false, // ✅ default false
+    this.isRequired = false,
     this.controller,
     this.keyboardType,
     required this.validator,
@@ -51,7 +51,7 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
                 color: AppColors.text,
               ),
             ),
-            SizedBox(width: 3.w,),
+            SizedBox(width: 3.w),
             if (widget.isRequired)
               const Text(
                 " *",
@@ -80,19 +80,20 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
             focusedBorder: const OutlineInputBorder(
               borderSide: BorderSide(color: Colors.blue, width: 2),
             ),
-            suffixIcon: widget.isPassword
-                ? IconButton(
-              icon: Icon(
-                _obscureText ? Icons.visibility_off : Icons.visibility,
-                color: Colors.grey,
-              ),
-              onPressed: () {
-                setState(() {
-                  _obscureText = !_obscureText;
-                });
-              },
-            )
-                : null,
+            suffixIcon:
+                widget.isPassword
+                    ? IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility_off : Icons.visibility,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                    )
+                    : null,
           ),
         ),
       ],

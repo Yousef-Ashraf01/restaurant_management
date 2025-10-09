@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_management/config/routes/app_routes.dart';
-import 'package:restaurant_management/core/widgets/auth_guard.dart';
 import 'package:restaurant_management/features/auth/data/models/dish_model.dart';
 import 'package:restaurant_management/features/auth/screens/login_screen.dart';
 import 'package:restaurant_management/features/auth/screens/new_password_screen.dart';
@@ -11,13 +10,14 @@ import 'package:restaurant_management/features/changePassword/screens/change_pas
 import 'package:restaurant_management/features/home/screens/dish_details_screen.dart';
 import 'package:restaurant_management/features/language/screens/language_screen.dart';
 import 'package:restaurant_management/features/main/screens/main_screen.dart';
+import 'package:restaurant_management/features/orders/screens/order_details_screen.dart';
+import 'package:restaurant_management/features/orders/screens/orders_screen.dart';
 import 'package:restaurant_management/features/profile/screens/profile_screen.dart';
 import 'package:restaurant_management/features/restaurant_info/screens/restaurant_info_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
     switch (settings.name) {
-      // 🟢 شاشات الدخول والتسجيل مفتوحة بدون AuthGuard
       case AppRoutes.loginRoute:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
 
@@ -35,11 +35,8 @@ class RouteGenerator {
       case AppRoutes.languageRoute:
         return MaterialPageRoute(builder: (_) => const LanguageScreen());
 
-      // 🔒 باقي الشاشات محمية بـ AuthGuard
       case AppRoutes.mainRoute:
-        return MaterialPageRoute(
-          builder: (_) => const AuthGuard(child: MainScreen()),
-        );
+        return MaterialPageRoute(builder: (_) => MainScreen());
 
       case AppRoutes.progileRoute:
         final args = settings.arguments as Map<String, dynamic>?;
@@ -55,12 +52,8 @@ class RouteGenerator {
         }
         return MaterialPageRoute(
           builder:
-              (_) => AuthGuard(
-                child: ProfileScreen(
-                  userId: args['userId'],
-                  token: args['token'],
-                ),
-              ),
+              (_) =>
+                  ProfileScreen(userId: args['userId'], token: args['token']),
         );
 
       case AppRoutes.changePsswordRoute:
@@ -68,6 +61,9 @@ class RouteGenerator {
 
       case AppRoutes.restaurantInfoRoute:
         return MaterialPageRoute(builder: (_) => RestaurantInfoScreen());
+
+      case AppRoutes.ordersRoute:
+        return MaterialPageRoute(builder: (_) => OrdersScreen());
 
       case AppRoutes.cartRoute:
         return MaterialPageRoute(builder: (_) => CartScreen());
@@ -82,6 +78,19 @@ class RouteGenerator {
           );
         }
         return MaterialPageRoute(builder: (_) => DishDetailsScreen(dish: dish));
+      case AppRoutes.orderDetailsRoute:
+        final args = settings.arguments as Map<String, dynamic>?;
+        if (args == null || !args.containsKey('orderId')) {
+          return MaterialPageRoute(
+            builder:
+                (_) => const Scaffold(
+                  body: Center(child: Text("Order ID is missing")),
+                ),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) => OrderDetailsScreen(orderId: args['orderId']),
+        );
 
       default:
         return _unDefinedRoute();

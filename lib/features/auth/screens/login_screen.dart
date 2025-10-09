@@ -18,23 +18,18 @@ import 'package:restaurant_management/features/auth/state/auth_state.dart';
 import 'package:restaurant_management/features/auth/state/connectivity_cubit.dart';
 import 'package:restaurant_management/features/auth/widgets/language_dropdown.dart';
 import 'package:restaurant_management/features/auth/widgets/login_form_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   Future<Map<String, dynamic>> _initRepositories() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    // 👑 استخدام DioClient مع TokenStorage
-    final tokenStorage = TokenStorage(prefs);
+    final tokenStorage = TokenStorage();
+    await tokenStorage.init();
     final dioClient = DioClient(tokenStorage);
 
-    // RemoteDataSources
     final authRemote = AuthRemoteDataSourceImpl(dioClient);
     final profileRemote = ProfileRemoteDataSourceImpl(dioClient);
 
-    // Repositories
     final authRepository = AuthRepositoryImpl(
       remote: authRemote,
       tokenStorage: tokenStorage,

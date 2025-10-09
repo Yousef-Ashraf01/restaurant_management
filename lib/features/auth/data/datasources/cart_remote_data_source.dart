@@ -13,8 +13,9 @@ class CartRemoteDataSource {
   Future<CartModel> getCart(String userId) async {
     try {
       final response = await dioClient.get("/api/Carts/user/$userId");
+      print("🔍 Response status: ${response.statusCode}");
+      print("🔍 Response data: ${response.data}");
 
-      // ✅ لو الكارت موجود
       if (response.data['success'] == true && response.data['data'] != null) {
         return CartModel.fromJson(response.data['data']);
       } else {

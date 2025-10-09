@@ -4,11 +4,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart'; // لو هتستخدم Lottie للانيميشن
+import 'package:restaurant_management/config/routes/app_routes.dart';
 import 'package:restaurant_management/core/network/token_storage.dart';
 import 'package:restaurant_management/features/auth/state/connectivity_cubit.dart';
 import 'package:restaurant_management/features/auth/state/order_cubit.dart';
 import 'package:restaurant_management/features/auth/state/order_state.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -23,17 +23,31 @@ class _OrdersScreenState extends State<OrdersScreen> {
   @override
   void initState() {
     super.initState();
-    _loadUserId();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _loadUserId();
+    });
   }
 
+
   Future<void> _loadUserId() async {
-    final prefs = await SharedPreferences.getInstance();
-    final tokenStorage = TokenStorage(prefs);
+    debugPrint("🟢 Entered _loadUserId");
+    final tokenStorage = TokenStorage();
+    await tokenStorage.init();
+    debugPrint("🟣 TokenStorage initialized");
+
     final id = tokenStorage.getUserId();
+    debugPrint("🔵 Retrieved userId from prefs: $id");
 
     if (id != null && id.isNotEmpty && mounted) {
       setState(() => userId = id);
-      context.read<OrderCubit>().getUserOrders(id);
+      debugPrint("✅ User ID loaded successfully: $userId");
+
+      // 🔥 استخدم Future.microtask هنا
+      Future.microtask(() {
+        if (mounted) {
+          context.read<OrderCubit>().getUserOrders(id);
+        }
+      });
     } else {
       debugPrint("⚠️ UserId not found in SharedPreferences");
     }
@@ -219,52 +233,18 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                       ),
                                     ),
                                   ),
-                                  onTap: () {
-                                    if (!isConnected) {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                            "❌ No internet connection",
-                                          ),
-                                        ),
-                                      );
-                                      return;
-                                    }
-
-                                    showDialog(
-                                      context: context,
-                                      builder:
-                                          (context) => AlertDialog(
-                                            title: Text(
-                                              "${AppLocalizations.of(context)!.order} #${order.id} ${AppLocalizations.of(context)!.details}",
-                                            ),
-                                            content: Text(
-                                              "${AppLocalizations.of(context)!.address}: ${order.fullAddress}\n\n"
-                                              "${AppLocalizations.of(context)!.status}: ${_getStatusText(order.status)}\n\n"
-                                              "${AppLocalizations.of(context)!.createdAt}: $orderDate",
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                onPressed:
-                                                    () =>
-                                                        Navigator.of(
-                                                          context,
-                                                        ).pop(),
-                                                child: Text(
-                                                  AppLocalizations.of(
-                                                    context,
-                                                  )!.close,
-                                                  style: TextStyle(
-                                                    color: Colors.orange,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                  onTap: () async {
+                                    final orderCubit = context.read<OrderCubit>(); // ✅
+                                    await Navigator.pushNamed(
+                                      context,
+                                      AppRoutes.orderDetailsRoute,
+                                      arguments: {'orderId': order.id},
                                     );
+
+                                    if (!mounted || userId == null) return;
+                                    orderCubit.getUserOrders(userId!); // ✅ آمن 100%
                                   },
+
                                 ),
                               );
                             },

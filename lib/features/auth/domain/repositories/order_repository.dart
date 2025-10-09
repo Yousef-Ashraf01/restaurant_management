@@ -1,4 +1,5 @@
 import 'package:restaurant_management/features/auth/data/datasources/order_remote_data_source.dart';
+import 'package:restaurant_management/features/auth/data/models/order_details_model.dart';
 import 'package:restaurant_management/features/auth/data/models/order_model.dart';
 
 class OrderRepository {
@@ -30,5 +31,9 @@ class OrderRepository {
 
   Future<List<OrderModel>> getUserOrders(String userId) async {
     return await remoteDataSource.getUserOrders(userId);
+  }
+
+  Future<OrderDetailsModel> getOrderDetails(String orderId) async {
+    return await remoteDataSource.getOrderDetails(orderId);
   }
 }

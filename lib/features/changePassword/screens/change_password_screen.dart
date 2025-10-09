@@ -13,7 +13,6 @@ import 'package:restaurant_management/features/auth/data/models/change_password_
 import 'package:restaurant_management/features/auth/state/auth_cubit.dart';
 import 'package:restaurant_management/features/auth/state/auth_state.dart';
 import 'package:restaurant_management/features/auth/state/connectivity_cubit.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -63,7 +62,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       return;
     }
 
-    final tokenStorage = TokenStorage(await SharedPreferences.getInstance());
+    final tokenStorage = TokenStorage();
+    await tokenStorage.init();
     final userId = tokenStorage.getUserId();
     if (userId == null) {
       showAppSnackBar(
@@ -81,7 +81,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         newPassword: _passwordController.text.trim(),
         confirmPassword: _confirmPasswordController.text.trim(),
       ),
-      context
+      context,
     );
   }
 
