@@ -74,7 +74,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                 alignment: Alignment.centerRight,
                 child: InkWell(
                   onTap: () {
-                    Navigator.pushNamed(context, AppRoutes.newPasswordRoute);
+                    Navigator.pushNamed(context, AppRoutes.confirmEmailRoute);
                   },
                   child: Text(
                     AppLocalizations.of(context)!.forgotPassword,

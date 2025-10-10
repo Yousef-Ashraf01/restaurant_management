@@ -3,67 +3,45 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
-import 'package:otp_text_field/otp_field.dart';
-import 'package:otp_text_field/style.dart';
 import 'package:restaurant_management/config/routes/app_routes.dart';
 import 'package:restaurant_management/core/constants/app_colors.dart';
 import 'package:restaurant_management/core/utils/show_snack_bar.dart';
 import 'package:restaurant_management/core/utils/validators.dart';
 import 'package:restaurant_management/core/widgets/app_button.dart';
-import 'package:restaurant_management/core/widgets/app_text_form_field.dart';
 import 'package:restaurant_management/core/widgets/app_un_focus_wrapper.dart';
 import 'package:restaurant_management/features/auth/state/auth_cubit.dart';
 import 'package:restaurant_management/features/auth/state/auth_state.dart';
 import 'package:restaurant_management/features/auth/state/connectivity_cubit.dart';
 
-class NewPasswordScreen extends StatefulWidget {
-  const NewPasswordScreen({super.key});
+class ConfirmEmailScreen extends StatefulWidget {
+  const ConfirmEmailScreen({super.key});
 
   @override
-  State<NewPasswordScreen> createState() => _NewPasswordScreenState();
+  State<ConfirmEmailScreen> createState() => _ConfirmEmailScreenState();
 }
 
-class _NewPasswordScreenState extends State<NewPasswordScreen> {
-  OtpFieldController otpController = OtpFieldController();
-  String otpCode = "";
-
+class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _passwordController = TextEditingController();
   final _emailController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      otpController.setFocus(0);
-    });
-  }
-
-  @override
   void dispose() {
-    _passwordController.dispose();
     _emailController.dispose();
     super.dispose();
   }
 
-  void _resetPassword(BuildContext context) {
+  void _sendOtp(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
-      if (otpCode.length != 6) {
+      final email = _emailController.text.trim();
+      try {
+        await context.read<AuthCubit>().sendPasswordResetToken(email);
+      } catch (e) {
         showAppSnackBar(
           context,
-          message: "OTP is invalid, please try again",
+          message: e.toString(),
           type: SnackBarType.error,
         );
-        otpController.clear();
-        return;
       }
-
-      // استدعاء البلوك
-      context.read<AuthCubit>().resetPassword(
-        email: _emailController.text.trim(),
-        newPassword: _passwordController.text.trim(),
-        otp: otpCode,
-      );
     }
   }
 
@@ -99,22 +77,23 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
         return AppUnfocusWrapper(
           child: BlocListener<AuthCubit, AuthState>(
             listener: (context, state) {
-              if (state is AuthResetPasswordSuccess) {
+              if (state is AuthPasswordResetOTPSuccess) {
                 showAppSnackBar(
                   context,
-                  message: state.message,
+                  message: "A code has been sent to your email",
                   type: SnackBarType.success,
                 );
-                Navigator.pushReplacementNamed(context, AppRoutes.loginRoute);
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.newPasswordRoute,
+                  arguments: _emailController.text.trim(),
+                );
               } else if (state is AuthError) {
                 showAppSnackBar(
                   context,
                   message: state.message,
                   type: SnackBarType.error,
                 );
-                otpController.clear();
-                _emailController.clear();
-                _passwordController.clear();
               }
             },
             child: Scaffold(
@@ -134,25 +113,20 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                           RichText(
                             textAlign: TextAlign.center,
                             text: TextSpan(
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: TextStyle(color: Colors.black),
                               children: [
                                 TextSpan(
-                                  text:
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.mailConfirmed +
-                                      "\n",
-                                  style: TextStyle(fontSize: 20.sp),
+                                  text: "Enter your email address\n",
+                                  style: TextStyle(
+                                    fontSize: 20.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
+                                WidgetSpan(child: SizedBox(height: 26.h)),
                                 TextSpan(
                                   text:
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.chooseNewPassword,
+                                      "and you will receive a confirmation message",
+                                  style: TextStyle(fontSize: 18.sp),
                                 ),
                               ],
                             ),
@@ -163,21 +137,6 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                OTPTextField(
-                                  keyboardType: TextInputType.number,
-                                  controller: otpController,
-                                  length: 6,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.9,
-                                  textFieldAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  fieldWidth: 45,
-                                  fieldStyle: FieldStyle.box,
-                                  outlineBorderRadius: 15,
-                                  style: const TextStyle(fontSize: 17),
-                                  onCompleted: (pin) => otpCode = pin,
-                                ),
-                                SizedBox(height: 20.h),
                                 Text(
                                   AppLocalizations.of(context)!.email,
                                   style: TextStyle(
@@ -213,25 +172,11 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                                         width: 2,
                                       ),
                                     ),
-                                    suffixIcon: const Icon(
-                                      Icons.email_outlined,
-                                      color: Colors.grey,
-                                    ),
+                                    suffixIcon: const Icon(Icons.email_rounded),
                                   ),
                                   validator:
                                       (value) =>
                                           Validators.email(context, value),
-                                ),
-                                SizedBox(height: 20.h),
-                                AppTextFormField(
-                                  label: "New Password",
-                                  hint: "Enter your new password",
-                                  isPassword: true,
-                                  keyboardType: TextInputType.visiblePassword,
-                                  controller: _passwordController,
-                                  validator:
-                                      (value) =>
-                                          Validators.password(context, value),
                                 ),
                                 SizedBox(height: 35.h),
                                 BlocBuilder<AuthCubit, AuthState>(
@@ -245,12 +190,8 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                                           ),
                                         )
                                         : AppButton(
-                                          text:
-                                              AppLocalizations.of(
-                                                context,
-                                              )!.confirm,
-                                          onPressed:
-                                              () => _resetPassword(context),
+                                          text: "Next",
+                                          onPressed: () => _sendOtp(context),
                                         );
                                   },
                                 ),

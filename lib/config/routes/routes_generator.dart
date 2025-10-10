@@ -7,6 +7,7 @@ import 'package:restaurant_management/features/auth/screens/otp_verification_cod
 import 'package:restaurant_management/features/auth/screens/sign_up__screen.dart';
 import 'package:restaurant_management/features/cart/screens/cart_screen.dart';
 import 'package:restaurant_management/features/changePassword/screens/change_password_screen.dart';
+import 'package:restaurant_management/features/confirm_email/screens/confirm_email_screen.dart';
 import 'package:restaurant_management/features/home/screens/dish_details_screen.dart';
 import 'package:restaurant_management/features/language/screens/language_screen.dart';
 import 'package:restaurant_management/features/main/screens/main_screen.dart';
@@ -26,6 +27,9 @@ class RouteGenerator {
 
       case AppRoutes.newPasswordRoute:
         return MaterialPageRoute(builder: (_) => const NewPasswordScreen());
+
+      case AppRoutes.confirmEmailRoute:
+        return MaterialPageRoute(builder: (_) => const ConfirmEmailScreen());
 
       case AppRoutes.otpVerificatonCodeRoute:
         final args = settings.arguments as Map<String, dynamic>?;

@@ -35,3 +35,14 @@ class AuthChangePasswordSuccess extends AuthState {
   final String message;
   AuthChangePasswordSuccess(this.message);
 }
+
+class AuthPasswordResetOTPSuccess extends AuthState {
+  final String otp;
+  AuthPasswordResetOTPSuccess(this.otp);
+}
+
+
+class AuthResetPasswordSuccess extends AuthState {
+  final String message;
+  AuthResetPasswordSuccess(this.message);
+}

@@ -10,6 +10,7 @@ class AppTextFormField extends StatefulWidget {
   final TextEditingController? controller;
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
+  final Widget? suffix;
 
   const AppTextFormField({
     super.key,
@@ -20,6 +21,7 @@ class AppTextFormField extends StatefulWidget {
     this.controller,
     this.keyboardType,
     required this.validator,
+    this.suffix,
   });
 
   @override

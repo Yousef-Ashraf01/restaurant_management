@@ -1,29 +1,20 @@
-#flutter_native_splash:
-#  background_image: "assets/images/splash_logo_android.jpg"
-#
-#  # خلي الخلفية بيضاء دايمًا
-#  color: "#ffffff"
-#
-#  # عطّل أي تأثير لوضع الليل (هيستخدم نفس الخلفية البيضاء)
-#  color_dark: "#ffffff"
-#
-#  # عطّل أي صورة مختلفة في الدارك مود
-#  background_image_dark: "assets/images/splash_logo_android.jpg"
-#
-#  android_12:
-#    # الصورة اللي تظهر في Android 12+
-#    image: assets/images/splash_logo.jpg
-#    # الخلفية برضو بيضاء
-#    color: "#ffffff"
-#    color_dark: "#ffffff"
-#
-#  # شغّل على كل المنصات
-#  android: true
-#  ios: true
-#
-#  # استخدم نفس الصورة في iOS
-#  image_ios: assets/images/splash_logo_ios.png
-#
-#  # خلي الصورة في النص دايمًا
-#  android_gravity: center
-#  ios_content_mode: center
+flutter_native_splash:
+  background_image: "assets/images/splash_logo_android.jpg"
+
+  color: "#ffffff"
+
+  color_dark: "#ffffff"
+
+
+  android_12:
+    image: assets/images/splash_logo.jpg
+    color: "#ffffff"
+    color_dark: "#ffffff"
+
+  android: true
+  ios: true
+
+  image_ios: assets/images/splash_logo_ios.jpg
+
+  android_gravity: center
+  ios_content_mode: center
