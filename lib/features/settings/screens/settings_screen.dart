@@ -38,7 +38,6 @@ class SettingScreen extends StatelessWidget {
                       final tokenStorage =
                           context.read<AuthCubit>().repository.tokenStorage;
 
-                      // جلب البيانات بشكل async
                       final userId = await tokenStorage.getUserId();
                       final token = await tokenStorage.getAccessToken();
 

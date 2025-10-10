@@ -10,4 +10,6 @@ class AppRoutes {
   static const String restaurantInfoRoute = '/restaurantInfoRoute';
   static const String dishDetailsRoute = '/dishDetailsRoute';
   static const String cartRoute = '/cartRoute';
+  static const String ordersRoute = '/orderRoute';
+  static const String orderDetailsRoute = '/orderDetailsRoute';
 }

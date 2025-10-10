@@ -27,10 +27,10 @@ class AuthResponseModel {
 class AuthDataModel {
   final String? id;
   final String? accessToken;
-  final DateTime? expiresIn; // ⬅️ بقت DateTime
+  final DateTime? expiresIn;
   final bool? isAuthenticated;
   final String? refreshToken;
-  final DateTime? refreshTokenExpiration; // ⬅️ بقت DateTime
+  final DateTime? refreshTokenExpiration;
   final List<String>? roles;
   final String? firstName;
   final String? lastName;
@@ -61,9 +61,7 @@ class AuthDataModel {
           json['expiresIn'] != null
               ? DateTime.tryParse(json['expiresIn'].toString())
               : null,
-      isAuthenticated:
-          json['isAuthinticated']
-              as bool?, // ممكن تحتفظ بالكلمة زي ما هي لو السيرفر رجعها غلط
+      isAuthenticated: json['isAuthinticated'] as bool?,
       refreshToken: json['refreshToken'] as String?,
       refreshTokenExpiration:
           json['refreshTokenExpiration'] != null

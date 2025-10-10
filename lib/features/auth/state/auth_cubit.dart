@@ -15,12 +15,9 @@ class AuthCubit extends Cubit<AuthState> {
 
   AuthCubit(this.repository, this.profileRepository) : super(AuthInitial());
 
-  // ✅ Helper لترجمة الأخطاء
-  // ✅ Helper لترجمة الأخطاء
   String _mapErrorToMessage(dynamic error) {
     final rawMessage = error.toString().replaceFirst("Exception: ", "");
 
-    // ✅ نمسك رسائل السيرفر الواضحة
     if (rawMessage.contains("EmailAlreadyRegistered")) {
       return "This email is already registered";
     } else if (rawMessage.contains("UserNameAlreadyRegistered")) {
@@ -37,7 +34,6 @@ class AuthCubit extends Cubit<AuthState> {
       return "No internet connection";
     }
 
-    // ✅ لو السيرفر رجّع JSON فيه errors.message
     try {
       final errorMap = error as Map<String, dynamic>;
       final serverMessage = errorMap['errors']?['message'];
@@ -47,9 +43,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (serverMessage != null && serverMessage.toString().isNotEmpty) {
         return serverMessage.toString();
       }
-    } catch (_) {
-      // لو مش Map نرجع الـ raw
-    }
+    } catch (_) {}
 
     return "Something went wrong, please try again";
   }
@@ -63,7 +57,6 @@ class AuthCubit extends Cubit<AuthState> {
       if (resp.success && resp.statusCode == 201) {
         emit(AuthRegisterSuccess("Registered successfully"));
       } else {
-        // ✅ ناخد الأول errors.message لو موجود
         final errorMessage = resp.errors?['message'];
         final fallbackMessage = resp.message;
         print("errorMessage $errorMessage");
@@ -75,7 +68,7 @@ class AuthCubit extends Cubit<AuthState> {
           } else if (errorMessage == "UserNameAlreadyRegistered") {
             emit(AuthError(appLocal.usernameAlreadyRegistered));
           } else {
-            emit(AuthError(errorMessage)); // أي رسالة تانية من السيرفر
+            emit(AuthError(errorMessage));
           }
         } else if (fallbackMessage == "ValidationFailed") {
           emit(AuthError("Invalid input, please check your data"));
@@ -96,19 +89,11 @@ class AuthCubit extends Cubit<AuthState> {
 
       if (response.success && response.data?.accessToken != null) {
         await repository.tokenStorage.savePassword(body.password);
-        await repository.tokenStorage.saveUserId(
-          response.data!.id!,
-        ); // ✅ حفظ userId
+        await repository.tokenStorage.saveUserId(response.data!.id!);
         await repository.tokenStorage.saveAccessToken(
           response.data!.accessToken!,
         );
 
-        print("💾 Saved userId: ${repository.tokenStorage.getUserId()}");
-        print(
-          "💾 Saved accessToken: ${repository.tokenStorage.getAccessToken()}",
-        );
-
-        // بعد كده ممكن تجيب البروفايل
         await profileRepository.getUserProfile(response.data!.id!);
 
         emit(
@@ -120,10 +105,15 @@ class AuthCubit extends Cubit<AuthState> {
       } else {
         final serverMessage = response.errors?['message'] ?? response.message;
 
-        if (serverMessage == "EmailOrPassworIsIncorrect") {
-          emit(AuthError(appLocal.emailOrPasswordIncorrect));
-        } else {
-          emit(AuthError(serverMessage ?? "Login failed"));
+        switch (serverMessage) {
+          case "EmailOrPassworIsIncorrect":
+            emit(AuthError(appLocal.emailOrPasswordIncorrect));
+            break;
+          case "ValidationFailed":
+            emit(AuthError("Invalid input, please check your data"));
+            break;
+          default:
+            emit(AuthError(serverMessage ?? "Login failed"));
         }
       }
     } catch (e) {
@@ -161,25 +151,12 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> refreshToken() async {
-    emit(AuthLoading());
-    try {
-      final success = await repository.refreshToken();
-      if (success) {
-        emit(AuthTokenRefreshed("Token refreshed successfully"));
-      } else {
-        emit(AuthLoggedOut());
-      }
-    } catch (e) {
-      emit(AuthError(_mapErrorToMessage(e)));
-    }
-  }
-
   Future<void> revokeToken() async {
     emit(AuthLoading());
     try {
       final success = await repository.revokeToken();
       if (success) {
+        await repository.tokenStorage.clear();
         emit(AuthLoggedOut());
       } else {
         emit(AuthError("Revoke token failed"));

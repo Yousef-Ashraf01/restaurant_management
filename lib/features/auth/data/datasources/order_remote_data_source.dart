@@ -1,4 +1,5 @@
 import 'package:restaurant_management/core/network/dio_client.dart';
+import 'package:restaurant_management/features/auth/data/models/order_details_model.dart';
 import 'package:restaurant_management/features/auth/data/models/order_model.dart';
 
 class OrderRemoteDataSource {
@@ -39,6 +40,8 @@ class OrderRemoteDataSource {
   Future<List<OrderModel>> getUserOrders(String userId) async {
     try {
       final response = await dioClient.get("/api/Orders/User/$userId");
+      print("🔍 Response status: ${response.statusCode}");
+      print("🔍 Response data: ${response.data}");
       if (response.data["success"] == true) {
         final List data = response.data["data"] ?? [];
         print(
@@ -50,6 +53,25 @@ class OrderRemoteDataSource {
       }
     } catch (e) {
       print("❌ getUserOrders DioClient error: $e");
+      rethrow;
+    }
+  }
+
+  Future<OrderDetailsModel> getOrderDetails(String orderId) async {
+    try {
+      final response = await dioClient.get("/api/Orders/$orderId");
+      print("🔍 getOrderDetails Response: ${response.data}");
+
+      if (response.data["success"] == true) {
+        final data = response.data["data"];
+        return OrderDetailsModel.fromJson(data);
+      } else {
+        throw Exception(
+          response.data["message"] ?? "Failed to load order details",
+        );
+      }
+    } catch (e) {
+      print("❌ getOrderDetails DioClient error: $e");
       rethrow;
     }
   }

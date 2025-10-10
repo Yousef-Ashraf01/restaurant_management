@@ -1,9 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:restaurant_management/core/constants/app_colors.dart';
+import 'package:restaurant_management/core/network/token_storage.dart';
 import 'package:restaurant_management/core/utils/image_utils.dart';
 import 'package:restaurant_management/features/auth/state/banner_cubit.dart';
 import 'package:restaurant_management/features/auth/state/banner_state.dart';
@@ -12,8 +14,6 @@ import 'package:restaurant_management/features/auth/state/dish_cubit.dart';
 import 'package:restaurant_management/features/auth/state/dish_state.dart';
 import 'package:restaurant_management/features/auth/state/local_cubit.dart';
 import 'package:restaurant_management/features/home/screens/dish_details_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -36,7 +36,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
-                   Text(
+                  Text(
                     AppLocalizations.of(context)!.noInternetConnection,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
@@ -86,20 +86,20 @@ class HomeScreen extends StatelessWidget {
                             autoPlayInterval: const Duration(seconds: 3),
                           ),
                           items:
-                          banners.map((banner) {
-                            return Builder(
-                              builder: (BuildContext context) {
-                                return ClipRRect(
-                                  borderRadius: BorderRadius.circular(15),
-                                  child: Image.memory(
-                                    convertBase64ToImage(banner.image),
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                  ),
+                              banners.map((banner) {
+                                return Builder(
+                                  builder: (BuildContext context) {
+                                    return ClipRRect(
+                                      borderRadius: BorderRadius.circular(15),
+                                      child: Image.memory(
+                                        convertBase64ToImage(banner.image),
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                      ),
+                                    );
+                                  },
                                 );
-                              },
-                            );
-                          }).toList(),
+                              }).toList(),
                         );
                       }
                       return const SizedBox(
@@ -142,30 +142,29 @@ class HomeScreen extends StatelessWidget {
                               final dish = dishes[index];
                               return GestureDetector(
                                 onTap:
-                                isConnected
-                                    ? () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (_) =>
-                                          DishDetailsScreen(
-                                            dish: dish,
-                                          ),
-                                    ),
-                                  );
-                                }
-                                    : () {
-                                  ScaffoldMessenger.of(
-                                    context,
-                                  ).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        "❌ No internet connection",
-                                      ),
-                                    ),
-                                  );
-                                },
+                                    isConnected
+                                        ? () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (_) => DishDetailsScreen(
+                                                    dish: dish,
+                                                  ),
+                                            ),
+                                          );
+                                        }
+                                        : () {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                "❌ No internet connection",
+                                              ),
+                                            ),
+                                          );
+                                        },
                                 child: Container(
                                   width: double.infinity,
                                   padding: EdgeInsets.all(10.w),
@@ -191,30 +190,29 @@ class HomeScreen extends StatelessWidget {
                                           ),
                                           image: DecorationImage(
                                             image:
-                                            (dish.image.isNotEmpty &&
-                                                dish.image != "null")
-                                                ? MemoryImage(
-                                              convertBase64ToImage(
-                                                dish.image,
-                                              ),
-                                            )
-                                                : const AssetImage(
-                                              "assets/images/logo1.jpg",
-                                            )
-                                            as ImageProvider,
+                                                (dish.image.isNotEmpty &&
+                                                        dish.image != "null")
+                                                    ? MemoryImage(
+                                                      convertBase64ToImage(
+                                                        dish.image,
+                                                      ),
+                                                    )
+                                                    : const AssetImage(
+                                                          "assets/images/logo1.jpg",
+                                                        )
+                                                        as ImageProvider,
                                             fit: BoxFit.cover,
                                           ),
                                         ),
                                       ),
                                       SizedBox(width: 15.w),
                                       Expanded(
-                                        child: BlocBuilder<
-                                            LocaleCubit,
-                                            Locale>(
+                                        child: BlocBuilder<LocaleCubit, Locale>(
                                           builder: (context, locale) {
                                             return Text(
-                                              locale.languageCode == 'en' ? dish
-                                                  .engName : dish.arbName,
+                                              locale.languageCode == 'en'
+                                                  ? dish.engName
+                                                  : dish.arbName,
                                               style: TextStyle(
                                                 fontSize: 16.sp,
                                                 fontWeight: FontWeight.bold,

@@ -28,10 +28,8 @@ class OrderModel {
   factory OrderModel.fromJson(Map<String, dynamic> json) {
     String dateStr = json["date"]?.toString() ?? "";
 
-    // نقطع أي جزء زائد بعد النقطة العشرية إذا موجود microseconds زيادة
     if (dateStr.contains(".")) {
       int dotIndex = dateStr.indexOf(".");
-      // ناخد أول 6 أرقام بعد النقطة (microseconds)
       int endIndex =
           (dotIndex + 7 < dateStr.length) ? dotIndex + 7 : dateStr.length;
       dateStr = dateStr.substring(0, endIndex);

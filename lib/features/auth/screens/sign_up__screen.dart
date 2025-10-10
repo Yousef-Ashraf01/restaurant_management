@@ -18,7 +18,6 @@ import 'package:restaurant_management/features/auth/state/auth_state.dart';
 import 'package:restaurant_management/features/auth/state/connectivity_cubit.dart';
 import 'package:restaurant_management/features/auth/widgets/language_dropdown.dart';
 import 'package:restaurant_management/features/auth/widgets/sign_up_form_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
@@ -26,18 +25,14 @@ class SignUpScreen extends StatelessWidget {
   Future<Map<String, dynamic>> _initRepositories() async {
     debugPrint("⏳ Initializing repositories...");
 
-    // ✅ تهيئة SharedPreferences
-    final prefs = await SharedPreferences.getInstance();
-    final tokenStorage = TokenStorage(prefs);
+    final tokenStorage = TokenStorage();
+    await tokenStorage.init();
 
-    // ✅ إنشاء DioClient المخصص بتاعك
     final dioClient = DioClient(tokenStorage);
 
-    // ✅ تمرير نفس الـ dioClient لكل RemoteDataSource
     final authRemote = AuthRemoteDataSourceImpl(dioClient);
     final profileRemote = ProfileRemoteDataSourceImpl(dioClient);
 
-    // ✅ إنشاء الـ Repositories
     final authRepository = AuthRepositoryImpl(
       remote: authRemote,
       tokenStorage: tokenStorage,
@@ -56,7 +51,6 @@ class SignUpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ConnectivityCubit, bool>(
       builder: (context, isConnected) {
-        // ✅ في حالة عدم وجود إنترنت
         if (!isConnected) {
           return Scaffold(
             body: Center(
@@ -82,7 +76,6 @@ class SignUpScreen extends StatelessWidget {
           );
         }
 
-        // ✅ تحميل الـ repositories أول مرة
         return FutureBuilder<Map<String, dynamic>>(
           future: _initRepositories(),
           builder: (context, snapshot) {
@@ -109,13 +102,11 @@ class SignUpScreen extends StatelessWidget {
               );
             }
 
-            // ✅ استرجاع الـ repositories بعد تهيئتها
             final authRepository =
-            snapshot.data!["authRepository"] as AuthRepositoryImpl;
+                snapshot.data!["authRepository"] as AuthRepositoryImpl;
             final profileRepository =
-            snapshot.data!["profileRepository"] as ProfileRepository;
+                snapshot.data!["profileRepository"] as ProfileRepository;
 
-            // ✅ BlocProvider يحقن الـ Cubit مع الـ repositories
             return BlocProvider(
               create: (_) => AuthCubit(authRepository, profileRepository),
               child: AppUnfocusWrapper(
@@ -138,7 +129,7 @@ class SignUpScreen extends StatelessWidget {
                               Navigator.pushNamedAndRemoveUntil(
                                 context,
                                 AppRoutes.mainRoute,
-                                    (route) => false,
+                                (route) => false,
                               );
                             } else if (state is AuthError) {
                               showAppSnackBar(

@@ -4,7 +4,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restaurant_management/config/routes/routes_generator.dart';
 import 'package:restaurant_management/core/constants/app_theme.dart';
-import 'package:restaurant_management/core/network/auth_manager.dart';
 import 'package:restaurant_management/core/network/dio_client.dart';
 import 'package:restaurant_management/core/network/token_storage.dart';
 import 'package:restaurant_management/core/widgets/network_listener.dart';
@@ -33,22 +32,17 @@ import 'package:restaurant_management/features/auth/state/dish_cubit.dart';
 import 'package:restaurant_management/features/auth/state/local_cubit.dart';
 import 'package:restaurant_management/features/auth/state/order_cubit.dart';
 import 'package:restaurant_management/features/auth/state/restaurant_cubit.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'config/routes/app_routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final prefs = await SharedPreferences.getInstance();
 
-  final tokenStorage = TokenStorage(prefs);
-  print("🔑 Saved Access Token: ${tokenStorage.getAccessToken()}");
-  print("🕒 Access Expiry: ${tokenStorage.getAccessExpiry()}");
-  print("🔄 Saved Refresh Token: ${tokenStorage.getRefreshToken()}");
-  print("🗓️ Refresh Expiry: ${tokenStorage.getRefreshExpiry()}");
+  final tokenStorage = TokenStorage();
+  await tokenStorage.init();
+
   final dioClient = DioClient(tokenStorage);
 
-  // Remote data sources
   final authRemote = AuthRemoteDataSourceImpl(dioClient);
   final profileRemote = ProfileRemoteDataSourceImpl(dioClient);
   final addressRemote = AddressRemoteDataSourceImpl(dioClient);
@@ -58,7 +52,6 @@ void main() async {
   final cartRemote = CartRemoteDataSource(dioClient);
   final orderRemote = OrderRemoteDataSource(dioClient);
 
-  // Repositories
   final authRepository = AuthRepositoryImpl(
     remote: authRemote,
     tokenStorage: tokenStorage,
@@ -71,11 +64,9 @@ void main() async {
   final cartRepository = CartRepository(cartRemote, tokenStorage);
   final orderRepository = OrderRepository(orderRemote);
 
-  // ✅ AuthManager
-  final authManager = AuthManager(tokenStorage: tokenStorage, dio: dioClient.dio);
-  final hasSession = await authManager.checkSession();
-
-  final initialRoute = hasSession ? AppRoutes.mainRoute : AppRoutes.loginRoute;
+  final accessToken = tokenStorage.getAccessToken();
+  final initialRoute =
+      (accessToken != null) ? AppRoutes.mainRoute : AppRoutes.loginRoute;
 
   runApp(
     MultiRepositoryProvider(
@@ -96,20 +87,20 @@ void main() async {
           BlocProvider<AuthCubit>(
             create:
                 (context) => AuthCubit(
-              context.read<AuthRepositoryImpl>(),
-              context.read<ProfileRepository>(),
-            ),
+                  context.read<AuthRepositoryImpl>(),
+                  context.read<ProfileRepository>(),
+                ),
           ),
           BlocProvider<LocaleCubit>(create: (_) => LocaleCubit()..loadLocale()),
           BlocProvider<RestaurantCubit>(
             create:
                 (context) =>
-                RestaurantCubit(context.read<RestaurantRepository>()),
+                    RestaurantCubit(context.read<RestaurantRepository>()),
           ),
           BlocProvider<BannerCubit>(
             create:
                 (context) =>
-            BannerCubit(context.read<BannerRepository>())..getBanners(),
+                    BannerCubit(context.read<BannerRepository>())..getBanners(),
           ),
           BlocProvider<DishCubit>(
             create: (context) => DishCubit(dishRepository)..getDishes(),
@@ -145,20 +136,23 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return BlocBuilder<LocaleCubit, Locale>(
           builder: (context, locale) {
-            return NetworkListener(
-              showLottieDialogIfOffline: true,
-              child: MaterialApp(
-                debugShowCheckedModeBanner: false,
-                theme: AppTheme.lightTheme,
-                onGenerateRoute: RouteGenerator.getRoute,
-                initialRoute: initialRoute,
-                localizationsDelegates: AppLocalizations.localizationsDelegates,
-                supportedLocales: AppLocalizations.supportedLocales,
-                locale: locale,
-                builder: (context, widget) {
-                  ScreenUtil.ensureScreenSize();
-                  return widget!;
-                },
+            return ScaffoldMessenger(
+              child: NetworkListener(
+                showLottieDialogIfOffline: true,
+                child: MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  theme: AppTheme.lightTheme,
+                  onGenerateRoute: RouteGenerator.getRoute,
+                  initialRoute: initialRoute,
+                  localizationsDelegates:
+                      AppLocalizations.localizationsDelegates,
+                  supportedLocales: AppLocalizations.supportedLocales,
+                  locale: locale,
+                  builder: (context, widget) {
+                    ScreenUtil.ensureScreenSize();
+                    return widget!;
+                  },
+                ),
               ),
             );
           },

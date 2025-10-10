@@ -17,6 +17,8 @@ class DishRemoteDataSourceImpl implements DishRemoteDataSource {
       final response = await dioClient.get(
         "/api/Dishes?skip=0&take=2147483647&statusFilter=0",
       );
+      print("🔍 Response status: ${response.statusCode}");
+      print("🔍 Response data: ${response.data}");
 
       if (response.data['success'] == true) {
         final dishesJson = response.data['data'] as List;

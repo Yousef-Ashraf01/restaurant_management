@@ -23,7 +23,6 @@ class LanguageScreen extends StatelessWidget {
       body: BlocBuilder<ConnectivityCubit, bool>(
         builder: (context, isConnected) {
           if (!isConnected) {
-            // المستخدم أوفلاين
             return Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -46,7 +45,6 @@ class LanguageScreen extends StatelessWidget {
             );
           }
 
-          // المستخدم أونلاين
           return Padding(
             padding: EdgeInsets.all(20.w),
             child: Column(

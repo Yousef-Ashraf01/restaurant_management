@@ -22,3 +22,5 @@ class ProfileError extends ProfileState {
 
   ProfileError(this.message);
 }
+
+class ProfileUpdating extends ProfileState{}

@@ -20,15 +20,15 @@ import 'package:restaurant_management/features/home/widgets/dish_image.dart';
 import 'package:restaurant_management/features/home/widgets/dish_info.dart';
 import 'package:restaurant_management/features/home/widgets/option_group_widget.dart';
 import 'package:restaurant_management/features/home/widgets/quantity_button.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class DishDetailsScreen extends StatelessWidget {
   final DishModel dish;
   const DishDetailsScreen({super.key, required this.dish});
 
   Future<TokenStorage> _initTokenStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    return TokenStorage(prefs);
+    final tokenStorage = TokenStorage();
+    await tokenStorage.init();
+    return TokenStorage();
   }
 
   @override

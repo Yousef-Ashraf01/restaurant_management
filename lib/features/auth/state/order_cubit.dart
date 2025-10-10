@@ -41,9 +41,20 @@ class OrderCubit extends Cubit<OrderState> {
     emit(OrderLoading());
     try {
       final orders = await orderRepository.getUserOrders(userId);
+
       emit(OrderListSuccess(orders));
     } catch (e) {
       emit(OrderFailure(e.toString()));
+    }
+  }
+
+  Future<void> getOrderDetails(String orderId) async {
+    emit(OrderDetailsLoading());
+    try {
+      final order = await orderRepository.getOrderDetails(orderId);
+      emit(OrderDetailsSuccess(order));
+    } catch (e) {
+      emit(OrderDetailsFailure(e.toString()));
     }
   }
 }

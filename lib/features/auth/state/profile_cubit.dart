@@ -19,11 +19,10 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   Future<void> updateProfile(ProfileData updatedProfile, String token) async {
-    emit(ProfileLoading());
+    emit(ProfileUpdating());
     try {
       final response = await repository.updateUserProfile(updatedProfile);
 
-      // mapping للرسالة
       final userMessage =
           response.message == "UpdatedMessage"
               ? "Profile updated successfully"
@@ -31,7 +30,6 @@ class ProfileCubit extends Cubit<ProfileState> {
 
       emit(ProfileUpdateSuccess(userMessage));
 
-      // بعد التحديث، نجيب البيانات الجديدة عشان نحدث الـ UI
       final profile = await repository.getUserProfile(updatedProfile.id);
       emit(ProfileSuccess(profile));
     } catch (e) {

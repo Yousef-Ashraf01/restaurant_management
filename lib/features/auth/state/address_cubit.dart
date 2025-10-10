@@ -30,7 +30,6 @@ class AddressCubit extends Cubit<AddressState> {
       final newAddress = await repository.addAddress(address);
       print("✅ Added address: ${newAddress.id}");
 
-      // جلب العناوين بعد الإضافة للتأكد من التحديث
       final updatedAddresses = await repository.fetchAddresses(address.userId!);
       emit(AddressLoaded(updatedAddresses));
     } catch (e) {

@@ -3,13 +3,13 @@ class DishDetailsState {
   final Map<int, dynamic> selectedOptions;
   final double totalPrice;
   final bool isSizeSelected;
-  final int quantity; // 👈 أضفنا quantity
+  final int quantity;
 
   DishDetailsState({
     required this.selectedOptions,
     required this.totalPrice,
     required this.isSizeSelected,
-    this.quantity = 1, // 👈 القيمة الافتراضية
+    this.quantity = 1,
   });
 
   DishDetailsState copyWith({
