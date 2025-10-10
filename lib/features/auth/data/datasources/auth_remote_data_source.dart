@@ -10,6 +10,8 @@ abstract class AuthRemoteDataSource {
   Future<dynamic> logout(String userId);
   Future<dynamic> changePassword(Map<String, dynamic> body);
   Future<dynamic> revokeToken(Map<String, dynamic> body);
+  Future<dynamic> sendEmailConfirmationToken(String userId);
+  Future<dynamic> confirmEmail(String userId, String token);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -88,4 +90,33 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       rethrow;
     }
   }
+
+  @override
+  Future<dynamic> sendEmailConfirmationToken(String userId) async {
+    try {
+      final response = await dioClient.post(
+        '/api/Users/EmailConfirmationToken',
+        data: {"userId": userId},
+      );
+      return response.data;
+    } catch (e) {
+      print("❌ sendEmailConfirmationToken error: $e");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<dynamic> confirmEmail(String userId, String token) async {
+    try {
+      final response = await dioClient.post(
+        '/api/Users/ConfirmEmail',
+        data: {"userId": userId, "token": token},
+      );
+      return response.data;
+    } catch (e) {
+      print("❌ confirmEmail error: $e");
+      rethrow;
+    }
+  }
+
 }

@@ -29,6 +29,7 @@ import 'package:restaurant_management/features/auth/state/banner_cubit.dart';
 import 'package:restaurant_management/features/auth/state/cart_cubit.dart';
 import 'package:restaurant_management/features/auth/state/connectivity_cubit.dart';
 import 'package:restaurant_management/features/auth/state/dish_cubit.dart';
+import 'package:restaurant_management/features/auth/state/email_confirmation_cubit.dart';
 import 'package:restaurant_management/features/auth/state/local_cubit.dart';
 import 'package:restaurant_management/features/auth/state/order_cubit.dart';
 import 'package:restaurant_management/features/auth/state/restaurant_cubit.dart';
@@ -116,6 +117,15 @@ void main() async {
             create: (context) => OrderCubit(context.read<OrderRepository>()),
           ),
           BlocProvider<ConnectivityCubit>(create: (_) => ConnectivityCubit()),
+          BlocProvider<EmailConfirmationCubit>(
+            create:
+                (context) => EmailConfirmationCubit(
+                  context
+                      .read<
+                        AuthRepositoryImpl
+                      >(), // أو لو ليه Repository خاص، عدّله هنا
+                ),
+          ),
         ],
         child: MyApp(initialRoute: initialRoute),
       ),

@@ -91,13 +91,9 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text("Error: ${state.message}"),
-                        const SizedBox(height: 12),
-                        ElevatedButton(
-                          onPressed: () {
-                            context.read<RestaurantCubit>().getRestaurantInfo();
-                          },
-                          child: const Text("Retry"),
+                        Text(
+                          "Restaurant info not found",
+                          style: TextStyle(fontSize: 18.sp),
                         ),
                       ],
                     ),

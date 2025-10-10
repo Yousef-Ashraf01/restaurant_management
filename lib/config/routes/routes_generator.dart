@@ -28,8 +28,17 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const NewPasswordScreen());
 
       case AppRoutes.otpVerificatonCodeRoute:
+        final args = settings.arguments as Map<String, dynamic>?;
+        if (args == null || !args.containsKey('userId')) {
+          return MaterialPageRoute(
+            builder:
+                (_) => const Scaffold(
+                  body: Center(child: Text("User ID is missing")),
+                ),
+          );
+        }
         return MaterialPageRoute(
-          builder: (_) => const OtpVerificationCodeScreen(),
+          builder: (_) => OtpVerificationCodeScreen(userId: args['userId']),
         );
 
       case AppRoutes.languageRoute:

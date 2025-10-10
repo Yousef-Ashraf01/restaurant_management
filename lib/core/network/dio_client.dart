@@ -24,14 +24,14 @@ class DioClient {
   DioClient._internal(this.tokenStorage, {this.onLogout})
     : dio = Dio(
         BaseOptions(
-          baseUrl: "https://restaurantmanagementsystem.runasp.net",
+          baseUrl: "https://elasalaelmasriaapi.runasp.net",
           headers: {'Content-Type': 'application/json'},
           validateStatus: (_) => true,
         ),
       ),
       _refreshDio = Dio(
         BaseOptions(
-          baseUrl: "https://restaurantmanagementsystem.runasp.net",
+          baseUrl: "https://elasalaelmasriaapi.runasp.net",
           headers: {'Content-Type': 'application/json'},
           validateStatus: (_) => true,
         ),

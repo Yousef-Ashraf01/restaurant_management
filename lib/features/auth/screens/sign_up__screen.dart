@@ -124,13 +124,28 @@ class SignUpScreen extends StatelessWidget {
                         AuthHeader(title: AppLocalizations.of(context)!.signUp),
                         SizedBox(height: 30.h),
                         BlocConsumer<AuthCubit, AuthState>(
-                          listener: (context, state) {
+                          listener: (context, state) async {
                             if (state is AuthRegisterSuccess) {
-                              Navigator.pushNamedAndRemoveUntil(
-                                context,
-                                AppRoutes.mainRoute,
-                                (route) => false,
-                              );
+                              final tokenStorage = TokenStorage();
+                              await tokenStorage.init();
+
+                              final userId =
+                                  await tokenStorage
+                                      .getUserId(); // نجيب اليوزر من التخزين المحلي
+
+                              if (userId != null) {
+                                Navigator.pushNamed(
+                                  context,
+                                  AppRoutes.otpVerificatonCodeRoute,
+                                  arguments: {'userId': userId},
+                                );
+                              } else {
+                                showAppSnackBar(
+                                  context,
+                                  message: "User ID not found in local storage",
+                                  type: SnackBarType.error,
+                                );
+                              }
                             } else if (state is AuthError) {
                               showAppSnackBar(
                                 context,

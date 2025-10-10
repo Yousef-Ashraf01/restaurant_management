@@ -92,4 +92,18 @@ class AuthRepositoryImpl implements AuthRepository {
       await tokenStorage.saveRefreshExpiry(resp.data!.refreshTokenExpiration!);
     }
   }
+
+  Future<String?> sendEmailConfirmationToken(String userId) async {
+    final resp = await remote.sendEmailConfirmationToken(userId);
+    if (resp["success"] == true) {
+      return resp["data"]; // الكود المرسل (للاختبار فقط)
+    }
+    return null;
+  }
+
+  Future<bool> confirmEmail(String userId, String token) async {
+    final resp = await remote.confirmEmail(userId, token);
+    return resp["success"] == true;
+  }
+
 }
