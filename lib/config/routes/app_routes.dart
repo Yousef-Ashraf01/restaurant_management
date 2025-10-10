@@ -3,6 +3,7 @@ class AppRoutes {
   static const String signUpRoute = '/signUp';
   static const String mainRoute = '/main';
   static const String newPasswordRoute = '/newPassword';
+  static const String confirmEmailRoute = '/confirmEmailRoute';
   static const String otpVerificatonCodeRoute = '/otpVerificatonCodeRoute';
   static const String progileRoute = '/progileRoute';
   static const String languageRoute = '/languageRoute';

@@ -12,6 +12,12 @@ abstract class AuthRemoteDataSource {
   Future<dynamic> revokeToken(Map<String, dynamic> body);
   Future<dynamic> sendEmailConfirmationToken(String userId);
   Future<dynamic> confirmEmail(String userId, String token);
+  Future<String> sendPasswordResetToken(String email);
+  Future<bool> resetPassword({
+    required String email,
+    required String newPassword,
+    required String token,
+  });
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -119,4 +125,38 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     }
   }
 
+  @override
+  Future<String> sendPasswordResetToken(String email) async {
+    try {
+      final response = await dioClient.post(
+        '/api/Users/passwordResetToken',
+        data: {"email": email},
+      );
+      if (response.data['success'] == true &&
+          (response.data['data'] ?? "").isNotEmpty) {
+        return response.data['data']; // الكود المرسل
+      } else {
+        throw Exception(response.data['message'] ?? 'Email not found');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> resetPassword({
+    required String email,
+    required String newPassword,
+    required String token,
+  }) async {
+    try {
+      final response = await dioClient.post(
+        '/api/Users/ResetPassword',
+        data: {"email": email, "newPassword": newPassword, "token": token},
+      );
+      return response.data['success'] == true;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

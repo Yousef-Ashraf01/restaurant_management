@@ -106,4 +106,19 @@ class AuthRepositoryImpl implements AuthRepository {
     return resp["success"] == true;
   }
 
+  Future<String> sendPasswordResetToken(String email) async {
+    return await remote.sendPasswordResetToken(email);
+  }
+
+  Future<bool> resetPassword({
+    required String email,
+    required String newPassword,
+    required String token,
+  }) async {
+    return await remote.resetPassword(
+      email: email,
+      newPassword: newPassword,
+      token: token,
+    );
+  }
 }

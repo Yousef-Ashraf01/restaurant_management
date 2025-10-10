@@ -165,4 +165,38 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthError(_mapErrorToMessage(e)));
     }
   }
+
+  Future<String?> sendPasswordResetToken(String email) async {
+    emit(AuthLoading());
+    try {
+      final otp = await repository.sendPasswordResetToken(email);
+      emit(AuthPasswordResetOTPSuccess(otp));
+      return otp;
+    } catch (e) {
+      emit(AuthError(_mapErrorToMessage(e)));
+      return null;
+    }
+  }
+
+  Future<void> resetPassword({
+    required String email,
+    required String newPassword,
+    required String otp,
+  }) async {
+    emit(AuthLoading());
+    try {
+      final success = await repository.resetPassword(
+        email: email,
+        newPassword: newPassword,
+        token: otp,
+      );
+      if (success) {
+        emit(AuthResetPasswordSuccess("Password changed successfully"));
+      } else {
+        emit(AuthError("Failed to reset password"));
+      }
+    } catch (e) {
+      emit(AuthError(_mapErrorToMessage(e)));
+    }
+  }
 }
