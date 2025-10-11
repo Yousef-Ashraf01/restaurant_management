@@ -103,9 +103,9 @@ class SignUpScreen extends StatelessWidget {
             }
 
             final authRepository =
-                snapshot.data!["authRepository"] as AuthRepositoryImpl;
+            snapshot.data!["authRepository"] as AuthRepositoryImpl;
             final profileRepository =
-                snapshot.data!["profileRepository"] as ProfileRepository;
+            snapshot.data!["profileRepository"] as ProfileRepository;
 
             return BlocProvider(
               create: (_) => AuthCubit(authRepository, profileRepository),
@@ -130,8 +130,8 @@ class SignUpScreen extends StatelessWidget {
                               await tokenStorage.init();
 
                               final userId =
-                                  await tokenStorage
-                                      .getUserId(); // نجيب اليوزر من التخزين المحلي
+                              await tokenStorage
+                                  .getUserId(); // نجيب اليوزر من التخزين المحلي
 
                               if (userId != null) {
                                 Navigator.pushNamed(

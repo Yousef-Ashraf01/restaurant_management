@@ -120,151 +120,151 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
         return Scaffold(
           body:
-              userId == null
-                  ? const Center(child: CircularProgressIndicator())
-                  : BlocBuilder<OrderCubit, OrderState>(
-                    builder: (context, state) {
-                      if (state is OrderLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
+          userId == null
+              ? const Center(child: CircularProgressIndicator())
+              : BlocBuilder<OrderCubit, OrderState>(
+            builder: (context, state) {
+              if (state is OrderLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-                      if (state is OrderListSuccess) {
-                        final orders = state.orders;
+              if (state is OrderListSuccess) {
+                final orders = state.orders;
 
-                        if (orders.isEmpty) {
-                          return Center(
+                if (orders.isEmpty) {
+                  return Center(
+                    child: Text(
+                      "${AppLocalizations.of(context)!.noOrdersYet} 🍔.",
+                      style: TextStyle(fontSize: 22.sp),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                }
+
+                return SafeArea(
+                  child: ListView.builder(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 15.w,
+                      vertical: 25.h,
+                    ),
+                    itemCount: orders.length,
+                    itemBuilder: (context, index) {
+                      final order = orders[index];
+                      final orderDate = DateFormat(
+                        'yyyy-MM-dd – hh:mm a',
+                      ).format(order.createdAt);
+
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        elevation: 2,
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.all(16),
+                          leading: CircleAvatar(
+                            radius: 26,
+                            backgroundColor: _getStatusColor(
+                              order.status,
+                            ).withOpacity(0.1),
+                            child: Icon(
+                              Icons.receipt_long,
+                              color: _getStatusColor(order.status),
+                              size: 28,
+                            ),
+                          ),
+                          title: Text(
+                            "${AppLocalizations.of(context)!.order} #${order.id.isNotEmpty ? order.id : '--'}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(top: 6),
+                            child: Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "${AppLocalizations.of(context)!.city}: ${order.city}",
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                Text(
+                                  "${AppLocalizations.of(context)!.address}: ${order.fullAddress}",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                Text(
+                                  "${AppLocalizations.of(context)!.createdAt}: $orderDate",
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          trailing: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: _getStatusColor(
+                                order.status,
+                              ).withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             child: Text(
-                              "${AppLocalizations.of(context)!.noOrdersYet} 🍔.",
-                              style: TextStyle(fontSize: 22.sp),
+                              _getStatusText(order.status),
                               textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: _getStatusColor(order.status),
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          );
-                        }
-
-                        return SafeArea(
-                          child: ListView.builder(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 15.w,
-                              vertical: 25.h,
-                            ),
-                            itemCount: orders.length,
-                            itemBuilder: (context, index) {
-                              final order = orders[index];
-                              final orderDate = DateFormat(
-                                'yyyy-MM-dd – hh:mm a',
-                              ).format(order.createdAt);
-
-                              return Card(
-                                margin: const EdgeInsets.symmetric(vertical: 8),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                elevation: 2,
-                                child: ListTile(
-                                  contentPadding: const EdgeInsets.all(16),
-                                  leading: CircleAvatar(
-                                    radius: 26,
-                                    backgroundColor: _getStatusColor(
-                                      order.status,
-                                    ).withOpacity(0.1),
-                                    child: Icon(
-                                      Icons.receipt_long,
-                                      color: _getStatusColor(order.status),
-                                      size: 28,
-                                    ),
-                                  ),
-                                  title: Text(
-                                    "${AppLocalizations.of(context)!.order} #${order.id.isNotEmpty ? order.id : '--'}",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  subtitle: Padding(
-                                    padding: const EdgeInsets.only(top: 6),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "${AppLocalizations.of(context)!.city}: ${order.city}",
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.black87,
-                                          ),
-                                        ),
-                                        Text(
-                                          "${AppLocalizations.of(context)!.address}: ${order.fullAddress}",
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontSize: 13,
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                        Text(
-                                          "${AppLocalizations.of(context)!.createdAt}: $orderDate",
-                                          style: const TextStyle(
-                                            fontSize: 13,
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  trailing: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: _getStatusColor(
-                                        order.status,
-                                      ).withOpacity(0.15),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Text(
-                                      _getStatusText(order.status),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: _getStatusColor(order.status),
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  onTap: () async {
-                                    final orderCubit = context.read<OrderCubit>(); // ✅
-                                    await Navigator.pushNamed(
-                                      context,
-                                      AppRoutes.orderDetailsRoute,
-                                      arguments: {'orderId': order.id},
-                                    );
-
-                                    if (!mounted || userId == null) return;
-                                    orderCubit.getUserOrders(userId!); // ✅ آمن 100%
-                                  },
-
-                                ),
-                              );
-                            },
                           ),
-                        );
-                      }
+                          onTap: () async {
+                            final orderCubit = context.read<OrderCubit>(); // ✅
+                            await Navigator.pushNamed(
+                              context,
+                              AppRoutes.orderDetailsRoute,
+                              arguments: {'orderId': order.id},
+                            );
 
-                      if (state is OrderFailure) {
-                        return Center(
-                          child: Text(
-                            "❌ Failed to load orders\n${state.message}",
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(color: Colors.red),
-                          ),
-                        );
-                      }
+                            if (!mounted || userId == null) return;
+                            orderCubit.getUserOrders(userId!); // ✅ آمن 100%
+                          },
 
-                      return const SizedBox();
+                        ),
+                      );
                     },
                   ),
+                );
+              }
+
+              if (state is OrderFailure) {
+                return Center(
+                  child: Text(
+                    "❌ Failed to load orders\n${state.message}",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                );
+              }
+
+              return const SizedBox();
+            },
+          ),
         );
       },
     );

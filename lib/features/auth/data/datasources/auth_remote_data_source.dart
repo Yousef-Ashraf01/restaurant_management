@@ -134,7 +134,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
       if (response.data['success'] == true &&
           (response.data['data'] ?? "").isNotEmpty) {
-        return response.data['data']; // الكود المرسل
+        return response.data['data'];
       } else {
         throw Exception(response.data['message'] ?? 'Email not found');
       }

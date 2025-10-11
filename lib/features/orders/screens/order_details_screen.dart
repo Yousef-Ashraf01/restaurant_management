@@ -174,7 +174,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(Icons.location_on_rounded, size: 20, color: Colors.grey,),
+                              Icon(
+                                Icons.location_on_rounded,
+                                size: 20,
+                                color: Colors.grey,
+                              ),
                               const SizedBox(width: 6),
                               Expanded(
                                 child: Text(

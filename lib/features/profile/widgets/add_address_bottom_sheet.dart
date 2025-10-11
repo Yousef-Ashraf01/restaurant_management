@@ -10,10 +10,10 @@ import 'package:restaurant_management/features/profile/widgets/text_field_bottom
 
 class AddAddressBottomSheet {
   static void show(
-    BuildContext context,
-    String userId, {
-    AddressModel? address,
-  }) {
+      BuildContext context,
+      String userId, {
+        AddressModel? address,
+      }) {
     final cubit = context.read<AddressCubit>();
     final formKey = GlobalKey<FormState>();
 
@@ -68,13 +68,13 @@ class AddAddressBottomSheet {
                       showAppSnackBar(
                         context,
                         message:
-                            address == null
-                                ? AppLocalizations.of(
-                                  context,
-                                )!.addressAddedSuccessfully
-                                : AppLocalizations.of(
-                                  context,
-                                )!.addressUpdatedSuccessfully,
+                        address == null
+                            ? AppLocalizations.of(
+                          context,
+                        )!.addressAddedSuccessfully
+                            : AppLocalizations.of(
+                          context,
+                        )!.addressUpdatedSuccessfully,
                         type: SnackBarType.success,
                       );
                     }
@@ -131,53 +131,53 @@ class AddAddressBottomSheet {
                         TextFieldBottom(
                           controller: additionalCtrl,
                           label:
-                              AppLocalizations.of(
-                                context,
-                              )!.additionalDirections,
+                          AppLocalizations.of(
+                            context,
+                          )!.additionalDirections,
                         ),
                         SizedBox(height: 20.h),
                         ElevatedButton(
                           onPressed:
-                              isLoading
-                                  ? null
-                                  : () {
-                                    if (formKey.currentState!.validate()) {
-                                      final newAddress = AddressModel(
-                                        id: address?.id,
-                                        addressLabel: labelCtrl.text,
-                                        street: streetCtrl.text,
-                                        city: cityCtrl.text,
-                                        apartmentNo:
-                                            int.tryParse(aptCtrl.text) ?? 0,
-                                        floor:
-                                            int.tryParse(floorCtrl.text) ?? 0,
-                                        fullAddress:
-                                            "${streetCtrl.text}, ${cityCtrl.text}",
-                                        userId: userId,
-                                        isPrimary: true,
-                                        latitude: 30.06263,
-                                        longitude: 31.24967,
-                                        isActive: true,
-                                        buildingName: buildingNameCtrl.text,
-                                        additionalDirections:
-                                            additionalCtrl.text,
-                                      );
+                          isLoading
+                              ? null
+                              : () {
+                            if (formKey.currentState!.validate()) {
+                              final newAddress = AddressModel(
+                                id: address?.id,
+                                addressLabel: labelCtrl.text,
+                                street: streetCtrl.text,
+                                city: cityCtrl.text,
+                                apartmentNo:
+                                int.tryParse(aptCtrl.text) ?? 0,
+                                floor:
+                                int.tryParse(floorCtrl.text) ?? 0,
+                                fullAddress:
+                                "${streetCtrl.text}, ${cityCtrl.text}",
+                                userId: userId,
+                                isPrimary: true,
+                                latitude: 30.06263,
+                                longitude: 31.24967,
+                                isActive: true,
+                                buildingName: buildingNameCtrl.text,
+                                additionalDirections:
+                                additionalCtrl.text,
+                              );
 
-                                      if (address == null) {
-                                        cubit.addAddress(newAddress);
-                                      } else {
-                                        cubit.updateAddress(newAddress, userId);
-                                      }
-                                    }
-                                  },
+                              if (address == null) {
+                                cubit.addAddress(newAddress);
+                              } else {
+                                cubit.updateAddress(newAddress, userId);
+                              }
+                            }
+                          },
                           child: Text(
                             isLoading
                                 ? AppLocalizations.of(context)!.loading
                                 : (address == null
-                                    ? AppLocalizations.of(context)!.add_address
-                                    : AppLocalizations.of(
-                                      context,
-                                    )!.update_address),
+                                ? AppLocalizations.of(context)!.add_address
+                                : AppLocalizations.of(
+                              context,
+                            )!.update_address),
                           ),
                         ),
                       ],

@@ -76,10 +76,10 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
                 controller: _firstNameController,
                 validator:
                     (value) => Validators.requiredField(
-                      context,
-                      value,
-                      AppLocalizations.of(context)!.firstName,
-                    ),
+                  context,
+                  value,
+                  AppLocalizations.of(context)!.firstName,
+                ),
               ),
               SizedBox(height: 20.h),
 
@@ -91,10 +91,10 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
                 controller: _lastNameController,
                 validator:
                     (value) => Validators.requiredField(
-                      context,
-                      value,
-                      AppLocalizations.of(context)!.lastName,
-                    ),
+                  context,
+                  value,
+                  AppLocalizations.of(context)!.lastName,
+                ),
               ),
               SizedBox(height: 20.h),
 
@@ -148,19 +148,19 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
                 controller: _confirmPasswordController,
                 validator:
                     (value) => Validators.confirmPassword(
-                      context,
-                      value,
-                      _passwordController.text,
-                    ),
+                  context,
+                  value,
+                  _passwordController.text,
+                ),
               ),
               SizedBox(height: 30.h),
 
               isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : AppButton(
-                    text: AppLocalizations.of(context)!.createAccount,
-                    onPressed: _onCreateAccount,
-                  ),
+                text: AppLocalizations.of(context)!.createAccount,
+                onPressed: _onCreateAccount,
+              ),
 
               SizedBox(height: 12.h),
 
@@ -177,20 +177,20 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
                     ),
                     WidgetSpan(child: SizedBox(width: 5.w)),
                     TextSpan(
-                      text: AppLocalizations.of(context)!.loginn,
+                      text: AppLocalizations.of(context)!.login,
                       style: TextStyle(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
                         fontSize: 13.sp,
                       ),
                       recognizer:
-                          TapGestureRecognizer()
-                            ..onTap = () {
-                              Navigator.pushNamed(
-                                context,
-                                AppRoutes.loginRoute,
-                              );
-                            },
+                      TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.loginRoute,
+                          );
+                        },
                     ),
                   ],
                 ),

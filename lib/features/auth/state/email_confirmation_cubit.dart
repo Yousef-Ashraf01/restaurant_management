@@ -7,7 +7,8 @@ part 'email_confirmation_state.dart';
 class EmailConfirmationCubit extends Cubit<EmailConfirmationState> {
   final AuthRepositoryImpl authRepository;
 
-  EmailConfirmationCubit(this.authRepository) : super(EmailConfirmationInitial());
+  EmailConfirmationCubit(this.authRepository)
+    : super(EmailConfirmationInitial());
 
   Future<void> sendCode(String userId) async {
     emit(EmailConfirmationLoading());

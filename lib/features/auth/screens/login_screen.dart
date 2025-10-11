@@ -98,9 +98,9 @@ class LoginScreen extends StatelessWidget {
             }
 
             final authRepository =
-                snapshot.data!["authRepository"] as AuthRepositoryImpl;
+            snapshot.data!["authRepository"] as AuthRepositoryImpl;
             final profileRepository =
-                snapshot.data!["profileRepository"] as ProfileRepository;
+            snapshot.data!["profileRepository"] as ProfileRepository;
 
             return BlocProvider(
               create: (_) => AuthCubit(authRepository, profileRepository),
@@ -124,7 +124,7 @@ class LoginScreen extends StatelessWidget {
                               Navigator.pushNamedAndRemoveUntil(
                                 context,
                                 AppRoutes.mainRoute,
-                                (route) => false,
+                                    (route) => false,
                               );
                             } else if (state is AuthError) {
                               showAppSnackBar(

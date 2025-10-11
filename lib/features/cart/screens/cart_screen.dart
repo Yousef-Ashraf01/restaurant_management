@@ -66,11 +66,11 @@ class _CartScreenState extends State<CartScreen> {
               return const Center(child: CircularProgressIndicator());
             } else if (state is CartLoaded || state is CartUpdatingItem) {
               final cart =
-                  (state is CartLoaded)
-                      ? state.cart
-                      : (state as CartUpdatingItem).previousCart;
+              (state is CartLoaded)
+                  ? state.cart
+                  : (state as CartUpdatingItem).previousCart;
               final updatingItemId =
-                  (state is CartUpdatingItem) ? state.itemId : null;
+              (state is CartUpdatingItem) ? state.itemId : null;
 
               if (cart.items.isEmpty) {
                 return Center(
@@ -153,9 +153,9 @@ class _CartScreenState extends State<CartScreen> {
               );
             } else if (state is CartError || state is CartFailure) {
               final message =
-                  (state is CartError)
-                      ? state.message
-                      : (state as CartFailure).message;
+              (state is CartError)
+                  ? state.message
+                  : (state as CartFailure).message;
               return Center(
                 child: Text(
                   "Error: $message",
@@ -172,10 +172,10 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Widget _buildCartItem(
-    BuildContext context,
-    CartItemModel item,
-    bool isUpdating,
-  ) {
+      BuildContext context,
+      CartItemModel item,
+      bool isUpdating,
+      ) {
     return Card(
       color: Colors.white,
       elevation: 2,
@@ -202,20 +202,20 @@ class _CartScreenState extends State<CartScreen> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child:
-                            item.dish.image.isNotEmpty &&
-                                    item.dish.image != "null"
-                                ? Image.memory(
-                                  convertBase64ToImage(item.dish.image),
-                                  width: 50.w,
-                                  height: 50.h,
-                                  fit: BoxFit.cover,
-                                )
-                                : Image.asset(
-                                  "assets/images/logo1.jpg",
-                                  width: 60.w,
-                                  height: 60.h,
-                                  fit: BoxFit.cover,
-                                ),
+                        item.dish.image.isNotEmpty &&
+                            item.dish.image != "null"
+                            ? Image.memory(
+                          convertBase64ToImage(item.dish.image),
+                          width: 50.w,
+                          height: 50.h,
+                          fit: BoxFit.cover,
+                        )
+                            : Image.asset(
+                          "assets/images/logo1.jpg",
+                          width: 60.w,
+                          height: 60.h,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     BlocBuilder<LocaleCubit, Locale>(
@@ -256,45 +256,45 @@ class _CartScreenState extends State<CartScreen> {
                       spacing: 8,
                       runSpacing: 6,
                       children:
-                          item.selectedOptions.map((option) {
-                            return Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.orange[50],
-                                borderRadius: BorderRadius.circular(24),
-                                border: Border.all(
-                                  color: Colors.orange.shade200,
+                      item.selectedOptions.map((option) {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.orange[50],
+                            borderRadius: BorderRadius.circular(24),
+                            border: Border.all(
+                              color: Colors.orange.shade200,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                locale.languageCode == 'en'
+                                    ? option.dishOption.engName
+                                    : option.dishOption.arbName,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: AppColors.accent,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    locale.languageCode == 'en'
-                                        ? option.dishOption.engName
-                                        : option.dishOption.arbName,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: AppColors.accent,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    option.dishOption.price.toStringAsFixed(2),
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: AppColors.accent,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
+                              const SizedBox(width: 6),
+                              Text(
+                                option.dishOption.price.toStringAsFixed(2),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: AppColors.accent,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            );
-                          }).toList(),
+                            ],
+                          ),
+                        );
+                      }).toList(),
                     ),
                   );
                 },
@@ -313,42 +313,42 @@ class _CartScreenState extends State<CartScreen> {
           context: context,
           builder:
               (context) => AlertDialog(
-                title: Text(AppLocalizations.of(context)!.deleteItem),
-                content: Text(AppLocalizations.of(context)!.confirmDeleteItem),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(
-                      AppLocalizations.of(context)!.cancel,
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      final cartCubit = context.read<CartCubit>();
-                      Navigator.pop(context);
-                      cartCubit.deleteItem(
-                        cartId: item.cartId,
-                        cartItemId: item.id,
-                      );
-                    },
-                    child: Text(
-                      AppLocalizations.of(context)!.delete,
-                      style: TextStyle(color: Colors.redAccent),
-                    ),
-                  ),
-                ],
+            title: Text(AppLocalizations.of(context)!.deleteItem),
+            content: Text(AppLocalizations.of(context)!.confirmDeleteItem),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  AppLocalizations.of(context)!.cancel,
+                  style: TextStyle(color: Colors.grey),
+                ),
               ),
+              TextButton(
+                onPressed: () {
+                  final cartCubit = context.read<CartCubit>();
+                  Navigator.pop(context);
+                  cartCubit.deleteItem(
+                    cartId: item.cartId,
+                    cartItemId: item.id,
+                  );
+                },
+                child: Text(
+                  AppLocalizations.of(context)!.delete,
+                  style: TextStyle(color: Colors.redAccent),
+                ),
+              ),
+            ],
+          ),
         );
       },
     );
   }
 
   Widget _buildQuantityControls(
-    BuildContext context,
-    CartItemModel item,
-    bool isUpdating,
-  ) {
+      BuildContext context,
+      CartItemModel item,
+      bool isUpdating,
+      ) {
     if (isUpdating) {
       return const SizedBox(
         width: 22,
@@ -455,9 +455,9 @@ class _CartScreenState extends State<CartScreen> {
                 context: context,
                 builder: (dialogContext) {
                   final dLoc =
-                      AppLocalizations.of(
-                        dialogContext,
-                      )!; // 🔹 استخدم ده جوه الديالوج
+                  AppLocalizations.of(
+                    dialogContext,
+                  )!; // 🔹 استخدم ده جوه الديالوج
                   String? selectedAddressId;
 
                   return StatefulBuilder(
@@ -477,7 +477,7 @@ class _CartScreenState extends State<CartScreen> {
                               }
 
                               final addresses =
-                                  state is AddressLoaded ? state.addresses : [];
+                              state is AddressLoaded ? state.addresses : [];
 
                               return Form(
                                 key: formKey,
@@ -520,9 +520,9 @@ class _CartScreenState extends State<CartScreen> {
                                             ),
                                             borderSide: BorderSide(
                                               color:
-                                                  Theme.of(
-                                                    context,
-                                                  ).primaryColor,
+                                              Theme.of(
+                                                context,
+                                              ).primaryColor,
                                               width: 1.6,
                                             ),
                                           ),
@@ -531,34 +531,34 @@ class _CartScreenState extends State<CartScreen> {
                                         ),
                                         dropdownColor: Colors.white,
                                         items:
-                                            addresses
-                                                .map(
-                                                  (a) =>
-                                                      DropdownMenuItem<String>(
-                                                        value: a.id ?? "",
-                                                        child: Text(
-                                                          a.addressLabel ?? "",
-                                                          style:
-                                                              const TextStyle(
-                                                                fontSize: 15,
-                                                              ),
-                                                        ),
-                                                      ),
-                                                )
-                                                .toList(),
+                                        addresses
+                                            .map(
+                                              (a) =>
+                                              DropdownMenuItem<String>(
+                                                value: a.id ?? "",
+                                                child: Text(
+                                                  a.addressLabel ?? "",
+                                                  style:
+                                                  const TextStyle(
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                              ),
+                                        )
+                                            .toList(),
                                         onChanged: (value) {
                                           setState(
-                                            () => selectedAddressId = value,
+                                                () => selectedAddressId = value,
                                           );
 
                                           final selected = addresses.firstWhere(
-                                            (a) => a.id == value,
+                                                (a) => a.id == value,
                                           );
 
                                           apartmentController.text =
                                               selected.apartmentNo
                                                   ?.toString() ??
-                                              "";
+                                                  "";
                                           floorController.text =
                                               selected.floor?.toString() ?? "";
                                           buildingController.text =
@@ -571,7 +571,7 @@ class _CartScreenState extends State<CartScreen> {
                                               selected.fullAddress ?? "";
                                           additionalController.text =
                                               selected.additionalDirections ??
-                                              "";
+                                                  "";
                                         },
                                       ),
                                     SizedBox(height: 10.h),
@@ -666,13 +666,13 @@ class _CartScreenState extends State<CartScreen> {
                                 barrierDismissible: false,
                                 builder:
                                     (_) => const Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
+                                  child: CircularProgressIndicator(),
+                                ),
                               );
 
                               await orderCubit.createOrder(
                                 apartmentNo:
-                                    int.tryParse(apartmentController.text) ?? 0,
+                                int.tryParse(apartmentController.text) ?? 0,
                                 buildingName: buildingController.text,
                                 city: cityController.text,
                                 floor: int.tryParse(floorController.text) ?? 0,
@@ -694,38 +694,38 @@ class _CartScreenState extends State<CartScreen> {
                                 context: navigator.context,
                                 builder:
                                     (_) => AlertDialog(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      title: const Icon(
-                                        Icons.check_circle,
-                                        color: Colors.green,
-                                        size: 60,
-                                      ),
-                                      content: Text(
-                                        "${loc.orderPlacedSuccessfully} 🎉",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20.sp,
-                                        ),
-                                      ),
-                                      actionsAlignment:
-                                          MainAxisAlignment.center,
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () => navigator.pop(),
-                                          child: Text(
-                                            loc.ok,
-                                            style: TextStyle(
-                                              color: Colors.green,
-                                              fontSize: 18.sp,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  title: const Icon(
+                                    Icons.check_circle,
+                                    color: Colors.green,
+                                    size: 60,
+                                  ),
+                                  content: Text(
+                                    "${loc.orderPlacedSuccessfully} 🎉",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.sp,
                                     ),
+                                  ),
+                                  actionsAlignment:
+                                  MainAxisAlignment.center,
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => navigator.pop(),
+                                      child: Text(
+                                        loc.ok,
+                                        style: TextStyle(
+                                          color: Colors.green,
+                                          fontSize: 18.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               );
                             },
                             child: Text(dLoc.confirmOrder),
@@ -753,11 +753,11 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Widget _buildTextField(
-    BuildContext context,
-    String label,
-    TextEditingController controller, {
-    bool required = true,
-  }) {
+      BuildContext context,
+      String label,
+      TextEditingController controller, {
+        bool required = true,
+      }) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 5.h),
       child: TextFormField(
@@ -768,25 +768,25 @@ class _CartScreenState extends State<CartScreen> {
               text: label,
               style: const TextStyle(color: Colors.black87),
               children:
-                  required
-                      ? const [
-                        TextSpan(
-                          text: ' *',
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ]
-                      : [],
+              required
+                  ? const [
+                TextSpan(
+                  text: ' *',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ]
+                  : [],
             ),
           ),
           border: const OutlineInputBorder(),
         ),
         validator:
-            required
-                ? (v) =>
-                    v == null || v.isEmpty
-                        ? AppLocalizations.of(context)!.required
-                        : null
-                : null,
+        required
+            ? (v) =>
+        v == null || v.isEmpty
+            ? AppLocalizations.of(context)!.required
+            : null
+            : null,
       ),
     );
   }

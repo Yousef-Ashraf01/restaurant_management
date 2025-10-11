@@ -13,7 +13,6 @@ class Validators {
     return null;
   }
 
-  // Username
   static String? username(BuildContext context, String? value) {
     if (value == null || value.trim().isEmpty) {
       return AppLocalizations.of(context)!.userNameRequired;
@@ -24,7 +23,6 @@ class Validators {
     return null;
   }
 
-  // Email
   static String? email(BuildContext context, String? value) {
     if (value == null || value.trim().isEmpty) {
       return AppLocalizations.of(context)!.emailRequired;
@@ -35,7 +33,6 @@ class Validators {
     return null;
   }
 
-  // Phone Number
   static String? phone(BuildContext context, String? value) {
     if (value == null || value.trim().isEmpty) {
       return AppLocalizations.of(context)!.phoneRequired;
@@ -52,7 +49,6 @@ class Validators {
     return null;
   }
 
-  // Password
   static String? password(BuildContext context, String? value) {
     if (value == null || value.trim().isEmpty) {
       return AppLocalizations.of(context)!.passwordRequired;
@@ -79,7 +75,6 @@ class Validators {
     return null;
   }
 
-  // Confirm Password
   static String? confirmPassword(
     BuildContext context,
     String? value,

@@ -9,7 +9,6 @@ class TokenStorage {
 
   TokenStorage._internal();
 
-  /// Call this once in main() before runApp()
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
     debugPrint("🧩 TokenStorage initialized with prefs: $_prefs");
@@ -22,7 +21,6 @@ class TokenStorage {
   static const _userIdKey = "user_id";
   static const _passwordKey = "user_password";
 
-  // Save methods
   Future<void> saveAccessToken(String token) async =>
       await _prefs.setString(_accessKey, token);
 
@@ -64,7 +62,6 @@ class TokenStorage {
   String? getUserId() => _prefs.getString(_userIdKey);
   String? getPassword() => _prefs.getString(_passwordKey);
 
-  // Clear all
   Future<void> clear() async {
     await _prefs.remove(_accessKey);
     await _prefs.remove(_refreshKey);

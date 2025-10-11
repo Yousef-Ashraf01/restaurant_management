@@ -5,7 +5,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:restaurant_management/core/constants/app_colors.dart';
-import 'package:restaurant_management/core/network/token_storage.dart';
 import 'package:restaurant_management/core/utils/image_utils.dart';
 import 'package:restaurant_management/features/auth/state/banner_cubit.dart';
 import 'package:restaurant_management/features/auth/state/banner_state.dart';
