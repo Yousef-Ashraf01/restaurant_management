@@ -64,14 +64,22 @@ class HomeScreen extends StatelessWidget {
                       } else if (state is BannerError) {
                         return SizedBox(
                           height: 200,
-                          child: Center(child: Text("Error: ${state.message}")),
+                          child: Center(
+                            child: Text(
+                              "${AppLocalizations.of(context)!.error}: ${state.message}",
+                            ),
+                          ),
                         );
                       } else if (state is BannerLoaded) {
                         final banners = state.banners;
                         if (banners.isEmpty) {
-                          return const SizedBox(
+                          return SizedBox(
                             height: 200,
-                            child: Center(child: Text("No Banners Found")),
+                            child: Center(
+                              child: Text(
+                                AppLocalizations.of(context)!.noBannersFound,
+                              ),
+                            ),
                           );
                         }
 
@@ -101,9 +109,13 @@ class HomeScreen extends StatelessWidget {
                               }).toList(),
                         );
                       }
-                      return const SizedBox(
+                      return SizedBox(
                         height: 200,
-                        child: Center(child: Text("Waiting for banners...")),
+                        child: Center(
+                          child: Text(
+                            AppLocalizations.of(context)!.waitingForBanners,
+                          ),
+                        ),
                       );
                     },
                   ),
@@ -127,11 +139,19 @@ class HomeScreen extends StatelessWidget {
                             child: CircularProgressIndicator(),
                           );
                         } else if (state is DishError) {
-                          return Center(child: Text("Error: ${state.message}"));
+                          return Center(
+                            child: Text(
+                              "${AppLocalizations.of(context)!.error}: ${state.message}",
+                            ),
+                          );
                         } else if (state is DishLoaded) {
                           final dishes = state.dishes;
                           if (dishes.isEmpty) {
-                            return const Center(child: Text("No Dishes Found"));
+                            return Center(
+                              child: Text(
+                                AppLocalizations.of(context)!.noDishesFound,
+                              ),
+                            );
                           }
 
                           return ListView.separated(
@@ -157,9 +177,11 @@ class HomeScreen extends StatelessWidget {
                                           ScaffoldMessenger.of(
                                             context,
                                           ).showSnackBar(
-                                            const SnackBar(
+                                            SnackBar(
                                               content: Text(
-                                                "❌ No internet connection",
+                                                AppLocalizations.of(
+                                                  context,
+                                                )!.noInternetConnection,
                                               ),
                                             ),
                                           );
@@ -243,8 +265,10 @@ class HomeScreen extends StatelessWidget {
                           );
                         }
 
-                        return const Center(
-                          child: Text("Waiting for dishes..."),
+                        return Center(
+                          child: Text(
+                            AppLocalizations.of(context)!.waitingForDishes,
+                          ),
                         );
                       },
                     ),

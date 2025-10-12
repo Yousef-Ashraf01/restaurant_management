@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DishInfo extends StatelessWidget {
@@ -19,7 +20,9 @@ class DishInfo extends StatelessWidget {
           ),
           SizedBox(height: 5.h),
           Text(
-            description.isNotEmpty ? description : "No description available",
+            description.isNotEmpty
+                ? description
+                : AppLocalizations.of(context)!.noDescriptionAvailable,
             style: TextStyle(fontSize: 16.sp, color: Colors.black54),
           ),
         ],

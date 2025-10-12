@@ -29,9 +29,8 @@ class ProfileCubit extends Cubit<ProfileState> {
               : response.message ?? "Profile updated successfully";
 
       emit(ProfileUpdateSuccess(userMessage));
-
-      final profile = await repository.getUserProfile(updatedProfile.id);
-      emit(ProfileSuccess(profile));
+      // final profile = await repository.getUserProfile(updatedProfile.id);
+      // emit(ProfileSuccess(profile));
     } catch (e) {
       emit(ProfileError(e.toString()));
     }

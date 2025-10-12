@@ -50,7 +50,11 @@ class SettingScreen extends StatelessWidget {
                       } else {
                         SchedulerBinding.instance.addPostFrameCallback((_) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("User not logged in")),
+                            SnackBar(
+                              content: Text(
+                                AppLocalizations.of(context)!.userNotLoggedIn,
+                              ),
+                            ),
                           );
                         });
                       }

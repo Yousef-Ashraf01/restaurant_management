@@ -35,8 +35,8 @@ class LanguageScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  const Text(
-                    'No internet connection\nPlease connect to the internet',
+                  Text(
+                    AppLocalizations.of(context)!.noInternetConnection,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
@@ -93,8 +93,8 @@ class LanguageScreen extends StatelessWidget {
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("No internet connection"),
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.noInternetConnection),
               duration: Duration(seconds: 2),
               behavior: SnackBarBehavior.floating,
             ),

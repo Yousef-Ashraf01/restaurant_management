@@ -56,7 +56,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     if (!isConnected) {
       showAppSnackBar(
         context,
-        message: "No internet connection",
+        message: AppLocalizations.of(context)!.noInternetConnection,
         type: SnackBarType.error,
       );
       return;
@@ -68,7 +68,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     if (userId == null) {
       showAppSnackBar(
         context,
-        message: "User ID not found!",
+        message: AppLocalizations.of(context)!.userIdNotFound,
         type: SnackBarType.error,
       );
       return;

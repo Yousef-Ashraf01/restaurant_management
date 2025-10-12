@@ -63,8 +63,8 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  const Text(
-                    'No internet connection\nPlease connect to the internet',
+                  Text(
+                    AppLocalizations.of(context)!.noInternetConnection,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
@@ -80,7 +80,7 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
               if (state is AuthPasswordResetOTPSuccess) {
                 showAppSnackBar(
                   context,
-                  message: "A code has been sent to your email",
+                  message: AppLocalizations.of(context)!.codeSentToEmail,
                   type: SnackBarType.success,
                 );
                 Navigator.pushNamed(
@@ -116,7 +116,10 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                               style: TextStyle(color: Colors.black),
                               children: [
                                 TextSpan(
-                                  text: "Enter your email address\n",
+                                  text:
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.enterYourEmailAddress,
                                   style: TextStyle(
                                     fontSize: 20.sp,
                                     fontWeight: FontWeight.bold,
@@ -125,7 +128,9 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                                 WidgetSpan(child: SizedBox(height: 26.h)),
                                 TextSpan(
                                   text:
-                                      "and you will receive a confirmation message",
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.receiveConfirmationMessage,
                                   style: TextStyle(fontSize: 18.sp),
                                 ),
                               ],
@@ -190,7 +195,10 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                                           ),
                                         )
                                         : AppButton(
-                                          text: "Next",
+                                          text:
+                                              AppLocalizations.of(
+                                                context,
+                                              )!.next,
                                           onPressed: () => _sendOtp(context),
                                         );
                                   },

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:restaurant_management/features/auth/state/local_cubit.dart';
 import 'package:restaurant_management/features/auth/state/order_cubit.dart';
 import 'package:restaurant_management/features/auth/state/order_state.dart';
 
@@ -23,15 +25,15 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   String _getStatusText(int status) {
     switch (status) {
       case 0:
-        return "Pending";
+        return AppLocalizations.of(context)!.pending;
       case 1:
-        return "Processing";
+        return AppLocalizations.of(context)!.processing;
       case 2:
-        return "Delivered";
+        return AppLocalizations.of(context)!.delivered;
       case 3:
-        return "Cancelled";
+        return AppLocalizations.of(context)!.cancelled;
       default:
-        return "Unknown";
+        return AppLocalizations.of(context)!.unknown;
     }
   }
 
@@ -54,7 +56,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Order #${widget.orderId}"),
+        title: Text(
+          "${AppLocalizations.of(context)!.order} #${widget.orderId}",
+        ),
         centerTitle: true,
         elevation: 2,
       ),
@@ -73,7 +77,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 🧾 Order Status
                   Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
@@ -93,8 +96,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  "Order Status",
+                                Text(
+                                  AppLocalizations.of(context)!.orderStatus,
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
@@ -126,7 +129,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   const SizedBox(height: 20),
 
                   Text(
-                    "Delivery Address",
+                    AppLocalizations.of(context)!.deliveryAddress,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -157,8 +160,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                 ),
                               ),
                               const SizedBox(width: 10),
-                              const Text(
-                                "Delivery Address",
+                              Text(
+                                AppLocalizations.of(context)!.deliveryAddress,
                                 style: TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.bold,
@@ -194,7 +197,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
                           const SizedBox(height: 12),
 
-                          // 🏢 Building + 🚪 Floor
                           Row(
                             children: [
                               Expanded(
@@ -208,7 +210,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                     const SizedBox(width: 6),
                                     Flexible(
                                       child: Text(
-                                        "Building: ${order.buildingName}",
+                                        "${AppLocalizations.of(context)!.building}: ${order.buildingName}",
                                         style: const TextStyle(fontSize: 15),
                                       ),
                                     ),
@@ -226,7 +228,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                     const SizedBox(width: 6),
                                     Flexible(
                                       child: Text(
-                                        "Floor: ${order.floor}",
+                                        "${AppLocalizations.of(context)!.floor}: ${order.floor}",
                                         style: const TextStyle(fontSize: 15),
                                       ),
                                     ),
@@ -238,7 +240,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
                           const SizedBox(height: 8),
 
-                          // 🚪 Apartment + 🌆 City
                           Row(
                             children: [
                               Expanded(
@@ -252,7 +253,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                     const SizedBox(width: 6),
                                     Flexible(
                                       child: Text(
-                                        "Apartment: ${order.apartmentNo}",
+                                        "${AppLocalizations.of(context)!.apartment}: ${order.apartmentNo}",
                                         style: const TextStyle(fontSize: 15),
                                       ),
                                     ),
@@ -270,7 +271,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                     const SizedBox(width: 6),
                                     Flexible(
                                       child: Text(
-                                        "City: ${order.city}",
+                                        "${AppLocalizations.of(context)!.city}: ${order.city}",
                                         style: const TextStyle(fontSize: 15),
                                       ),
                                     ),
@@ -282,7 +283,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
                           const SizedBox(height: 8),
 
-                          // 🧭 Directions (if available)
                           if (order.additionalDirections.isNotEmpty)
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -295,7 +295,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                 const SizedBox(width: 6),
                                 Expanded(
                                   child: Text(
-                                    "Directions: ${order.additionalDirections}",
+                                    "${AppLocalizations.of(context)!.directions}: ${order.additionalDirections}",
                                     style: const TextStyle(fontSize: 15),
                                   ),
                                 ),
@@ -309,7 +309,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   const SizedBox(height: 20),
 
                   Text(
-                    "Order Items",
+                    AppLocalizations.of(context)!.orderItems,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -342,16 +342,22 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                         ),
                                   ),
                                 ),
-                                title: Text(
-                                  dish?.engName ?? "Unnamed Dish",
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16,
-                                  ),
+                                title: BlocBuilder<LocaleCubit, Locale>(
+                                  builder: (context, locale) {
+                                    return Text(
+                                      locale.languageCode == 'en'
+                                          ? dish!.engName
+                                          : dish!.arbName,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                      ),
+                                    );
+                                  },
                                 ),
                                 subtitle: Text("x${item.quantity}"),
                                 trailing: Text(
-                                  "EGP ${item.totalPrice.toStringAsFixed(2)}",
+                                  item.totalPrice.toStringAsFixed(2),
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 15,
@@ -365,9 +371,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
                   const SizedBox(height: 20),
 
-                  // 💵 Order Summary
                   Text(
-                    "Order Summary",
+                    AppLocalizations.of(context)!.orderSummary,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -384,8 +389,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildSummaryRow(
-                            "Total:",
-                            "EGP ${order.totalPrice.toStringAsFixed(2)}",
+                            "${AppLocalizations.of(context)!.total}:",
+                            order.totalPrice.toStringAsFixed(2),
                             isBold: true,
                           ),
                         ],
@@ -398,7 +403,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           } else if (state is OrderDetailsFailure) {
             return Center(
               child: Text(
-                "❌ Error: ${state.message}",
+                "${AppLocalizations.of(context)!.error} : ${state.message}",
                 style: const TextStyle(color: Colors.red),
               ),
             );

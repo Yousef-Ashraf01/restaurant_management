@@ -44,8 +44,10 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: const Text(
-                    'Back online, fetching restaurant info...',
+                  content: Text(
+                    AppLocalizations.of(
+                      context,
+                    )!.backOnlineFetchingRestaurantInfo,
                   ),
                   duration: const Duration(seconds: 2),
                   behavior: SnackBarBehavior.floating,
@@ -69,8 +71,8 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    const Text(
-                      'No internet connection\nPlease connect to the internet',
+                    Text(
+                      AppLocalizations.of(context)!.noInternetConnection,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -92,7 +94,7 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          "Restaurant info not found",
+                          AppLocalizations.of(context)!.restaurantInfoNotFound,
                           style: TextStyle(fontSize: 18.sp),
                         ),
                       ],

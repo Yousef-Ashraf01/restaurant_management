@@ -49,8 +49,8 @@ class DishDetailsScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  const Text(
-                    'No internet connection\nPlease connect to the internet',
+                  Text(
+                    AppLocalizations.of(context)!.noInternetConnection,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
@@ -229,7 +229,11 @@ class DishDetailsScreen extends StatelessWidget {
                               );
                             } else if (state is CartFailure) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("❌ ${state.message}")),
+                                SnackBar(
+                                  content: Text(
+                                    "${AppLocalizations.of(context)!.error}: ${state.message}",
+                                  ),
+                                ),
                               );
                             }
                           },
@@ -242,8 +246,12 @@ class DishDetailsScreen extends StatelessWidget {
                               onAddToCart: () {
                                 if (!isConnected) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text("❌ No internet connection"),
+                                    SnackBar(
+                                      content: Text(
+                                        AppLocalizations.of(
+                                          context,
+                                        )!.noInternetConnection,
+                                      ),
                                     ),
                                   );
                                   return;
