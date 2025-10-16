@@ -8,10 +8,8 @@ class DishImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 220.h,
-      decoration: BoxDecoration(color: Colors.grey[300]),
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 15.h),
       child: Center(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(15),

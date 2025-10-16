@@ -37,8 +37,20 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+    applicationVariants.all {
+        outputs.all {
+            val appName = "Eco Nozom Demo" // 👈 الاسم اللي عايزه يظهر على الـ APK
+            val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+            output.outputFileName = "${appName}-${name}.apk"
+        }
+    }
+
 }
+
+
 
 flutter {
     source = "../.."
 }
+
+

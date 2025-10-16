@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,6 +12,7 @@ import 'package:restaurant_management/features/auth/data/datasources/address_rem
 import 'package:restaurant_management/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:restaurant_management/features/auth/data/datasources/banner_remote_data_source.dart';
 import 'package:restaurant_management/features/auth/data/datasources/cart_remote_data_source.dart';
+import 'package:restaurant_management/features/auth/data/datasources/category_remote_data_source.dart';
 import 'package:restaurant_management/features/auth/data/datasources/dish_remote_data_source.dart';
 import 'package:restaurant_management/features/auth/data/datasources/order_remote_data_source.dart';
 import 'package:restaurant_management/features/auth/data/datasources/profile_remote_data_source.dart';
@@ -19,6 +21,7 @@ import 'package:restaurant_management/features/auth/domain/repositories/address_
 import 'package:restaurant_management/features/auth/domain/repositories/auth_repository_impl.dart';
 import 'package:restaurant_management/features/auth/domain/repositories/banner_repository.dart';
 import 'package:restaurant_management/features/auth/domain/repositories/cart_repository.dart';
+import 'package:restaurant_management/features/auth/domain/repositories/category_repository.dart';
 import 'package:restaurant_management/features/auth/domain/repositories/dish_repository.dart';
 import 'package:restaurant_management/features/auth/domain/repositories/order_repository.dart';
 import 'package:restaurant_management/features/auth/domain/repositories/profile_repository.dart';
@@ -27,6 +30,7 @@ import 'package:restaurant_management/features/auth/state/address_cubit.dart';
 import 'package:restaurant_management/features/auth/state/auth_cubit.dart';
 import 'package:restaurant_management/features/auth/state/banner_cubit.dart';
 import 'package:restaurant_management/features/auth/state/cart_cubit.dart';
+import 'package:restaurant_management/features/auth/state/category_cubit.dart';
 import 'package:restaurant_management/features/auth/state/connectivity_cubit.dart';
 import 'package:restaurant_management/features/auth/state/dish_cubit.dart';
 import 'package:restaurant_management/features/auth/state/email_confirmation_cubit.dart';
@@ -38,6 +42,11 @@ import 'config/routes/app_routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitDown,
+    DeviceOrientation.portraitUp,
+  ]);
 
   final tokenStorage = TokenStorage();
   await tokenStorage.init();
@@ -52,6 +61,7 @@ void main() async {
   final dishRemote = DishRemoteDataSourceImpl(dioClient);
   final cartRemote = CartRemoteDataSource(dioClient);
   final orderRemote = OrderRemoteDataSource(dioClient);
+  final categoryRemote = CategoryRemoteDataSourceImpl(dioClient);
 
   final authRepository = AuthRepositoryImpl(
     remote: authRemote,
@@ -64,6 +74,7 @@ void main() async {
   final dishRepository = DishRepositoryImpl(dishRemote);
   final cartRepository = CartRepository(cartRemote, tokenStorage);
   final orderRepository = OrderRepository(orderRemote);
+  final categoryRepository = CategoryRepositoryImpl(categoryRemote);
 
   final accessToken = tokenStorage.getAccessToken();
   final initialRoute =
@@ -82,6 +93,7 @@ void main() async {
         RepositoryProvider<BannerRepository>.value(value: bannerRepository),
         RepositoryProvider<CartRepository>.value(value: cartRepository),
         RepositoryProvider<OrderRepository>.value(value: orderRepository),
+        RepositoryProvider<CategoryRepository>.value(value: categoryRepository),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -111,7 +123,10 @@ void main() async {
           ),
           BlocProvider<AddressCubit>(
             create:
-                (context) => AddressCubit(context.read<AddressRepository>()),
+                (context) => AddressCubit(
+                  context.read<AddressRepository>(),
+                  context.read<TokenStorage>(),
+                ),
           ),
           BlocProvider<OrderCubit>(
             create: (context) => OrderCubit(context.read<OrderRepository>()),
@@ -125,6 +140,12 @@ void main() async {
                         AuthRepositoryImpl
                       >(), // أو لو ليه Repository خاص، عدّله هنا
                 ),
+          ),
+          BlocProvider<CategoryCubit>(
+            create:
+                (context) =>
+                    CategoryCubit(context.read<CategoryRepository>())
+                      ..getCategories(),
           ),
         ],
         child: MyApp(initialRoute: initialRoute),

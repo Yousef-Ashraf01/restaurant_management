@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
+import 'package:restaurant_management/core/constants/app_colors.dart';
 import 'package:restaurant_management/core/network/dio_client.dart';
 import 'package:restaurant_management/core/network/token_storage.dart';
 import 'package:restaurant_management/core/utils/show_snack_bar.dart';
@@ -19,7 +20,7 @@ import 'package:restaurant_management/features/home/widgets/bottom_bar.dart';
 import 'package:restaurant_management/features/home/widgets/dish_image.dart';
 import 'package:restaurant_management/features/home/widgets/dish_info.dart';
 import 'package:restaurant_management/features/home/widgets/option_group_widget.dart';
-import 'package:restaurant_management/features/home/widgets/quantity_button.dart';
+import 'package:restaurant_management/features/home/widgets/quantity_selector.dart';
 
 class DishDetailsScreen extends StatelessWidget {
   final DishModel dish;
@@ -28,7 +29,7 @@ class DishDetailsScreen extends StatelessWidget {
   Future<TokenStorage> _initTokenStorage() async {
     final tokenStorage = TokenStorage();
     await tokenStorage.init();
-    return TokenStorage();
+    return tokenStorage;
   }
 
   @override
@@ -70,7 +71,6 @@ class DishDetailsScreen extends StatelessWidget {
             }
 
             final tokenStorage = snapshot.data!;
-
             return MultiBlocProvider(
               providers: [
                 BlocProvider(create: (_) => DishDetailsCubit(dish)),
@@ -94,40 +94,39 @@ class DishDetailsScreen extends StatelessWidget {
                             : dish.arbName,
                       ),
                       centerTitle: true,
+                      backgroundColor: AppColors.accent,
                     ),
                     body: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          DishImage(image: dish.image),
-                          SizedBox(height: 10.h),
-                          DishInfo(
-                            name:
-                                locale.languageCode == 'en'
-                                    ? dish.engName
-                                    : dish.arbName,
-                            description:
-                                locale.languageCode == 'en'
-                                    ? dish.engDescription
-                                    : dish.arbDescription,
-                          ),
-                          Divider(
-                            color: Colors.black45,
-                            indent: 15.w,
-                            endIndent: 15.w,
-                          ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 15.w),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 10.h),
+                            DishImage(image: dish.image),
+                            SizedBox(height: 15.h),
+                            DishInfo(
+                              name:
+                                  locale.languageCode == 'en'
+                                      ? dish.engName
+                                      : dish.arbName,
+                              description:
+                                  locale.languageCode == 'en'
+                                      ? dish.engDescription
+                                      : dish.arbDescription,
+                            ),
+                            SizedBox(height: 15.h),
+                            Divider(color: Colors.grey.shade300, thickness: 1),
+                            SizedBox(height: 15.h),
 
-                          BlocBuilder<DishDetailsCubit, DishDetailsState>(
-                            builder: (context, state) {
-                              final cubit = context.read<DishDetailsCubit>();
+                            /// Option Groups
+                            BlocBuilder<DishDetailsCubit, DishDetailsState>(
+                              builder: (context, state) {
+                                final cubit = context.read<DishDetailsCubit>();
+                                if (dish.optionGroups.isEmpty)
+                                  return const SizedBox.shrink();
 
-                              if (dish.optionGroups.isEmpty)
-                                return const SizedBox.shrink();
-
-                              return Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 15.w),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                return Column(
                                   children:
                                       dish.optionGroups.map((group) {
                                         return OptionGroupWidget(
@@ -154,18 +153,16 @@ class DishDetailsScreen extends StatelessWidget {
                                           },
                                         );
                                       }).toList(),
-                                ),
-                              );
-                            },
-                          ),
+                                );
+                              },
+                            ),
+                            SizedBox(height: 10.h),
 
-                          SizedBox(height: 10.h),
-                          BlocBuilder<DishDetailsCubit, DishDetailsState>(
-                            builder: (context, state) {
-                              final cubit = context.read<DishDetailsCubit>();
-                              return Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 15.w),
-                                child: Row(
+                            /// Quantity
+                            BlocBuilder<DishDetailsCubit, DishDetailsState>(
+                              builder: (context, state) {
+                                final cubit = context.read<DishDetailsCubit>();
+                                return Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
@@ -176,37 +173,19 @@ class DishDetailsScreen extends StatelessWidget {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    Row(
-                                      children: [
-                                        QuantityButton(
-                                          icon: Icons.remove,
-                                          onTap:
-                                              () => cubit.decrementQuantity(),
-                                        ),
-                                        SizedBox(width: 10.w),
-                                        Text(
-                                          "${state.quantity}",
-                                          style: TextStyle(
-                                            fontSize: 18.sp,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(width: 10.w),
-                                        QuantityButton(
-                                          icon: Icons.add,
-                                          onTap:
-                                              () => cubit.incrementQuantity(),
-                                        ),
-                                      ],
+                                    QuantitySelector(
+                                      quantity: state.quantity,
+                                      onIncrement: cubit.incrementQuantity,
+                                      onDecrement: cubit.decrementQuantity,
                                     ),
                                   ],
-                                ),
-                              );
-                            },
-                          ),
+                                );
+                              },
+                            ),
 
-                          SizedBox(height: 60.h),
-                        ],
+                            SizedBox(height: 60.h),
+                          ],
+                        ),
                       ),
                     ),
 
@@ -244,19 +223,6 @@ class DishDetailsScreen extends StatelessWidget {
                                   dishState.isSizeSelected &&
                                   cartState is! CartLoading,
                               onAddToCart: () {
-                                if (!isConnected) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        AppLocalizations.of(
-                                          context,
-                                        )!.noInternetConnection,
-                                      ),
-                                    ),
-                                  );
-                                  return;
-                                }
-
                                 final selectedOptionsList =
                                     dishState.selectedOptions.values
                                         .where((opt) => opt != null)
@@ -269,9 +235,7 @@ class DishDetailsScreen extends StatelessWidget {
                                           },
                                         )
                                         .toList();
-
                                 final int quantity = dishState.quantity ?? 1;
-
                                 final bodyItems = [
                                   {
                                     "dishId": dish.id,
@@ -279,7 +243,6 @@ class DishDetailsScreen extends StatelessWidget {
                                     "selectedOptions": selectedOptionsList,
                                   },
                                 ];
-
                                 context.read<CartCubit>().addToCart(
                                   items: bodyItems,
                                 );

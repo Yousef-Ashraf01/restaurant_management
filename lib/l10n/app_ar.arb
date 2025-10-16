@@ -195,5 +195,16 @@
   "notAvailable": "غير متاح",
   "noDishesFound": "لا توجد أطباق",
   "failedToSendCode": "فشل في إرسال رمز التأكيد",
-  "waitingForDishes": "جارٍ تحميل الأطباق..."
+  "waitingForDishes": "جارٍ تحميل الأطباق...",
+  "deliverTo": "التوصيل إلى",
+  "categories": "الفئات",
+  "seeMore": "عرض المزيد",
+  "seeLess": "عرض أقل",
+  "newAddress": "عنوان جديد",
+  "allDishes": "جميع الأطباق",
+  "accepted": "مقبول",
+  "ready": "جاهز",
+  "outForDelivery": "في الطريق للتوصيل",
+  "addedToCart": "تمت إضافته إلى السلة",
+  "selectRequiredOptions": "حدد الخيارات المطلوبة"
 }
