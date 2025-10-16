@@ -20,6 +20,15 @@ class TokenStorage {
   static const _refreshExpiryKey = "refresh_expiry";
   static const _userIdKey = "user_id";
   static const _passwordKey = "user_password";
+  static const _selectedAddressKey = 'selected_address';
+
+  Future<void> saveSelectedAddress(String address) async {
+    await _prefs.setString(_selectedAddressKey, address);
+  }
+
+  String? getSelectedAddress() {
+    return _prefs.getString(_selectedAddressKey);
+  }
 
   Future<void> saveAccessToken(String token) async =>
       await _prefs.setString(_accessKey, token);

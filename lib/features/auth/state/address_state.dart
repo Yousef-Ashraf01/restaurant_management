@@ -50,3 +50,9 @@ class DeleteAddressError extends AddressState {
   final String message;
   DeleteAddressError(this.message);
 }
+
+class AddressSelected extends AddressState {
+  final String selectedAddressLabel;
+
+  AddressSelected(this.selectedAddressLabel);
+}

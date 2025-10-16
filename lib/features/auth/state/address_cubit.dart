@@ -1,17 +1,51 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaurant_management/core/network/token_storage.dart';
 import 'package:restaurant_management/features/auth/data/models/address_model.dart';
 import 'package:restaurant_management/features/auth/domain/repositories/address_repository.dart';
 import 'package:restaurant_management/features/auth/state/address_state.dart';
 
 class AddressCubit extends Cubit<AddressState> {
   final AddressRepository repository;
-  AddressCubit(this.repository) : super(AddressInitial());
+  final TokenStorage tokenStorage;
 
-  void getUserAddresses(String userId) async {
+  AddressCubit(this.repository, this.tokenStorage) : super(AddressInitial()) {
+    // ✅ تحميل العنوان المختار سابقًا (لو محفوظ)
+    final savedAddressLabel = tokenStorage.getSelectedAddress();
+    final userId = tokenStorage.getUserId();
+    if (savedAddressLabel != null) {
+      selectedAddress = AddressModel(
+        fullAddress: savedAddressLabel,
+        userId: userId,
+      );
+      emit(AddressSelected(savedAddressLabel));
+    }
+  }
+
+  AddressModel? selectedAddress;
+
+  void selectAddress(AddressModel address) {
+    selectedAddress = address;
+    if (state is AddressLoaded) {
+      emit(AddressLoaded((state as AddressLoaded).addresses));
+    }
+  }
+
+  Future<void> getUserAddresses(String userId) async {
     emit(AddressLoading());
     try {
       final addresses = await repository.fetchAddresses(userId);
       print("🏠 Fetched ${addresses.length} addresses for userId $userId");
+
+      // ✅ لو عندي عنوان مختار قبل كده، رجّعه بنفسه بعد التحديث
+      if (selectedAddress != null) {
+        final stillExists = addresses.firstWhere(
+          (a) => a.id == selectedAddress!.id,
+          orElse:
+              () => addresses.isNotEmpty ? addresses.first : selectedAddress!,
+        );
+        selectedAddress = stillExists;
+      }
+
       emit(AddressLoaded(addresses));
     } catch (e) {
       print("❌ Error fetching addresses: $e");

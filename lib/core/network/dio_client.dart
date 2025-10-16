@@ -21,6 +21,10 @@ class DioClient {
     return _instance!;
   }
 
+  // https://elasalaelmasriaapi.runasp.net
+  // https://restaurantmanagementsystem.runasp.net
+  // https://restaurantmanagementsystemapi.runasp.net
+
   DioClient._internal(this.tokenStorage, {this.onLogout})
     : dio = Dio(
         BaseOptions(
@@ -201,10 +205,14 @@ class DioClient {
 
   Future<bool> _tryRefresh() async {
     final refreshToken = await tokenStorage.getRefreshToken();
-    print("In SharedPrefrences $refreshToken");
+    print("🔁 Current refresh token: $refreshToken");
+
     if (refreshToken == null || refreshToken.isEmpty) return false;
-    print("inside try refresh");
+
     try {
+      print(
+        '🔍 Sending refresh request with cookie: RefreshToken=$refreshToken',
+      );
       final res = await _refreshDio.get(
         "/api/Auth/refreshToken",
         options: Options(
@@ -214,15 +222,42 @@ class DioClient {
           },
         ),
       );
-      print("inside try refresh after calling request");
 
-      print(res.data);
+      print("🔁 Refresh response: ${res.data}");
 
-      final tokenResult = await _parseTokenResponse(res);
+      if (res.data == null || res.data['data'] == null) {
+        print("❌ Invalid response format");
+        return false;
+      }
 
-      if (tokenResult.accessToken == null) return false;
+      // ✅ Parse & save new tokens
+      final tokens = res.data['data'];
+      final newAccessToken = tokens['accessToken'] as String?;
+      final newRefreshToken = tokens['refreshToken'] as String?;
+      final newAccessExpiry =
+          tokens['expiresIn'] != null
+              ? DateTime.parse(tokens['expiresIn']).toUtc()
+              : null;
+      final newRefreshExpiry =
+          tokens['refreshTokenExpiration'] != null
+              ? DateTime.parse(tokens['refreshTokenExpiration']).toUtc()
+              : null;
 
-      print("🔁 Token refresh successful!");
+      if (newAccessToken == null || newRefreshToken == null) {
+        print("❌ Missing new token values");
+        return false;
+      }
+
+      // ✅ Save synchronously & wait
+      await tokenStorage.saveAccessToken(newAccessToken);
+      await tokenStorage.saveRefreshToken(newRefreshToken);
+      await tokenStorage.saveAccessExpiry(newAccessExpiry);
+      await tokenStorage.saveRefreshExpiry(newRefreshExpiry);
+
+      print("✅ Tokens updated successfully");
+      print("🕒 Access expires: $newAccessExpiry");
+      print("🔁 Refresh expires: $newRefreshExpiry");
+
       return true;
     } catch (e) {
       print("❌ Token refresh failed: $e");

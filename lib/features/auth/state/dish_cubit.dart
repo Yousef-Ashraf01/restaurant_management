@@ -19,4 +19,16 @@ class DishCubit extends Cubit<DishState> {
       emit(DishError(e.toString()));
     }
   }
+
+  Future<void> getDishesByCategory(String categoryId) async {
+    emit(DishLoading());
+    try {
+      final dishes = await repository.fetchDishesByCategory(categoryId);
+      print("🍛 Loaded ${dishes.length} dishes for category $categoryId");
+      emit(DishLoaded(dishes));
+    } catch (e) {
+      print("❌ Failed to load category dishes: $e");
+      emit(DishError(e.toString()));
+    }
+  }
 }

@@ -22,6 +22,32 @@ class CartCubit extends Cubit<CartState> {
     }
   }
 
+  // void undoLastAddedItem() {
+  //   if (state is! CartLoaded) return;
+  //
+  //   final currentState = state as CartLoaded;
+  //   final currentCart = currentState.cart;
+  //
+  //   if (currentCart.items.isEmpty) return;
+  //
+  //   // نشيل آخر عنصر اتضاف
+  //   final updatedItems = List.of(currentCart.items)..removeLast();
+  //
+  //   // نحسب الإجمالي الجديد
+  //   final newTotal = updatedItems.fold<double>(
+  //     0,
+  //     (sum, item) => sum + item.totalPrice,
+  //   );
+  //
+  //   // نعمل نسخة جديدة من الكارت بعد الحذف
+  //   final updatedCart = currentCart.copyWith(
+  //     items: updatedItems,
+  //     totalPrice: newTotal,
+  //   );
+  //
+  //   emit(CartLoaded(updatedCart));
+  // }
+
   Future<void> addSingleItemToCart({
     required int cartId,
     required int dishId,
@@ -30,6 +56,10 @@ class CartCubit extends Cubit<CartState> {
   }) async {
     emit(CartLoading());
     try {
+      print("🛒 ADD TO CART PRESSED");
+      print("dishId: $dishId");
+      print("selectedOptions: $selectedOptions");
+
       await repository.addToCart(
         items: [
           {

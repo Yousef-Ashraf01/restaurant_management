@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restaurant_management/core/utils/image_utils.dart';
 import 'package:restaurant_management/features/auth/state/banner_cubit.dart';
 import 'package:restaurant_management/features/auth/state/banner_state.dart';
@@ -33,14 +34,14 @@ class BannerScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final banner = banners[index];
                 return Card(
-                  margin: const EdgeInsets.all(10),
+                  margin:  EdgeInsets.all(10.h),
                   child: Column(
                     children: [
-                      Text(banner.name, style: const TextStyle(fontSize: 18)),
+                      Text(banner.name, style:  TextStyle(fontSize: 18.sp)),
                       Image.memory(
                         convertBase64ToImage(banner.image),
                         fit: BoxFit.cover,
-                        height: 200,
+                        height: 180.h,
                         width: double.infinity,
                       ),
                     ],

@@ -13,10 +13,10 @@ class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<MainScreen> createState() => MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
   final List<int> _navigationStack = [0];
 
@@ -47,7 +47,7 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  void _onTabChange(int index) {
+  void onTabChange(int index) {
     setState(() {
       if (_navigationStack.isEmpty || _navigationStack.last != index) {
         _navigationStack.add(index);
@@ -99,7 +99,7 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 ],
                 selectedIndex: _selectedIndex,
-                onTabChange: _onTabChange,
+                onTabChange: onTabChange,
               ),
             ),
           ),

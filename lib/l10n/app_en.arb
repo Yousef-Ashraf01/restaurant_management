@@ -194,6 +194,17 @@
   "notAvailable": "N/A",
   "noDishesFound": "No dishes found",
   "failedToSendCode": "Failed to send confirmation code",
-  "waitingForDishes": "Waiting for dishes..."
+  "waitingForDishes": "Waiting for dishes...",
+  "deliverTo": "Deliver to",
+  "categories": "Categories",
+  "seeMore": "See more",
+  "seeLess": "See less",
+  "newAddress": "New Address",
+  "allDishes": "All Dishes",
+  "accepted": "Accepted",
+  "ready": "Ready",
+  "outForDelivery": "Out For Delivery",
+  "addedToCart": "added to cart",
+  "selectRequiredOptions": "Select required options"
 }
 

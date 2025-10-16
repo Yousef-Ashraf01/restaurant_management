@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart'; // لازم تستورد Lottie
 import 'package:restaurant_management/core/constants/app_colors.dart';
+import 'package:restaurant_management/core/network/token_storage.dart';
 import 'package:restaurant_management/core/utils/show_snack_bar.dart';
 import 'package:restaurant_management/core/widgets/app_un_focus_wrapper.dart';
 import 'package:restaurant_management/features/auth/data/models/profile_response_model.dart';
@@ -48,9 +49,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     final profileRepository = context.read<ProfileRepository>();
     final addressRepository = context.read<AddressRepository>();
+    final tokenStorage = context.read<TokenStorage>();
 
     _profileCubit = ProfileCubit(profileRepository);
-    _addressCubit = AddressCubit(addressRepository);
+    _addressCubit = AddressCubit(addressRepository, tokenStorage);
 
     _initCubits = _initializeCubits();
   }
@@ -144,13 +146,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     },
                     child: BlocConsumer<ProfileCubit, ProfileState>(
                       listener: (context, state) {
-                        if (state is ProfileError) {
-                          setState(() => _isUpdating = false);
-                          showAppSnackBar(
-                            context,
-                            message: state.message,
-                            type: SnackBarType.error,
-                          );
+                        if (state is ProfileUpdating) {
+                          setState(() => _isUpdating = true);
                         } else if (state is ProfileUpdateSuccess) {
                           setState(() => _isUpdating = false);
                           showAppSnackBar(
@@ -164,6 +161,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           _profileCubit.fetchProfile(
                             widget.userId,
                             widget.token,
+                          );
+                        } else if (state is ProfileError) {
+                          setState(() => _isUpdating = false);
+                          showAppSnackBar(
+                            context,
+                            message: state.message,
+                            type: SnackBarType.error,
                           );
                         }
                       },
