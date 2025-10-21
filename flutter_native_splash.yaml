@@ -1,5 +1,5 @@
 flutter_native_splash:
-  background_image: "assets/images/eco_nozom.jpg"
+  background_image: "assets/images/splash_logo.jpg"
 
   color: "#ffffff"
 
@@ -7,14 +7,14 @@ flutter_native_splash:
 
 
   android_12:
-    image: assets/images/eco_nozom.jpg
+    image: assets/images/splash_logo.jpg
     color: "#ffffff"
     color_dark: "#ffffff"
 
   android: true
   ios: true
 
-  image_ios: assets/images/eco_nozom.jpg
+  image_ios: assets/images/splash_logo.jpg
 
   android_gravity: center
   ios_content_mode: center

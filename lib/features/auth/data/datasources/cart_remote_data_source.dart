@@ -48,4 +48,20 @@ class CartRemoteDataSource {
     );
     print('🗑️ DELETE Response: ${response.data}');
   }
+
+  Future<void> updateCartItemNotes({
+    required int cartId,
+    required int cartItemId,
+    required String notes,
+  }) async {
+    print("🔸 Sending notes update for item $cartItemId: $notes");
+
+    final body = {"cartItemId": cartItemId, "notes": notes};
+
+    final res = await dioClient.put(
+      "/api/Carts/$cartId/items/notes",
+      data: body,
+    );
+    print("✅ Response: ${res.data}");
+  }
 }

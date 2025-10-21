@@ -44,7 +44,7 @@ class SettingScreen extends StatelessWidget {
                       if (userId != null && token != null) {
                         Navigator.pushNamed(
                           context,
-                          AppRoutes.progileRoute,
+                          AppRoutes.profileRoute,
                           arguments: {'userId': userId, 'token': token},
                         );
                       } else {

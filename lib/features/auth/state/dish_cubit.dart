@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaurant_management/features/auth/data/models/dish_model.dart';
 
 import '../domain/repositories/dish_repository.dart';
 import 'dish_state.dart';
@@ -30,5 +31,15 @@ class DishCubit extends Cubit<DishState> {
       print("❌ Failed to load category dishes: $e");
       emit(DishError(e.toString()));
     }
+  }
+
+  DishModel? getDishById(int id) {
+    if (state is DishLoaded) {
+      return (state as DishLoaded).dishes.firstWhere(
+            (dish) => dish.id == id,
+        orElse: () => throw Exception("Dish not found"),
+      );
+    }
+    return null;
   }
 }

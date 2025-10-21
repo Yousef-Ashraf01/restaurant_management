@@ -13,6 +13,8 @@ import 'package:restaurant_management/features/auth/state/cart_state.dart';
 import 'package:restaurant_management/features/auth/state/connectivity_cubit.dart';
 import 'package:restaurant_management/features/auth/state/local_cubit.dart';
 import 'package:restaurant_management/features/auth/state/order_cubit.dart';
+import 'package:restaurant_management/features/auth/state/restaurant_cubit.dart';
+import 'package:restaurant_management/features/auth/state/restaurant_state.dart';
 import 'package:restaurant_management/features/cart/screens/delivery_details_screen.dart';
 
 class CartScreen extends StatefulWidget {
@@ -23,6 +25,8 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  final Map<int, String> _pendingNotes = {};
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -332,6 +336,53 @@ class _CartScreenState extends State<CartScreen> {
                       );
                     },
                   ),
+                // ✨ بعد عرض الخيارات (selectedOptions)
+                SizedBox(height: 20.h),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12.0,
+                    vertical: 6.0,
+                  ),
+                  child: TextField(
+                    cursorColor: AppColors.accent,
+                    decoration: InputDecoration(
+                      hintText: AppLocalizations.of(context)!.addNoteHere,
+                      hintStyle: TextStyle(color: Colors.grey),
+                      labelText: AppLocalizations.of(context)!.notesOptional,
+                      labelStyle: TextStyle(color: Colors.grey),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: AppColors.accent),
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.note_alt_outlined,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    controller: TextEditingController(
+                        text: _pendingNotes[item.id] ?? item.notes ?? "",
+                      )
+                      ..selection = TextSelection.fromPosition(
+                        TextPosition(
+                          offset:
+                              (_pendingNotes[item.id] ?? item.notes ?? "")
+                                  .length,
+                        ),
+                      ),
+                    onChanged: (value) {
+                      _pendingNotes[item.id] = value; // احفظ الملاحظة مؤقتًا
+                      print("✏️ Saved note locally for ${item.id}: $value");
+                    },
+                  ),
+                ),
               ],
             ),
           ),
@@ -508,6 +559,16 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Widget _buildCartFooter(cart) {
+    final restaurantState = context.read<RestaurantCubit>().state;
+    double deliveryFees = 0.0;
+
+    if (restaurantState is RestaurantLoaded) {
+      deliveryFees = restaurantState.restaurant.deliveryFees;
+    }
+
+    final subTotal = cart.totalPrice;
+    final total = subTotal + deliveryFees;
+
     return Container(
       margin: EdgeInsets.only(bottom: 20.h, left: 15.w, right: 15.w),
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
@@ -522,43 +583,170 @@ class _CartScreenState extends State<CartScreen> {
           ),
         ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "${AppLocalizations.of(context)!.total}: ${cart.totalPrice.toStringAsFixed(2)}",
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.accent,
-              padding: EdgeInsets.symmetric(horizontal: 28.w, vertical: 14.h),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
-            onPressed: () {
-              final cartCubit = context.read<CartCubit>();
-              final orderCubit = context.read<OrderCubit>();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder:
-                      (_) => DeliveryDetailsScreen(
-                        cartCubit: cartCubit,
-                        orderCubit: orderCubit,
-                      ),
+          // 🔹 Subtotal
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "${AppLocalizations.of(context)!.subtotal}:",
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
-              );
-            },
+              ),
+              Text(
+                subTotal.toStringAsFixed(2),
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
 
-            child: Text(
-              AppLocalizations.of(context)!.order,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          // 🔹 Delivery Fees
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "${AppLocalizations.of(context)!.deliveryFees}:",
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                deliveryFees.toStringAsFixed(2),
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+          const Divider(height: 20),
+
+          // 🔹 Total
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "${AppLocalizations.of(context)!.total}:",
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.accent,
+                ),
+              ),
+              Text(
+                total.toStringAsFixed(2),
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 16),
+
+          // 🔹 زرار الطلب
+          Center(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.accent,
+                padding: EdgeInsets.symmetric(horizontal: 28.w, vertical: 14.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              onPressed: () async {
+                final cartCubit = context.read<CartCubit>();
+                final orderCubit = context.read<OrderCubit>();
+
+                if (cartCubit.state is! CartLoaded) return;
+                final cart = (cartCubit.state as CartLoaded).cart;
+
+                // ✨ نفس الكود بتاع الإرسال والانتقال
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder:
+                      (_) => Center(
+                        child: Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const CircularProgressIndicator(
+                                color: AppColors.accent,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                AppLocalizations.of(context)!.sendingNotes,
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.sp,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                );
+
+                print("📦 Sending all notes before ordering...");
+
+                try {
+                  for (final item in cart.items) {
+                    final notes =
+                        _pendingNotes[item.id]?.trim() ??
+                        item.notes?.trim() ??
+                        "";
+                    if (notes.isNotEmpty) {
+                      print("🟡 Sending note for item ${item.id}: $notes");
+                      await cartCubit.updateItemNotes(
+                        cartId: item.cartId,
+                        cartItemId: item.id,
+                        notes: notes,
+                      );
+                    }
+                  }
+
+                  Navigator.pop(context);
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (_) => DeliveryDetailsScreen(
+                            cartCubit: cartCubit,
+                            orderCubit: orderCubit,
+                          ),
+                    ),
+                  );
+                } catch (e) {
+                  Navigator.pop(context);
+                  print("❌ Error sending notes: $e");
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("حدث خطأ أثناء إرسال الملاحظات"),
+                      backgroundColor: Colors.redAccent,
+                    ),
+                  );
+                }
+              },
+              child: Text(
+                AppLocalizations.of(context)!.order,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
         ],

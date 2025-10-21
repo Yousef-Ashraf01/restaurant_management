@@ -11,19 +11,15 @@ class DioClient {
   static DioClient? _instance;
   final TokenStorage tokenStorage;
   final Dio dio;
-  final Dio _refreshDio;
+  final Dio _refreshDio; // separate instance to avoid recursion
   final CookieJar _cookieJar = CookieJar();
-  final void Function()? onLogout;
+  final void Function()? onLogout; // callback to trigger UI logout
   Completer<void>? _refreshCompleter;
 
   factory DioClient(TokenStorage tokenStorage, {void Function()? onLogout}) {
     _instance ??= DioClient._internal(tokenStorage, onLogout: onLogout);
     return _instance!;
   }
-
-  // https://elasalaelmasriaapi.runasp.net
-  // https://restaurantmanagementsystem.runasp.net
-  // https://restaurantmanagementsystemapi.runasp.net
 
   DioClient._internal(this.tokenStorage, {this.onLogout})
     : dio = Dio(
@@ -40,6 +36,7 @@ class DioClient {
           validateStatus: (_) => true,
         ),
       ) {
+    // share same cookie jar
     dio.interceptors.add(
       LogInterceptor(
         request: true,
@@ -72,6 +69,9 @@ class DioClient {
             );
 
             if (!isRefreshPath) {
+              // --------------------------
+              // 🔑 Token expiry check here
+              // --------------------------
               final accessExpiry = await tokenStorage.getAccessExpiry();
               final refreshExpiry = await tokenStorage.getRefreshExpiry();
               final now = DateTime.now().toUtc();
@@ -80,14 +80,18 @@ class DioClient {
               print("📌 Saved Access Expiry: $accessExpiry");
               print("📌 Saved Refresh Expiry: $refreshExpiry");
               print("Direct try refrsh");
+              //await _tryRefresh();
               print("After direct refresh");
               if (accessExpiry != null && accessExpiry.isBefore(now)) {
+                // access token expired
                 if (refreshExpiry != null && refreshExpiry.isAfter(now)) {
+                  // refresh still valid → try refresh now
                   print("refresh is valid, try refresh...");
                   final refreshed = await _tryRefresh();
                   print("try refresh called and finished");
                   print(refreshed);
                   if (!refreshed) {
+                    // refresh failed → force logout
                     return handler.reject(
                       DioException(
                         requestOptions: options,
@@ -97,23 +101,27 @@ class DioClient {
                     );
                   }
                 } else {
+                  // both expired → force logout
                   await _forceLogoutAndReject(
                     DioException(
                       requestOptions: options,
                       error: "Session expired - please login again",
                       type: DioExceptionType.cancel,
                     ),
+                    // create a dummy handler to satisfy signature
                     ErrorInterceptorHandler(),
                   );
                   return;
                 }
               }
 
+              // Normal request → attach bearer
               final accessToken = await tokenStorage.getAccessToken();
               if (accessToken != null && accessToken.isNotEmpty) {
                 options.headers['Authorization'] = 'Bearer $accessToken';
               }
             } else {
+              // Refresh request → only send cookie
               final refreshToken = await tokenStorage.getRefreshToken();
               if (refreshToken != null && refreshToken.isNotEmpty) {
                 options.headers['Cookie'] = 'RefreshToken=$refreshToken';
@@ -138,9 +146,11 @@ class DioClient {
             "/api/Auth/refreshToken",
           );
 
+          // If 401 and not a refresh request → try refresh
           if (err.response?.statusCode == 401 && !isRefreshRequest) {
             try {
               if (_refreshCompleter != null) {
+                // wait for ongoing refresh
                 await _refreshCompleter!.future;
               } else {
                 _refreshCompleter = Completer<void>();
@@ -153,6 +163,7 @@ class DioClient {
                 _refreshCompleter!.complete();
               }
 
+              // retry original request
               final newAccess = await tokenStorage.getAccessToken();
               if (newAccess != null) {
                 reqOptions.headers['Authorization'] = 'Bearer $newAccess';
@@ -168,11 +179,18 @@ class DioClient {
             }
           }
 
+          // print("🧨 Dio Error Path: ${err.requestOptions.path}");
+          // print("🧾 Status code: ${err.response?.statusCode}");
+          // print("📦 Raw data: ${err.response?.data}");
+          // print("⚙️ DioException type: ${err.type}");
+
           handler.next(err);
         },
       ),
     );
   }
+
+  // ---------------- Helpers ----------------
 
   Future<bool> _hasInternet() async {
     final result = await Connectivity().checkConnectivity();
@@ -203,16 +221,15 @@ class DioClient {
     return await dio.delete(path, data: data, options: options);
   }
 
+  // Try refresh logic
+  // ✅ DioClient.dart بعد التعديل الكامل
+
   Future<bool> _tryRefresh() async {
     final refreshToken = await tokenStorage.getRefreshToken();
-    print("🔁 Current refresh token: $refreshToken");
-
+    print("In SharedPrefrences $refreshToken");
     if (refreshToken == null || refreshToken.isEmpty) return false;
-
+    print("inside try refresh");
     try {
-      print(
-        '🔍 Sending refresh request with cookie: RefreshToken=$refreshToken',
-      );
       final res = await _refreshDio.get(
         "/api/Auth/refreshToken",
         options: Options(
@@ -222,42 +239,15 @@ class DioClient {
           },
         ),
       );
+      print("inside try refresh after calling request");
 
-      print("🔁 Refresh response: ${res.data}");
+      print(res.data);
 
-      if (res.data == null || res.data['data'] == null) {
-        print("❌ Invalid response format");
-        return false;
-      }
+      final tokenResult = await _parseTokenResponse(res);
 
-      // ✅ Parse & save new tokens
-      final tokens = res.data['data'];
-      final newAccessToken = tokens['accessToken'] as String?;
-      final newRefreshToken = tokens['refreshToken'] as String?;
-      final newAccessExpiry =
-          tokens['expiresIn'] != null
-              ? DateTime.parse(tokens['expiresIn']).toUtc()
-              : null;
-      final newRefreshExpiry =
-          tokens['refreshTokenExpiration'] != null
-              ? DateTime.parse(tokens['refreshTokenExpiration']).toUtc()
-              : null;
+      if (tokenResult.accessToken == null) return false;
 
-      if (newAccessToken == null || newRefreshToken == null) {
-        print("❌ Missing new token values");
-        return false;
-      }
-
-      // ✅ Save synchronously & wait
-      await tokenStorage.saveAccessToken(newAccessToken);
-      await tokenStorage.saveRefreshToken(newRefreshToken);
-      await tokenStorage.saveAccessExpiry(newAccessExpiry);
-      await tokenStorage.saveRefreshExpiry(newRefreshExpiry);
-
-      print("✅ Tokens updated successfully");
-      print("🕒 Access expires: $newAccessExpiry");
-      print("🔁 Refresh expires: $newRefreshExpiry");
-
+      print("🔁 Token refresh successful!");
       return true;
     } catch (e) {
       print("❌ Token refresh failed: $e");
@@ -265,6 +255,7 @@ class DioClient {
     }
   }
 
+  // ✅ Parse APIResponse<AuthModel>
   Future<_TokenParseResult> _parseTokenResponse(Response response) async {
     final data = response.data;
 
@@ -283,6 +274,7 @@ class DioClient {
       throw Exception("❌ Missing token values in response");
     }
 
+    // ✅ نحاول نحلل التواريخ بأمان
     final accessExpiry =
         accessTokenExpiration != null
             ? DateTime.parse(accessTokenExpiration).toUtc()
@@ -298,6 +290,7 @@ class DioClient {
     print("📌 Saved Access Expiry: $accessExpiry");
     print("📌 Saved Refresh Expiry: $refreshExpiry");
 
+    // ✅ حفظ التوكنات (بس لو التواريخ موجودة)
     await tokenStorage.saveAccessToken(accessToken);
     await tokenStorage.saveRefreshToken(refreshToken);
 
@@ -321,6 +314,7 @@ class DioClient {
     );
   }
 
+  // force logout
   Future<void> _forceLogoutAndReject(
     DioException sourceErr,
     ErrorInterceptorHandler handler,
@@ -341,6 +335,26 @@ class DioClient {
         type: DioExceptionType.cancel,
       ),
     );
+  }
+
+  // Parse APIResponse<AuthModel>
+  DateTime? _parseExpiry(dynamic v) {
+    if (v == null) return null;
+    if (v is int) {
+      return v.toString().length <= 10
+          ? DateTime.fromMillisecondsSinceEpoch(v * 1000)
+          : DateTime.fromMillisecondsSinceEpoch(v);
+    }
+    if (v is String) {
+      if (RegExp(r'^\d+$').hasMatch(v)) {
+        final n = int.parse(v);
+        return v.length <= 10
+            ? DateTime.fromMillisecondsSinceEpoch(n * 1000)
+            : DateTime.fromMillisecondsSinceEpoch(n);
+      }
+      return DateTime.tryParse(v);
+    }
+    return null;
   }
 }
 

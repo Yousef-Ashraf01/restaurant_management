@@ -83,7 +83,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return BlocBuilder<ConnectivityCubit, bool>(
       builder: (context, isConnected) {
         if (!isConnected) {
-          // حالة عدم وجود إنترنت
           return Scaffold(
             appBar: AppBar(
               title: Text(AppLocalizations.of(context)!.profile),
@@ -115,7 +114,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
         }
 
-        // النت موجود → عرض البروفايل
         return FutureBuilder(
           future: _initCubits,
           builder: (context, snapshot) {
@@ -363,61 +361,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           },
                                         ),
                                         SizedBox(height: 30.h),
-                                        Center(
-                                          child: SizedBox(
-                                            width: 200.w,
-                                            height: 45.h,
-                                            child: ElevatedButton(
-                                              onPressed:
-                                                  _isUpdating
-                                                      ? null // تعطيل الزر أثناء التحميل
-                                                      : () {
-                                                        if (_formKey
-                                                            .currentState!
-                                                            .validate()) {
-                                                          setState(
-                                                            () =>
-                                                                _isUpdating =
-                                                                    true,
-                                                          );
-                                                          _profileCubit.updateProfile(
-                                                            profile.copyWith(
-                                                              firstName:
-                                                                  _firstNameController
-                                                                      .text
-                                                                      .trim(),
-                                                              lastName:
-                                                                  _lastNameController
-                                                                      .text
-                                                                      .trim(),
-                                                              phoneNumber:
-                                                                  _phoneController
-                                                                      .text
-                                                                      .trim(),
-                                                            ),
-                                                            widget.token,
-                                                          );
-                                                        }
-                                                      },
-                                              child:
-                                                  _isUpdating
-                                                      ? SizedBox(
-                                                        height: 22.h,
-                                                        width: 22.h,
-                                                        child:
-                                                            CircularProgressIndicator(
-                                                              strokeWidth: 2.5,
-                                                              color:
-                                                                  AppColors
-                                                                      .primary,
-                                                            ),
-                                                      )
-                                                      : Text(
-                                                        AppLocalizations.of(
-                                                          context,
-                                                        )!.updateProfile,
-                                                      ),
-                                            ),
+                                        SizedBox(
+                                          width: double.infinity,
+                                          child: ElevatedButton(
+                                            onPressed:
+                                                _isUpdating
+                                                    ? null
+                                                    : () {
+                                                      if (_formKey.currentState!
+                                                          .validate()) {
+                                                        setState(
+                                                          () =>
+                                                              _isUpdating =
+                                                                  true,
+                                                        );
+                                                        _profileCubit.updateProfile(
+                                                          profile.copyWith(
+                                                            firstName:
+                                                                _firstNameController
+                                                                    .text
+                                                                    .trim(),
+                                                            lastName:
+                                                                _lastNameController
+                                                                    .text
+                                                                    .trim(),
+                                                            phoneNumber:
+                                                                _phoneController
+                                                                    .text
+                                                                    .trim(),
+                                                          ),
+                                                          widget.token,
+                                                        );
+                                                      }
+                                                    },
+                                            child:
+                                                _isUpdating
+                                                    ? SizedBox(
+                                                      height: 22.h,
+                                                      width: 22.h,
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                            strokeWidth: 2.5,
+                                                            color:
+                                                                AppColors
+                                                                    .primary,
+                                                          ),
+                                                    )
+                                                    : Text(
+                                                      AppLocalizations.of(
+                                                        context,
+                                                      )!.updateProfile,
+                                                    ),
                                           ),
                                         ),
 

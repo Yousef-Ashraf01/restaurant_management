@@ -8,6 +8,7 @@ class CartItemModel {
   final int cartId;
   final DishModel dish;
   final List<SelectedOptionModel> selectedOptions;
+  final String? notes;
 
   CartItemModel({
     required this.id,
@@ -17,6 +18,7 @@ class CartItemModel {
     required this.cartId,
     required this.dish,
     required this.selectedOptions,
+    this.notes,
   });
 
   factory CartItemModel.fromJson(Map<String, dynamic> json) => CartItemModel(
@@ -34,6 +36,7 @@ class CartItemModel {
               ),
             )
             : [],
+    notes: json['notes'],
   );
 
   Map<String, dynamic> toJson() => {
@@ -46,9 +49,9 @@ class CartItemModel {
     'selectedOptions': List<dynamic>.from(
       selectedOptions.map((x) => x.toJson()),
     ),
+    'notes': notes,
   };
 
-  // ✅ copyWith method
   CartItemModel copyWith({
     int? id,
     int? dishId,
@@ -57,6 +60,7 @@ class CartItemModel {
     int? cartId,
     DishModel? dish,
     List<SelectedOptionModel>? selectedOptions,
+    String? notes,
   }) {
     return CartItemModel(
       id: id ?? this.id,
@@ -66,6 +70,7 @@ class CartItemModel {
       cartId: cartId ?? this.cartId,
       dish: dish ?? this.dish,
       selectedOptions: selectedOptions ?? this.selectedOptions,
+      notes: notes ?? this.notes,
     );
   }
 }

@@ -47,4 +47,17 @@ class CartRepository {
       cartItemId: cartItemId,
     );
   }
+
+  Future<void> updateCartItemNotes({
+    required int cartId,
+    required int cartItemId,
+    required String notes,
+  }) async {
+    await remoteDataSource.updateCartItemNotes(
+      cartId: cartId,
+      cartItemId: cartItemId,
+      notes: notes,
+    );
+  }
+
 }

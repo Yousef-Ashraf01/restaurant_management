@@ -170,7 +170,7 @@
   "waitingForBanners": "في انتظار اللافتات...",
   "userNotLoggedIn": "يرجى تسجيل الدخول للمتابعة",
   "enterYourEmailAddress": "أدخل عنوان بريدك الإلكتروني",
-  "receiveConfirmationMessage": "وسيصلك رسالة تأكيد على بريدك الإلكتروني",
+  "receiveConfirmationMessage": "وسيتم إرسال كود مكوّن من 6 أرقام للتأكيد",
   "codeSentToEmail": "تم إرسال كود إلى بريدك الإلكتروني",
   "errorOccurred": "حدث خطأ، حاول مرة أخرى لاحقًا",
   "next": "التالي",
@@ -206,5 +206,12 @@
   "ready": "جاهز",
   "outForDelivery": "في الطريق للتوصيل",
   "addedToCart": "تمت إضافته إلى السلة",
-  "selectRequiredOptions": "حدد الخيارات المطلوبة"
+  "selectRequiredOptions": "حدد الخيارات المطلوبة",
+  "notes": "ملاحظات",
+  "addedNotesHere": "ملاحظات إضافية",
+  "notesOptional": "ملاحظات (اختياري)",
+  "addNoteHere": "أضف ملاحظتك هنا",
+  "sendingNotes": "جارٍ إرسال الملاحظات...",
+  "subtotal": "الإجمالي الفرعي",
+  "deliveryFees": "رسوم التوصيل"
 }

@@ -148,4 +148,22 @@ class CartCubit extends Cubit<CartState> {
       emit(CartError("Failed to delete item: $e"));
     }
   }
+
+  Future<void> updateItemNotes({
+    required int cartId,
+    required int cartItemId,
+    required String notes,
+  }) async {
+    try {
+      await repository.updateCartItemNotes(
+        cartId: cartId,
+        cartItemId: cartItemId,
+        notes: notes,
+      );
+      await getCart(showLoading: false);
+    } catch (e) {
+      emit(CartError(e.toString()));
+    }
+  }
+
 }

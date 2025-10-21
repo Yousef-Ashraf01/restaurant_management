@@ -66,6 +66,7 @@ class _CategorySectionState extends State<CategorySection> {
                   widget.onCategorySelected(index, category.id);
                 },
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
@@ -95,9 +96,8 @@ class _CategorySectionState extends State<CategorySection> {
                                     key: ValueKey('cat_${category.id}'),
                                     width: 50,
                                     height: 50,
-                                    fit:
-                                        BoxFit
-                                            .cover, // 🔹 يخلي كل الصور بنفس الحجم داخل المربع
+                                    fit: BoxFit.cover,
+                                    // 🔹 يخلي كل الصور بنفس الحجم داخل المربع
                                     gaplessPlayback: true,
                                   ),
                                 )
@@ -109,13 +109,23 @@ class _CategorySectionState extends State<CategorySection> {
                       ),
                     ),
                     const SizedBox(height: 6),
-                    Text(
-                      Localizations.localeOf(context).languageCode == 'en'
-                          ? category.engName
-                          : category.arbName,
-                      style: TextStyle(
-                        color: isSelected ? AppColors.accent : Colors.black87,
-                        fontWeight: FontWeight.w600,
+                    SizedBox(
+                      width: 70, // 🔹 نفس عرض الصورة
+                      child: Text(
+                        Localizations.localeOf(context).languageCode == 'en'
+                            ? category.engName
+                            : category.arbName,
+                        maxLines: 2,
+                        // 🔹 يخلي الاسم يلف لسطرين فقط
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        // 🔹 يخلي النص في النص تحت الصورة
+                        style: TextStyle(
+                          color: isSelected ? AppColors.accent : Colors.black87,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12, // 🔹 حجم مناسب يخلي سطرين يشيلوا الكلام
+                          height: 1.2, // 🔹 يقلل المسافة بين السطرين
+                        ),
                       ),
                     ),
                   ],

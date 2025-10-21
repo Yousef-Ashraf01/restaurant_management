@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
+import 'package:restaurant_management/core/utils/image_utils.dart';
 import 'package:restaurant_management/features/auth/state/connectivity_cubit.dart';
 import 'package:restaurant_management/features/auth/state/local_cubit.dart';
 import 'package:restaurant_management/features/auth/state/restaurant_cubit.dart';
@@ -117,6 +118,22 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // ✅ اللوجو
+                                if (restaurant.logo.isNotEmpty)
+                                  Center(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Image.memory(
+                                        convertBase64ToImage(restaurant.logo),
+                                        height: 100,
+                                        width: 100,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                const SizedBox(height: 12),
+
+                                // ✅ اسم المطعم
                                 BlocBuilder<LocaleCubit, Locale>(
                                   builder: (context, locale) {
                                     return Text(
@@ -130,8 +147,11 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
                                     );
                                   },
                                 ),
-                                const SizedBox(height: 4),
-                                const Divider(height: 20),
+                                const SizedBox(height: 8),
+
+
+
+                                // ✅ رقم الهاتف
                                 Row(
                                   children: [
                                     Icon(
@@ -141,12 +161,15 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
                                     ),
                                     SizedBox(width: 8.w),
                                     Text(
-                                      restaurant.phoneNumber ?? "N/A",
+                                      restaurant.phoneNumber.isNotEmpty
+                                          ? restaurant.phoneNumber
+                                          : AppLocalizations.of(context)!.notAvailable,
                                       style: const TextStyle(fontSize: 16),
                                     ),
                                   ],
                                 ),
                               ],
+
                             ),
                           ),
                         ),

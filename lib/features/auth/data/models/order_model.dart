@@ -10,6 +10,7 @@ class OrderModel {
   final String additionalDirections;
   final String status;
   final DateTime createdAt;
+  final String notes;
 
   OrderModel({
     required this.id,
@@ -23,6 +24,7 @@ class OrderModel {
     required this.additionalDirections,
     required this.status,
     required this.createdAt,
+    this.notes = "",
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
@@ -47,6 +49,7 @@ class OrderModel {
       additionalDirections: json["additionalDirections"]?.toString() ?? "",
       status: json["status"]?.toString() ?? "pending",
       createdAt: DateTime.tryParse(dateStr) ?? DateTime.now(),
+      notes: json["notes"]?.toString() ?? "",
     );
   }
 
@@ -63,6 +66,7 @@ class OrderModel {
       "additionalDirections": additionalDirections,
       "status": status,
       "createdAt": createdAt.toIso8601String(),
+      "notes": notes
     };
   }
 }

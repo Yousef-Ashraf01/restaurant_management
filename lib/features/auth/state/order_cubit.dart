@@ -17,6 +17,7 @@ class OrderCubit extends Cubit<OrderState> {
     required String street,
     required String userId,
     String additionalDirections = "",
+    String notes = ""
   }) async {
     emit(OrderLoading());
     try {
@@ -29,6 +30,7 @@ class OrderCubit extends Cubit<OrderState> {
         street: street,
         userId: userId,
         additionalDirections: additionalDirections,
+        notes: notes
       );
 
       emit(OrderCreated(response["message"] ?? "Order created successfully"));
