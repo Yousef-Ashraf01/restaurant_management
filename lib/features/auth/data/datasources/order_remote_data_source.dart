@@ -16,6 +16,7 @@ class OrderRemoteDataSource {
     required String street,
     required String userId,
     String additionalDirections = "",
+    String notes = "",
   }) async {
     final body = {
       "apartmentNo": apartmentNo,
@@ -26,6 +27,7 @@ class OrderRemoteDataSource {
       "street": street,
       "userId": userId,
       "additionalDirections": additionalDirections,
+      "notes": notes
     };
 
     try {

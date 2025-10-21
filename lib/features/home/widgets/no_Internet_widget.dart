@@ -1,0 +1,23 @@
+import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+class NoInternetWidget extends StatelessWidget {
+  const NoInternetWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          SizedBox(width: 180, height: 180, child: Lottie.asset('assets/animations/noInternetConnection.json')),
+          const SizedBox(height: 12),
+          Text(
+            AppLocalizations.of(context)!.noInternetConnection,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+        ]),
+      ),
+    );
+  }
+}

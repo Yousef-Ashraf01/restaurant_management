@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:restaurant_management/core/constants/app_colors.dart';
 import 'package:restaurant_management/core/utils/image_utils.dart';
@@ -219,7 +220,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                           if (order.additionalDirections.isNotEmpty)
                             _buildAddressRow(
                               Icons.map_outlined,
-                              loc.directions,
+                              loc.additionalDirections,
                               order.additionalDirections,
                             ),
                         ],
@@ -247,6 +248,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                           order.items.map((item) {
                             final dish = item.dish;
                             return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 ListTile(
                                   contentPadding: const EdgeInsets.symmetric(
@@ -290,6 +292,58 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                     ),
                                   ),
                                 ),
+
+                                // 🟡 ملاحظات العنصر (لو موجودة)
+                                if (item.notes != null &&
+                                    item.notes!.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 16,
+                                      right: 16,
+                                      bottom: 8,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // 🔹 العنوان "Notes"
+                                        Text(
+                                          AppLocalizations.of(context)!.notes,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                            color: Colors.orange.shade700,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+
+                                        // 🔹 نص الملاحظة
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Icon(
+                                              Icons.notes_rounded,
+                                              color: Colors.grey,
+                                              size: 18,
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Expanded(
+                                              child: Text(
+                                                item.notes!,
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black54,
+                                                  fontStyle: FontStyle.italic,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
                                 if (item != order.items.last)
                                   Divider(color: Colors.grey[200], height: 1),
                               ],
@@ -315,15 +369,68 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     elevation: 2,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: _buildSummaryRow(
-                        "${loc.total}:",
-                        order.totalPrice.toStringAsFixed(2),
-                        isBold: true,
+                      child: Column(
+                        children: [
+                          // 🧮 Subtotal
+                          _buildSummaryRow(
+                            "${loc.subtotal}:",
+                            order.totalPrice.toStringAsFixed(2),
+                          ),
+                          const SizedBox(height: 8),
+
+                          _buildSummaryRow(
+                            "${loc.deliveryFees}:",
+                            order.deliveryFees.toStringAsFixed(2),
+                          ),
+                          const Divider(height: 20),
+
+
+                          // 💰 Total
+                          _buildSummaryRow(
+                            "${loc.total}:",
+                            order.orderTotal.toStringAsFixed(2),
+                            isBold: true,
+                          ),
+                        ],
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 25),
+                  SizedBox(height: 25.h),
+
+                  // 🟢 ملاحظات عامة على الطلب (لو موجودة)
+                  if (order.notes != null && order.notes!.isNotEmpty)
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 2,
+                      color: Colors.orange.shade50,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.sticky_note_2_rounded,
+                              color: Colors.orange.shade700,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                order.notes!,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black87,
+                                  fontStyle: FontStyle.italic,
+                                  height: 1.5,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
 
                   /// 🔙 Back Button
                   // Center(

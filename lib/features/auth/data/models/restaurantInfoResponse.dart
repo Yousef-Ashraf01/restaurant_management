@@ -28,6 +28,7 @@ class RestaurantData {
   final String phoneNumber;
   final String logo;
   final List<Branch> branches;
+  final double deliveryFees;
 
   RestaurantData({
     required this.id,
@@ -35,6 +36,7 @@ class RestaurantData {
     required this.engName,
     required this.phoneNumber,
     required this.logo,
+    required this.deliveryFees,
     required this.branches,
   });
 
@@ -45,6 +47,7 @@ class RestaurantData {
       engName: json['engName'] ?? '',
       phoneNumber: json['phoneNumber'] ?? '',
       logo: json['logo'] ?? '',
+      deliveryFees: (json['deliveryFees'] ?? 0).toDouble(),
       branches:
           (json['branches'] as List<dynamic>?)
               ?.map((e) => Branch.fromJson(e))

@@ -32,6 +32,7 @@ class _DeliveryDetailsScreenState extends State<DeliveryDetailsScreen> {
   final streetController = TextEditingController();
   final addressController = TextEditingController();
   final additionalController = TextEditingController();
+  final notesController = TextEditingController(); // 🆕 Notes Controller
   final formKey = GlobalKey<FormState>();
 
   String? selectedAddressId;
@@ -45,7 +46,6 @@ class _DeliveryDetailsScreenState extends State<DeliveryDetailsScreen> {
       context.read<AddressCubit>().getUserAddresses(userId);
     }
 
-    // لو فيه عنوان مختار مسبقًا
     final addressCubit = context.read<AddressCubit>();
     if (addressCubit.selectedAddress != null) {
       final selected = addressCubit.selectedAddress!;
@@ -72,7 +72,7 @@ class _DeliveryDetailsScreenState extends State<DeliveryDetailsScreen> {
           backgroundColor: AppColors.accent,
           title: Text(
             loc.enterDeliveryDetails,
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
           centerTitle: true,
           iconTheme: const IconThemeData(color: Colors.white),
@@ -163,7 +163,7 @@ class _DeliveryDetailsScreenState extends State<DeliveryDetailsScreen> {
                         SizedBox(height: 18.h),
                       ],
                       Text(
-                        AppLocalizations.of(context)!.newAddress,
+                        loc.newAddress,
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
@@ -172,7 +172,7 @@ class _DeliveryDetailsScreenState extends State<DeliveryDetailsScreen> {
                       ),
                       SizedBox(height: 12.h),
 
-                      /// Row 1 → Apartment No + Floor
+                      // 🏢 Row 1 → Apartment No + Floor
                       Row(
                         children: [
                           Expanded(
@@ -193,7 +193,7 @@ class _DeliveryDetailsScreenState extends State<DeliveryDetailsScreen> {
                         ],
                       ),
 
-                      /// Row 2 → Building + Street
+                      // 🏙️ Row 2 → Building + City
                       Row(
                         children: [
                           Expanded(
@@ -215,17 +215,11 @@ class _DeliveryDetailsScreenState extends State<DeliveryDetailsScreen> {
                       ),
 
                       _buildTextField(context, loc.street, streetController),
-
-                      /// Row 3 → City (full width)
-
-                      /// Row 4 → Full address (full width)
                       _buildTextField(
                         context,
                         loc.fullAddress,
                         addressController,
                       ),
-
-                      /// Row 5 → Additional Directions (optional)
                       _buildTextField(
                         context,
                         loc.additionalDirections,
@@ -233,7 +227,45 @@ class _DeliveryDetailsScreenState extends State<DeliveryDetailsScreen> {
                         required: false,
                       ),
 
-                      SizedBox(height: 24.h),
+                      // 🆕 ملاحظات الطلب
+                      SizedBox(height: 16.h),
+                      Text(
+                        loc.notes, // تأكد إن الكلمة موجودة في AppLocalizations
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.accent,
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      TextFormField(
+                        cursorColor: AppColors.accent,
+                        controller: notesController,
+                        maxLines: 3,
+                        decoration: InputDecoration(
+                          hintText:
+                              loc.addedNotesHere, // مثلاً "اكتب ملاحظاتك هنا..."
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: const BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide(
+                              color: AppColors.accent,
+                              width: 1.5,
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.all(14.w),
+                        ),
+                      ),
+
+                      SizedBox(height: 28.h),
                       ElevatedButton.icon(
                         onPressed: () async {
                           if (!formKey.currentState!.validate()) return;
@@ -270,11 +302,12 @@ class _DeliveryDetailsScreenState extends State<DeliveryDetailsScreen> {
                             street: streetController.text,
                             userId: userId,
                             additionalDirections: additionalController.text,
+                            notes: notesController.text, // 🆕 هنا
                           );
 
                           await widget.cartCubit.getCart(showLoading: false);
 
-                          if (mounted) Navigator.pop(context); // Close loader
+                          if (mounted) Navigator.pop(context);
 
                           if (!mounted) return;
 

@@ -117,9 +117,7 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                               children: [
                                 TextSpan(
                                   text:
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.enterYourEmailAddress,
+                                      "${AppLocalizations.of(context,)!.enterYourEmailAddress}\n",
                                   style: TextStyle(
                                     fontSize: 20.sp,
                                     fontWeight: FontWeight.bold,

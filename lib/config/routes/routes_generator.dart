@@ -51,7 +51,7 @@ class RouteGenerator {
       case AppRoutes.mainRoute:
         return MaterialPageRoute(builder: (_) => MainScreen());
 
-      case AppRoutes.progileRoute:
+      case AppRoutes.profileRoute:
         final args = settings.arguments as Map<String, dynamic>?;
         if (args == null ||
             !args.containsKey('userId') ||
@@ -65,7 +65,7 @@ class RouteGenerator {
         }
         return MaterialPageRoute(
           builder:
-              (_) =>
+              (context) =>
                   ProfileScreen(userId: args['userId'], token: args['token']),
         );
 

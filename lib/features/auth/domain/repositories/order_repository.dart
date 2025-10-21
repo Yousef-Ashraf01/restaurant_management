@@ -16,6 +16,7 @@ class OrderRepository {
     required String street,
     required String userId,
     String additionalDirections = "",
+    String notes = ""
   }) async {
     return await remoteDataSource.createOrder(
       apartmentNo: apartmentNo,
@@ -26,6 +27,7 @@ class OrderRepository {
       street: street,
       userId: userId,
       additionalDirections: additionalDirections,
+      notes: notes
     );
   }
 

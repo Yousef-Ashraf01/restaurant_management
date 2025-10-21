@@ -5,6 +5,7 @@ class OrderDetailsModel {
   final String orderNo;
   final String userId;
   final double totalPrice;
+  final double orderTotal;
   final int status;
   final DateTime date;
   final String buildingName;
@@ -17,6 +18,8 @@ class OrderDetailsModel {
   final String displayAddress;
   final UserModel? user;
   final List<OrderItemModel> items;
+  final String? notes;
+  final double deliveryFees;
 
   OrderDetailsModel({
     required this.id,
@@ -35,6 +38,9 @@ class OrderDetailsModel {
     required this.displayAddress,
     required this.user,
     required this.items,
+    required this.orderTotal,
+    this.notes,
+    required this.deliveryFees,
   });
 
   factory OrderDetailsModel.fromJson(Map<String, dynamic> json) {
@@ -43,6 +49,8 @@ class OrderDetailsModel {
       orderNo: json["orderNo"]?.toString() ?? "",
       userId: json["userId"]?.toString() ?? "",
       totalPrice: (json["totalPrice"] ?? 0).toDouble(),
+      orderTotal: (json["orderTotal"] ?? 0).toDouble(),
+      deliveryFees: (json["deliveryFees"] ?? 0).toDouble(),
       status: json["status"] ?? 0,
       date: DateTime.tryParse(json["date"] ?? "") ?? DateTime.now(),
       buildingName: json["buildingName"]?.toString() ?? "",
@@ -59,6 +67,7 @@ class OrderDetailsModel {
               ?.map((e) => OrderItemModel.fromJson(e))
               .toList() ??
           [],
+      notes: json["notes"]?.toString(), // ✨
     );
   }
 }
@@ -71,6 +80,8 @@ class OrderItemModel {
   final int quantity;
   final double totalPrice;
   final DishModel? dish;
+  final String? notes;
+  // ✨ ملاحظات العنصر
 
   OrderItemModel({
     required this.id,
@@ -80,6 +91,7 @@ class OrderItemModel {
     required this.quantity,
     required this.totalPrice,
     required this.dish,
+    this.notes,
   });
 
   factory OrderItemModel.fromJson(Map<String, dynamic> json) {
@@ -91,6 +103,7 @@ class OrderItemModel {
       quantity: json["quantity"] ?? 0,
       totalPrice: (json["totalPrice"] ?? 0).toDouble(),
       dish: json["dish"] != null ? DishModel.fromJson(json["dish"]) : null,
+      notes: json["notes"]?.toString(), // ✨
     );
   }
 }
