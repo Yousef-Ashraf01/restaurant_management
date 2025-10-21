@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restaurant_management/config/routes/app_routes.dart';
-import 'package:restaurant_management/features/auth/state/auth_cubit.dart';
+import 'package:restaurant_management/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:restaurant_management/features/settings/widgets/list_tile_widget.dart';
 
 class SettingScreen extends StatelessWidget {

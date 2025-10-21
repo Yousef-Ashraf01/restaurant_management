@@ -11,7 +11,7 @@ class TokenStorage {
 
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
-    debugPrint("🧩 TokenStorage initialized with prefs: $_prefs");
+    debugPrint("TokenStorage initialized with prefs: $_prefs");
   }
 
   static const _accessKey = "access_token";

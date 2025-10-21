@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_management/config/routes/app_routes.dart';
-import 'package:restaurant_management/features/auth/data/models/dish_model.dart';
-import 'package:restaurant_management/features/auth/screens/login_screen.dart';
-import 'package:restaurant_management/features/auth/screens/new_password_screen.dart';
-import 'package:restaurant_management/features/auth/screens/otp_verification_code_screen.dart';
-import 'package:restaurant_management/features/auth/screens/sign_up__screen.dart';
-import 'package:restaurant_management/features/cart/screens/cart_screen.dart';
-import 'package:restaurant_management/features/changePassword/screens/change_password_screen.dart';
-import 'package:restaurant_management/features/confirm_email/screens/confirm_email_screen.dart';
-import 'package:restaurant_management/features/home/screens/dish_details_screen.dart';
-import 'package:restaurant_management/features/language/screens/language_screen.dart';
+import 'package:restaurant_management/features/auth/presentation/screens/login_screen.dart';
+import 'package:restaurant_management/features/auth/presentation/screens/new_password_screen.dart';
+import 'package:restaurant_management/features/auth/presentation/screens/otp_verification_code_screen.dart';
+import 'package:restaurant_management/features/auth/presentation/screens/sign_up__screen.dart';
+import 'package:restaurant_management/features/cart/presentation/screens/cart_screen.dart';
+import 'package:restaurant_management/features/changePassword/presentation/screens/change_password_screen.dart';
+import 'package:restaurant_management/features/confirm_email/presentation/screens/confirm_email_screen.dart';
+import 'package:restaurant_management/features/home/data/models/dish_model.dart';
+import 'package:restaurant_management/features/home/presentation/screens/dish_details_screen.dart';
+import 'package:restaurant_management/features/language/presentation/screens/language_screen.dart';
 import 'package:restaurant_management/features/main/screens/main_screen.dart';
-import 'package:restaurant_management/features/orders/screens/order_details_screen.dart';
-import 'package:restaurant_management/features/orders/screens/orders_screen.dart';
-import 'package:restaurant_management/features/profile/screens/profile_screen.dart';
-import 'package:restaurant_management/features/restaurant_info/screens/restaurant_info_screen.dart';
+import 'package:restaurant_management/features/orders/presentation/screens/order_details_screen.dart';
+import 'package:restaurant_management/features/orders/presentation/screens/orders_screen.dart';
+import 'package:restaurant_management/features/profile/presentation/screens/profile_screen.dart';
+import 'package:restaurant_management/features/restaurant_info/presentation/screens/restaurant_info_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {

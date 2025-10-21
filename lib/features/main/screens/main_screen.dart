@@ -4,9 +4,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:restaurant_management/core/constants/app_colors.dart';
-import 'package:restaurant_management/features/cart/screens/cart_screen.dart';
-import 'package:restaurant_management/features/home/screens/home_screen.dart';
-import 'package:restaurant_management/features/orders/screens/orders_screen.dart';
+import 'package:restaurant_management/features/cart/presentation/screens/cart_screen.dart';
+import 'package:restaurant_management/features/home/presentation/screens/home_screen.dart';
+import 'package:restaurant_management/features/orders/presentation/screens/orders_screen.dart';
 import 'package:restaurant_management/features/settings/screens/settings_screen.dart';
 
 class MainScreen extends StatefulWidget {
