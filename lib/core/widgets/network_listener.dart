@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
-import 'package:restaurant_management/features/auth/state/connectivity_cubit.dart';
+import 'package:restaurant_management/core/network/connectivity_cubit.dart';
 
 class NetworkListener extends StatefulWidget {
   final Widget child;
@@ -24,7 +24,7 @@ class _NetworkListenerState extends State<NetworkListener> {
     return BlocListener<ConnectivityCubit, bool>(
       listener: (context, connected) async {
         final messenger = ScaffoldMessenger.maybeOf(context);
-        if (messenger == null) return; // لو مفيش Scaffold، مانعملش حاجة
+        if (messenger == null) return;
 
         if (!connected) {
           messenger.showMaterialBanner(

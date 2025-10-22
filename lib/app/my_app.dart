@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restaurant_management/config/routes/routes_generator.dart';
 import 'package:restaurant_management/core/constants/app_theme.dart';
 import 'package:restaurant_management/core/widgets/network_listener.dart';
-import 'package:restaurant_management/features/auth/state/local_cubit.dart';
+import 'package:restaurant_management/features/language/presentation/cubit/local_cubit.dart';
 
 class MyApp extends StatelessWidget {
   final String initialRoute;

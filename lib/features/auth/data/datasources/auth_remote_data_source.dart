@@ -34,7 +34,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
       return AuthResponseModel.fromJson(response.data);
     } catch (e) {
-      print("❌ Register DioClient error: $e");
+      print("Register DioClient error: $e");
       rethrow;
     }
   }
@@ -49,7 +49,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       print(response.data);
       return AuthResponseModel.fromJson(response.data);
     } catch (e) {
-      print("❌ Login DioClient error: $e");
+      print("Login DioClient error: $e");
       rethrow;
     }
   }
@@ -63,7 +63,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
       return response.data;
     } catch (e) {
-      print("❌ Logout DioClient error: $e");
+      print("Logout DioClient error: $e");
       rethrow;
     }
   }
@@ -77,7 +77,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
       return response.data;
     } catch (e) {
-      print("❌ ChangePassword DioClient error: $e");
+      print("ChangePassword DioClient error: $e");
       rethrow;
     }
   }
@@ -92,7 +92,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
       return response.data;
     } catch (e) {
-      print("❌ RevokeToken DioClient error: $e");
+      print("RevokeToken DioClient error: $e");
       rethrow;
     }
   }
@@ -106,7 +106,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
       return response.data;
     } catch (e) {
-      print("❌ sendEmailConfirmationToken error: $e");
+      print("sendEmailConfirmationToken error: $e");
       rethrow;
     }
   }
@@ -120,7 +120,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
       return response.data;
     } catch (e) {
-      print("❌ confirmEmail error: $e");
+      print("confirmEmail error: $e");
       rethrow;
     }
   }
