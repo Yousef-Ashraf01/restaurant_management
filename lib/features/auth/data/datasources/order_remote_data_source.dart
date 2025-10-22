@@ -34,7 +34,7 @@ class OrderRemoteDataSource {
       final response = await dioClient.post("/api/Orders", data: body);
       return response.data ?? {};
     } catch (e) {
-      print("❌ createOrder DioClient error: $e");
+      print("createOrder DioClient error: $e");
       rethrow;
     }
   }
@@ -42,19 +42,19 @@ class OrderRemoteDataSource {
   Future<List<OrderModel>> getUserOrders(String userId) async {
     try {
       final response = await dioClient.get("/api/Orders/User/$userId");
-      print("🔍 Response status: ${response.statusCode}");
-      print("🔍 Response data: ${response.data}");
+      print("Response status: ${response.statusCode}");
+      print("Response data: ${response.data}");
       if (response.data["success"] == true) {
         final List data = response.data["data"] ?? [];
         print(
-          "📡 Order Status Debug: ${data.map((e) => e["status"]).toList()}",
+          "Order Status Debug: ${data.map((e) => e["status"]).toList()}",
         );
         return data.map((e) => OrderModel.fromJson(e)).toList();
       } else {
         throw Exception(response.data["message"] ?? "Failed to load orders");
       }
     } catch (e) {
-      print("❌ getUserOrders DioClient error: $e");
+      print("getUserOrders DioClient error: $e");
       rethrow;
     }
   }

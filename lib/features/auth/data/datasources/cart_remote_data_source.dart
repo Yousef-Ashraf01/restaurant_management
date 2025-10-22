@@ -13,17 +13,17 @@ class CartRemoteDataSource {
   Future<CartModel> getCart(String userId) async {
     try {
       final response = await dioClient.get("/api/Carts/user/$userId");
-      print("🔍 Response status: ${response.statusCode}");
-      print("🔍 Response data: ${response.data}");
+      print("Response status: ${response.statusCode}");
+      print("Response data: ${response.data}");
 
       if (response.data['success'] == true && response.data['data'] != null) {
         return CartModel.fromJson(response.data['data']);
       } else {
-        print('🛒 No cart found for user $userId → returning empty cart');
+        print('No cart found for user $userId → returning empty cart');
         return CartModel(items: [], totalPrice: 0.0);
       }
     } catch (e) {
-      print('❌ Error in getCart: $e');
+      print('Error in getCart: $e');
       return CartModel(items: [], totalPrice: 0.0);
     }
   }
@@ -46,7 +46,7 @@ class CartRemoteDataSource {
       "/api/Carts/$cartId/items",
       data: body,
     );
-    print('🗑️ DELETE Response: ${response.data}');
+    print('🗑DELETE Response: ${response.data}');
   }
 
   Future<void> updateCartItemNotes({
@@ -54,7 +54,7 @@ class CartRemoteDataSource {
     required int cartItemId,
     required String notes,
   }) async {
-    print("🔸 Sending notes update for item $cartItemId: $notes");
+    print("Sending notes update for item $cartItemId: $notes");
 
     final body = {"cartItemId": cartItemId, "notes": notes};
 
@@ -62,6 +62,6 @@ class CartRemoteDataSource {
       "/api/Carts/$cartId/items/notes",
       data: body,
     );
-    print("✅ Response: ${res.data}");
+    print("Response: ${res.data}");
   }
 }

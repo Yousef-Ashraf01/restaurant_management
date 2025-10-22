@@ -3,7 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppButton extends StatelessWidget {
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
+  final bool isLoading;
   final Color backgroundColor;
   final Color textColor;
   final double borderRadius;
@@ -15,6 +16,7 @@ class AppButton extends StatelessWidget {
     super.key,
     required this.text,
     required this.onPressed,
+    this.isLoading = false,
     this.backgroundColor = Colors.blue,
     this.textColor = Colors.white,
     this.borderRadius = 10,
@@ -26,15 +28,31 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: onPressed,
-      style:
-          style ??
+      onPressed: isLoading ? null : onPressed,
+      style: style ??
           ElevatedButton.styleFrom(
+            backgroundColor: backgroundColor,
             padding: EdgeInsets.symmetric(vertical: 12.h),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(borderRadius),
+            ),
           ),
-      child: Text(
+      child: isLoading
+          ? SizedBox(
+        width: 22.w,
+        height: 22.w,
+        child: const CircularProgressIndicator(
+          strokeWidth: 2.5,
+          color: Colors.white,
+        ),
+      )
+          : Text(
         text,
-        style: TextStyle(fontSize: fontSize.sp, fontWeight: fontWeight),
+        style: TextStyle(
+          fontSize: fontSize.sp,
+          fontWeight: fontWeight,
+          color: textColor,
+        ),
       ),
     );
   }

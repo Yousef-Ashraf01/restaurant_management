@@ -17,7 +17,7 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
       final response = await dioClient.get(
         "/api/Categories?skip=0&take=2147483647&statusFilter=2",
       );
-      print("📦 Categories response: ${response.data}");
+      print("Categories response: ${response.data}");
 
       if (response.data['success'] == true) {
         final data = response.data['data'] as List;
@@ -28,7 +28,7 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
         );
       }
     } catch (e) {
-      print("❌ Error fetching categories: $e");
+      print("Error fetching categories: $e");
       rethrow;
     }
   }

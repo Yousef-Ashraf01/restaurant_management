@@ -16,8 +16,8 @@ class AddressRemoteDataSourceImpl implements AddressRemoteDataSource {
   @override
   Future<List<AddressModel>> getAddresses(String userId) async {
     final response = await dioClient.get('/api/Users/addresses/$userId');
-    print("🔍 Response status: ${response.statusCode}");
-    print("🔍 Response data: ${response.data}");
+    print("Response status: ${response.statusCode}");
+    print("Response data: ${response.data}");
 
     if (response.data['success'] == true) {
       final addressesJson = response.data['data'] as List;
@@ -64,16 +64,16 @@ class AddressRemoteDataSourceImpl implements AddressRemoteDataSource {
         data: address.toJson(),
       );
 
-      print("🔵 Update response raw: ${response.data}");
+      print("Update response raw: ${response.data}");
 
       if (response.data['success'] == true) {
-        print("🟢 Updated address from server: ${response.data['data']}");
+        print("Updated address from server: ${response.data['data']}");
         return AddressModel.fromJson(response.data['data']);
       } else {
         throw Exception(response.data['message'] ?? "Failed to update address");
       }
     } catch (e) {
-      print("🔴 Error updating address: $e");
+      print("Error updating address: $e");
       rethrow;
     }
   }

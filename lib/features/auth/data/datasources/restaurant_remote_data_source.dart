@@ -12,8 +12,8 @@ class RestaurantRemoteDataSourceImpl implements RestaurantRemoteDataSource {
   @override
   Future<RestaurantData> getRestaurantInfo() async {
     final response = await client.get("/api/RestaurantInfo");
-    print("🔍 Response status: ${response.statusCode}");
-    print("🔍 Response data: ${response.data}");
+    print("Response status: ${response.statusCode}");
+    print("Response data: ${response.data}");
 
     if (response.data['success'] == true) {
       return RestaurantData.fromJson(response.data['data']);
