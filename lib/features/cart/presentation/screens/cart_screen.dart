@@ -30,7 +30,15 @@ class _CartScreenState extends State<CartScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
+    // تحميل الكارت
     context.read<CartCubit>().getCart(showLoading: true);
+
+    // تحميل بيانات المطعم لو مش متحمّلة
+    final restaurantCubit = context.read<RestaurantCubit>();
+    if (restaurantCubit.state is! RestaurantLoaded) {
+      restaurantCubit.getRestaurantInfo();
+    }
   }
 
   @override
@@ -514,195 +522,197 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Widget _buildCartFooter(cart) {
-    final restaurantState = context.read<RestaurantCubit>().state;
-    double deliveryFees = 0.0;
+    return BlocBuilder<RestaurantCubit, RestaurantState>(
+      builder: (context, restaurantState) {
+        double deliveryFees = 0.0;
 
-    if (restaurantState is RestaurantLoaded) {
-      deliveryFees = restaurantState.restaurant.deliveryFees;
-    }
+        if (restaurantState is RestaurantLoaded) {
+          deliveryFees = restaurantState.restaurant.deliveryFees;
+        }
 
-    final subTotal = cart.totalPrice;
-    final total = subTotal + deliveryFees;
+        final subTotal = cart.totalPrice;
+        final total = subTotal + deliveryFees;
 
-    return Container(
-      margin: EdgeInsets.only(bottom: 20.h, left: 15.w, right: 15.w),
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20.r),
-        color: Colors.white,
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 20,
-            offset: Offset(0, -3),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "${AppLocalizations.of(context)!.subtotal}:",
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                subTotal.toStringAsFixed(2),
-                style: const TextStyle(fontSize: 16),
+        return Container(
+          margin: EdgeInsets.only(bottom: 20.h, left: 15.w, right: 15.w),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.r),
+            color: Colors.white,
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 20,
+                offset: Offset(0, -3),
               ),
             ],
           ),
-          const SizedBox(height: 8),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "${AppLocalizations.of(context)!.deliveryFees}:",
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "${AppLocalizations.of(context)!.subtotal}:",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    subTotal.toStringAsFixed(2),
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
               ),
-              Text(
-                deliveryFees.toStringAsFixed(2),
-                style: const TextStyle(fontSize: 16),
+              const SizedBox(height: 8),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "${AppLocalizations.of(context)!.deliveryFees}:",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    deliveryFees.toStringAsFixed(2),
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
               ),
-            ],
-          ),
-          const Divider(height: 20),
+              const Divider(height: 20),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "${AppLocalizations.of(context)!.total}:",
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.accent,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "${AppLocalizations.of(context)!.total}:",
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.accent,
+                    ),
+                  ),
+                  Text(
+                    total.toStringAsFixed(2),
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                total.toStringAsFixed(2),
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-            ],
-          ),
 
-          const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-          Center(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.accent,
-                padding: EdgeInsets.symmetric(horizontal: 28.w, vertical: 14.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
-              onPressed: () async {
-                final cartCubit = context.read<CartCubit>();
-                final orderCubit = context.read<OrderCubit>();
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.accent,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 28.w,
+                      vertical: 14.h,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  onPressed: () async {
+                    final cartCubit = context.read<CartCubit>();
+                    final orderCubit = context.read<OrderCubit>();
 
-                if (cartCubit.state is! CartLoaded) return;
-                final cart = (cartCubit.state as CartLoaded).cart;
+                    if (cartCubit.state is! CartLoaded) return;
+                    final cart = (cartCubit.state as CartLoaded).cart;
 
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder:
-                      (_) => Center(
-                        child: Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const CircularProgressIndicator(
-                                color: AppColors.accent,
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder:
+                          (_) => Center(
+                            child: Container(
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
                               ),
-                              const SizedBox(height: 16),
-                              Text(
-                                AppLocalizations.of(context)!.sendingNotes,
-                                style: TextStyle(
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16.sp,
-                                ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const CircularProgressIndicator(
+                                    color: AppColors.accent,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    AppLocalizations.of(context)!.sendingNotes,
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.sp,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
+                    );
+
+                    try {
+                      for (final item in cart.items) {
+                        final notes =
+                            _pendingNotes[item.id]?.trim() ??
+                            item.notes?.trim() ??
+                            "";
+                        if (notes.isNotEmpty) {
+                          await cartCubit.updateItemNotes(
+                            cartId: item.cartId,
+                            cartItemId: item.id,
+                            notes: notes,
+                          );
+                        }
+                      }
+
+                      Navigator.pop(context);
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (_) => DeliveryDetailsScreen(
+                                cartCubit: cartCubit,
+                                orderCubit: orderCubit,
+                              ),
                         ),
-                      ),
-                );
-
-                print("Sending all notes before ordering...");
-
-                try {
-                  for (final item in cart.items) {
-                    final notes =
-                        _pendingNotes[item.id]?.trim() ??
-                        item.notes?.trim() ??
-                        "";
-                    if (notes.isNotEmpty) {
-                      print("Sending note for item ${item.id}: $notes");
-                      await cartCubit.updateItemNotes(
-                        cartId: item.cartId,
-                        cartItemId: item.id,
-                        notes: notes,
+                      );
+                    } catch (e) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "An error occurred while sending feedback.",
+                          ),
+                          backgroundColor: Colors.redAccent,
+                        ),
                       );
                     }
-                  }
-
-                  Navigator.pop(context);
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (_) => DeliveryDetailsScreen(
-                            cartCubit: cartCubit,
-                            orderCubit: orderCubit,
-                          ),
+                  },
+                  child: Text(
+                    AppLocalizations.of(context)!.order,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
-                  );
-                } catch (e) {
-                  Navigator.pop(context);
-                  print("Error sending notes: $e");
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        "An error occurred while sending feedback.",
-                      ),
-                      backgroundColor: Colors.redAccent,
-                    ),
-                  );
-                }
-              },
-              child: Text(
-                AppLocalizations.of(context)!.order,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

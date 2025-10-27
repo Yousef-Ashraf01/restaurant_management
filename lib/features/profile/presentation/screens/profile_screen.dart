@@ -305,10 +305,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   Label(
                                                     AppLocalizations.of(
                                                       context,
-                                                    )!.userName,
+                                                    )!.phoneNumber,
                                                   ),
-                                                  ReadOnlyField(
-                                                    profile.userName,
+                                                  buildTextFormField(
+                                                    controller:
+                                                        _phoneController,
+                                                    hintText:
+                                                        AppLocalizations.of(
+                                                          context,
+                                                        )!.phoneNumber,
+                                                    keyboardType:
+                                                        TextInputType.phone,
+                                                    validator: (value) {
+                                                      if (value == null ||
+                                                          value
+                                                              .trim()
+                                                              .isEmpty) {
+                                                        return AppLocalizations.of(
+                                                          context,
+                                                        )!.phoneNumberEmpty;
+                                                      }
+                                                      if (!RegExp(
+                                                        r'^\d{11}$',
+                                                      ).hasMatch(
+                                                        value.trim(),
+                                                      )) {
+                                                        return AppLocalizations.of(
+                                                          context,
+                                                        )!.phoneNumberLength;
+                                                      }
+                                                      return null;
+                                                    },
                                                   ),
                                                 ],
                                               ),
@@ -330,36 +357,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             ),
                                           ],
                                         ),
-                                        SizedBox(height: 20.h),
-                                        Label(
-                                          AppLocalizations.of(
-                                            context,
-                                          )!.phoneNumber,
-                                        ),
-                                        buildTextFormField(
-                                          controller: _phoneController,
-                                          hintText:
-                                              AppLocalizations.of(
-                                                context,
-                                              )!.phoneNumber,
-                                          keyboardType: TextInputType.phone,
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.trim().isEmpty) {
-                                              return AppLocalizations.of(
-                                                context,
-                                              )!.phoneNumberEmpty;
-                                            }
-                                            if (!RegExp(
-                                              r'^\d{11}$',
-                                            ).hasMatch(value.trim())) {
-                                              return AppLocalizations.of(
-                                                context,
-                                              )!.phoneNumberLength;
-                                            }
-                                            return null;
-                                          },
-                                        ),
+
                                         SizedBox(height: 30.h),
                                         SizedBox(
                                           width: double.infinity,

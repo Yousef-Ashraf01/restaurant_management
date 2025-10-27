@@ -54,8 +54,25 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       final resp = await repository.register(req);
 
-      if (resp.success && resp.statusCode == 201) {
-        emit(AuthRegisterSuccess("Registered successfully"));
+      if (resp.success && resp.statusCode == 201 && resp.data != null) {
+        await repository.tokenStorage.saveAccessToken(resp.data!.accessToken!);
+        await repository.tokenStorage.saveRefreshToken(
+          resp.data!.refreshToken!,
+        );
+        await repository.tokenStorage.saveAccessExpiry(resp.data!.expiresIn!);
+        await repository.tokenStorage.saveRefreshExpiry(
+          resp.data!.refreshTokenExpiration!,
+        );
+        await repository.tokenStorage.saveUserId(resp.data!.id!);
+
+        await profileRepository.getUserProfile(resp.data!.id!);
+
+        emit(
+          AuthRegisterSuccess(
+            "Registered successfully",
+            token: resp.data!.accessToken!,
+          ),
+        );
       } else {
         final errorMessage = resp.errors?['message'];
         final fallbackMessage = resp.message;
@@ -93,6 +110,37 @@ class AuthCubit extends Cubit<AuthState> {
         await repository.tokenStorage.saveAccessToken(
           response.data!.accessToken!,
         );
+
+        if (response.data?.refreshToken != null) {
+          await repository.tokenStorage.saveRefreshToken(
+            response.data!.refreshToken!,
+          );
+        }
+
+        if (response.data?.expiresIn != null) {
+          await repository.tokenStorage.saveAccessExpiry(
+            response.data!.expiresIn!,
+          );
+        }
+
+        if (response.data?.refreshTokenExpiration != null) {
+          await repository.tokenStorage.saveRefreshExpiry(
+            response.data!.refreshTokenExpiration!,
+          );
+        }
+
+        debugPrint('✅ Saved Tokens:');
+        debugPrint('AccessToken: ${repository.tokenStorage.getAccessToken()}');
+        debugPrint(
+          'RefreshToken: ${repository.tokenStorage.getRefreshToken()}',
+        );
+        debugPrint(
+          'Access Expiry: ${repository.tokenStorage.getAccessExpiry()}',
+        );
+        debugPrint(
+          'Refresh Expiry: ${repository.tokenStorage.getRefreshExpiry()}',
+        );
+        debugPrint('User ID: ${repository.tokenStorage.getUserId()}');
 
         await profileRepository.getUserProfile(response.data!.id!);
 

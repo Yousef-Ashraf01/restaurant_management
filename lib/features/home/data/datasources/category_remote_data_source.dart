@@ -15,7 +15,7 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
   Future<List<CategoryModel>> getCategories() async {
     try {
       final response = await dioClient.get(
-        "/api/Categories?skip=0&take=2147483647&statusFilter=2",
+        "/api/Categories?skip=0&take=2147483647&statusFilter=1",
       );
       print("Categories response: ${response.data}");
 

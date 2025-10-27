@@ -13,7 +13,9 @@ class BannerRemoteDataSourceImpl implements BannerRemoteDataSource {
   @override
   Future<List<BannerModel>> getBanners() async {
     try {
-      final response = await client.get("/api/Banners?skip=0&take=2147483647");
+      final response = await client.get(
+        "/api/Banners?skip=0&take=2147483647&statusFilter=1",
+      );
       if (response.data['success'] == true) {
         final bannersJson = response.data['data'] as List;
         return bannersJson.map((e) => BannerModel.fromJson(e)).toList();

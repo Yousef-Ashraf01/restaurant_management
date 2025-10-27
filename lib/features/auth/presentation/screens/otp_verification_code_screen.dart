@@ -25,12 +25,18 @@ class OtpVerificationCodeScreen extends StatefulWidget {
 class _OtpVerificationCodeScreenState extends State<OtpVerificationCodeScreen> {
   OtpFieldController otpController = OtpFieldController();
   String otpCode = "";
+  bool _codeSent = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       otpController.setFocus(0);
+      if (!_codeSent) {
+        context.read<EmailConfirmationCubit>().sendCode(widget.userId);
+        _codeSent = true;
+        print("📨 sendCode CALLED ✅");
+      }
     });
   }
 

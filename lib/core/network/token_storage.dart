@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TokenStorage {
@@ -11,7 +11,7 @@ class TokenStorage {
 
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
-    debugPrint("TokenStorage initialized with prefs: $_prefs");
+    debugPrint("✅ TokenStorage initialized with prefs: $_prefs");
   }
 
   static const _accessKey = "access_token";
@@ -22,13 +22,10 @@ class TokenStorage {
   static const _passwordKey = "user_password";
   static const _selectedAddressKey = 'selected_address';
 
-  Future<void> saveSelectedAddress(String address) async {
-    await _prefs.setString(_selectedAddressKey, address);
-  }
+  // ---------------------- Save Methods ----------------------
 
-  String? getSelectedAddress() {
-    return _prefs.getString(_selectedAddressKey);
-  }
+  Future<void> saveSelectedAddress(String address) async =>
+      await _prefs.setString(_selectedAddressKey, address);
 
   Future<void> saveAccessToken(String token) async =>
       await _prefs.setString(_accessKey, token);
@@ -38,13 +35,17 @@ class TokenStorage {
 
   Future<void> saveAccessExpiry(DateTime? expiry) async {
     if (expiry != null) {
-      await _prefs.setString(_accessExpiryKey, expiry.toIso8601String());
+      final utcExpiry = expiry.toUtc();
+      debugPrint("🕒 Saving Access Expiry (UTC): $utcExpiry");
+      await _prefs.setString(_accessExpiryKey, utcExpiry.toIso8601String());
     }
   }
 
   Future<void> saveRefreshExpiry(DateTime? expiry) async {
     if (expiry != null) {
-      await _prefs.setString(_refreshExpiryKey, expiry.toIso8601String());
+      final utcExpiry = expiry.toUtc();
+      debugPrint("🕒 Saving Refresh Expiry (UTC): $utcExpiry");
+      await _prefs.setString(_refreshExpiryKey, utcExpiry.toIso8601String());
     }
   }
 
@@ -54,22 +55,35 @@ class TokenStorage {
   Future<void> savePassword(String password) async =>
       await _prefs.setString(_passwordKey, password);
 
-  // Get methods
+  // ---------------------- Get Methods ----------------------
+
+  String? getSelectedAddress() => _prefs.getString(_selectedAddressKey);
   String? getAccessToken() => _prefs.getString(_accessKey);
   String? getRefreshToken() => _prefs.getString(_refreshKey);
+  String? getUserId() => _prefs.getString(_userIdKey);
+  String? getPassword() => _prefs.getString(_passwordKey);
 
   DateTime? getAccessExpiry() {
     final v = _prefs.getString(_accessExpiryKey);
-    return v != null ? DateTime.parse(v).toUtc() : null;
+    if (v == null) return null;
+    final parsed = DateTime.tryParse(v);
+    if (parsed == null) return null;
+    final utc = parsed.toUtc();
+    debugPrint("📆 Loaded Access Expiry (UTC): $utc");
+    return utc;
   }
 
   DateTime? getRefreshExpiry() {
     final v = _prefs.getString(_refreshExpiryKey);
-    return v != null ? DateTime.parse(v).toUtc() : null;
+    if (v == null) return null;
+    final parsed = DateTime.tryParse(v);
+    if (parsed == null) return null;
+    final utc = parsed.toUtc();
+    debugPrint("📆 Loaded Refresh Expiry (UTC): $utc");
+    return utc;
   }
 
-  String? getUserId() => _prefs.getString(_userIdKey);
-  String? getPassword() => _prefs.getString(_passwordKey);
+  // ---------------------- Clear ----------------------
 
   Future<void> clear() async {
     await _prefs.remove(_accessKey);
