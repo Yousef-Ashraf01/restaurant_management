@@ -15,7 +15,7 @@ class DishRemoteDataSourceImpl implements DishRemoteDataSource {
   Future<List<DishModel>> getDishes() async {
     try {
       final response = await dioClient.get(
-        "/api/Dishes?skip=0&take=2147483647&statusFilter=0",
+        "/api/Dishes?skip=0&take=2147483647&statusFilter=1",
       );
       print("Response status: ${response.statusCode}");
       print("Response data: ${response.data}");

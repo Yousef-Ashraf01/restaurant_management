@@ -6,7 +6,8 @@ class AuthLoading extends AuthState {}
 
 class AuthRegisterSuccess extends AuthState {
   final String message;
-  AuthRegisterSuccess(this.message);
+  final String token;
+  AuthRegisterSuccess(this.message, {required this.token});
 }
 
 class AuthLoginSuccess extends AuthState {
@@ -40,7 +41,6 @@ class AuthPasswordResetOTPSuccess extends AuthState {
   final String otp;
   AuthPasswordResetOTPSuccess(this.otp);
 }
-
 
 class AuthResetPasswordSuccess extends AuthState {
   final String message;

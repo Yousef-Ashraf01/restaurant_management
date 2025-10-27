@@ -12,8 +12,7 @@ class RegisterRequestModel {
     required this.lastName,
     required this.password,
     required this.phoneNumber,
-    required this.userName,
-  });
+  }) : userName = email.split('@').first;
 
   Map<String, dynamic> toJson() {
     return {

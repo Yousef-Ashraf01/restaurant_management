@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restaurant_management/features/profile/presentation/cubit/address_cubit.dart';
 import 'package:restaurant_management/features/profile/presentation/cubit/address_state.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class HomeAddressSection extends StatelessWidget {
   const HomeAddressSection({super.key});
@@ -129,7 +131,7 @@ class HomeAddressSection extends StatelessWidget {
                     const Icon(Icons.location_off, color: Colors.grey),
                     SizedBox(width: 8.w),
                     Text(
-                      "No address found",
+                      AppLocalizations.of(context)!.no_addresses_found,
                       style: TextStyle(
                         color: Colors.black54,
                         fontSize: 13.sp,

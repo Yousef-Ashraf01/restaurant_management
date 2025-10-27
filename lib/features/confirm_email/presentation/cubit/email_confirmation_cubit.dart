@@ -9,6 +9,7 @@ class EmailConfirmationCubit extends Cubit<EmailConfirmationState> {
     : super(EmailConfirmationInitial());
 
   Future<void> sendCode(String userId) async {
+    print("📨 sendCode CALLED for $userId");
     emit(EmailConfirmationLoading());
     try {
       final code = await authRepository.sendEmailConfirmationToken(userId);

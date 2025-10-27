@@ -24,7 +24,6 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
 
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
-  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -34,7 +33,6 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
-    _usernameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
     _passwordController.dispose();
@@ -50,7 +48,6 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
         lastName: _lastNameController.text.trim(),
         password: _passwordController.text.trim(),
         phoneNumber: _phoneController.text.trim(),
-        userName: _usernameController.text.trim(),
       );
 
       context.read<AuthCubit>().register(body, context);
@@ -95,16 +92,6 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
                       value,
                       AppLocalizations.of(context)!.lastName,
                     ),
-              ),
-              SizedBox(height: 20.h),
-
-              AppTextFormField(
-                isRequired: true,
-                label: AppLocalizations.of(context)!.userName,
-                hint: AppLocalizations.of(context)!.enterUserName,
-                keyboardType: TextInputType.text,
-                controller: _usernameController,
-                validator: (value) => Validators.username(context, value),
               ),
               SizedBox(height: 20.h),
 

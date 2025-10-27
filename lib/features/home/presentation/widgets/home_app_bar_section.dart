@@ -33,13 +33,35 @@ class HomeAppBarSection extends StatelessWidget {
                 if (state is AddressLoaded && state.addresses.isNotEmpty) {
                   final selectedAddress =
                       context.read<AddressCubit>().selectedAddress ??
-                      state.addresses.first;
+                          state.addresses.first;
                   addressLabel = selectedAddress.addressLabel ?? "";
                 }
 
-                final isLoaded =
-                    state is AddressLoaded && state.addresses.isNotEmpty;
+                final hasAddress = state is AddressLoaded && state.addresses.isNotEmpty;
+                final isLoading = state is AddressLoading;
 
+                String displayText;
+                if (isLoading) {
+                  displayText = AppLocalizations.of(context)!.loading;
+                } else if (hasAddress) {
+                  displayText = addressLabel;
+                } else {
+                  displayText = AppLocalizations.of(context)!.no_addresses_found;
+                }
+
+                // ✅ لو مفيش عناوين، ما نكتبش Deliver to
+                if (!hasAddress && !isLoading) {
+                  return Text(
+                    displayText,
+                    style: TextStyle(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                    ),
+                  );
+                }
+
+                // ✅ باقي الحالات: Loading أو عند وجود عناوين
                 return RichText(
                   text: TextSpan(
                     children: [
@@ -52,14 +74,11 @@ class HomeAppBarSection extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text:
-                            isLoaded
-                                ? addressLabel
-                                : AppLocalizations.of(context)!.loading,
+                        text: displayText,
                         style: TextStyle(
                           fontSize: 15.sp,
                           fontWeight: FontWeight.bold,
-                          color: isLoaded ? Colors.deepOrange : Colors.grey,
+                          color: hasAddress ? Colors.deepOrange : Colors.grey,
                         ),
                       ),
                     ],
@@ -67,6 +86,7 @@ class HomeAppBarSection extends StatelessWidget {
                 );
               },
             ),
+
 
             /// 🛒 Cart Icon + Badge
             BlocBuilder<CartCubit, CartState>(
