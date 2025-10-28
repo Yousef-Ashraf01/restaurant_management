@@ -6,12 +6,13 @@ import 'package:lottie/lottie.dart';
 import 'package:restaurant_management/config/routes/app_routes.dart';
 import 'package:restaurant_management/core/constants/app_colors.dart';
 import 'package:restaurant_management/core/network/connectivity_cubit.dart';
-import 'package:restaurant_management/core/utils/image_utils.dart';
+import 'package:restaurant_management/core/utils/dish_image_cache.dart';
 import 'package:restaurant_management/core/widgets/app_un_focus_wrapper.dart';
 import 'package:restaurant_management/features/cart/data/models/cart_item_model.dart';
 import 'package:restaurant_management/features/cart/presentation/cubit/cart_cubit.dart';
 import 'package:restaurant_management/features/cart/presentation/cubit/cart_state.dart';
 import 'package:restaurant_management/features/cart/presentation/screens/delivery_details_screen.dart';
+import 'package:restaurant_management/features/cart/presentation/widgets/cart_shimmer_list.dart';
 import 'package:restaurant_management/features/language/presentation/cubit/local_cubit.dart';
 import 'package:restaurant_management/features/orders/presentation/cubit/order_cubit.dart';
 import 'package:restaurant_management/features/restaurant_info/presentation/cubit/restaurant_cubit.dart';
@@ -31,10 +32,8 @@ class _CartScreenState extends State<CartScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // تحميل الكارت
     context.read<CartCubit>().getCart(showLoading: true);
 
-    // تحميل بيانات المطعم لو مش متحمّلة
     final restaurantCubit = context.read<RestaurantCubit>();
     if (restaurantCubit.state is! RestaurantLoaded) {
       restaurantCubit.getRestaurantInfo();
@@ -73,14 +72,12 @@ class _CartScreenState extends State<CartScreen> {
         return BlocBuilder<CartCubit, CartState>(
           builder: (context, state) {
             if (state is CartInitial || state is CartLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return const CartShimmerList();
             } else if (state is CartLoaded || state is CartUpdatingItem) {
               final cart =
                   (state is CartLoaded)
                       ? state.cart
                       : (state as CartUpdatingItem).previousCart;
-              final updatingItemId =
-                  (state is CartUpdatingItem) ? state.itemId : null;
 
               if (cart.items.isEmpty) {
                 return Center(
@@ -234,25 +231,35 @@ class _CartScreenState extends State<CartScreen> {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(12),
-                        child:
-                            item.dish.image.isNotEmpty &&
-                                    item.dish.image != "null"
-                                ? Image.memory(
-                                  key: ValueKey(item.dish.image),
-                                  convertBase64ToImage(item.dish.image),
-                                  width: 60.w,
-                                  height: 60.h,
-                                  fit: BoxFit.cover,
-                                  gaplessPlayback: true,
-                                )
-                                : Image.asset(
-                                  "assets/images/logo1.jpg",
-                                  width: 60.w,
-                                  height: 60.h,
-                                  fit: BoxFit.cover,
-                                ),
+                        child: Builder(
+                          builder: (context) {
+                            final imageBytes = DishImageCache.getImage(
+                              item.dish.id,
+                              item.dish.image,
+                            );
+
+                            if (imageBytes != null) {
+                              return Image.memory(
+                                imageBytes,
+                                key: ValueKey(item.dish.id),
+                                width: 60.w,
+                                height: 60.h,
+                                fit: BoxFit.cover,
+                                gaplessPlayback: true,
+                              );
+                            } else {
+                              return Image.asset(
+                                "assets/images/logo1.jpg",
+                                width: 60.w,
+                                height: 60.h,
+                                fit: BoxFit.cover,
+                              );
+                            }
+                          },
+                        ),
                       ),
                     ),
+
                     Expanded(
                       child: BlocBuilder<LocaleCubit, Locale>(
                         builder: (context, locale) {

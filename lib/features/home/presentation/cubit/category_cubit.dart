@@ -7,7 +7,9 @@ class CategoryCubit extends Cubit<CategoryState> {
 
   CategoryCubit(this.repository) : super(CategoryInitial());
 
-  Future<void> getCategories() async {
+  Future<void> getCategories({bool forceRefresh = false}) async {
+    if (state is CategoryLoaded && !forceRefresh) return;
+
     emit(CategoryLoading());
     try {
       final categories = await repository.fetchCategories();

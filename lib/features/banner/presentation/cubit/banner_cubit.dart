@@ -7,7 +7,8 @@ class BannerCubit extends Cubit<BannerState> {
 
   BannerCubit(this.repository) : super(BannerInitial());
 
-  Future<void> getBanners() async {
+  Future<void> getBanners({bool forceRefresh = false}) async {
+    if (state is BannerLoaded && !forceRefresh) return;
     emit(BannerLoading());
     try {
       final banners = await repository.getBanners();

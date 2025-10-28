@@ -8,6 +8,7 @@ import 'package:restaurant_management/features/home/presentation/cubit/dish_cubi
 import 'package:restaurant_management/features/home/presentation/cubit/dish_state.dart';
 import 'package:restaurant_management/features/home/presentation/screens/dish_details_screen.dart';
 import 'package:restaurant_management/features/home/presentation/widgets/dish_card.dart';
+import 'package:restaurant_management/features/home/presentation/widgets/dish_grid_shimmer.dart';
 import 'package:restaurant_management/features/home/presentation/widgets/show_dish_options_bottom_sheet.dart';
 
 class DishGridSection extends StatelessWidget {
@@ -20,19 +21,17 @@ class DishGridSection extends StatelessWidget {
       sliver: BlocBuilder<DishCubit, DishState>(
         builder: (context, state) {
           if (state is DishLoading) {
-            return const SliverToBoxAdapter(
-              child: Center(child: CircularProgressIndicator()),
-            );
+            return const DishGridShimmer();
           } else if (state is DishLoaded) {
             final dishes = state.dishes;
 
             if (dishes.isEmpty) {
-              return const SliverToBoxAdapter(
+              return SliverToBoxAdapter(
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 40),
                   child: Center(
                     child: Text(
-                      "No dishes found",
+                      AppLocalizations.of(context)!.noDishesFound,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -49,7 +48,7 @@ class DishGridSection extends StatelessWidget {
                 crossAxisCount: 2,
                 mainAxisSpacing: 20.h,
                 crossAxisSpacing: 20.w,
-                childAspectRatio: 0.78,
+                childAspectRatio: 0.8,
               ),
               delegate: SliverChildBuilderDelegate((context, index) {
                 final dish = dishes[index];
@@ -93,9 +92,7 @@ class DishGridSection extends StatelessWidget {
             );
           }
 
-          return const SliverToBoxAdapter(
-            child: Center(child: Text("Waiting for dishes...")),
-          );
+          return DishGridShimmer();
         },
       ),
     );

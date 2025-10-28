@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restaurant_management/core/constants/app_colors.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BottomBar extends StatelessWidget {
   final double total;
@@ -41,7 +41,10 @@ class BottomBar extends StatelessWidget {
               backgroundColor: AppColors.accent,
               padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 12.h),
             ),
-            child: Text(AppLocalizations.of(context)!.addToCart, style: TextStyle(fontSize: 18.sp)),
+            child: Text(
+              AppLocalizations.of(context)!.addToCart,
+              style: TextStyle(fontSize: 18.sp),
+            ),
           ),
         ],
       ),

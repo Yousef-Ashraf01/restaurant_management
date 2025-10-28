@@ -8,6 +8,7 @@ import 'package:restaurant_management/core/utils/image_utils.dart';
 import 'package:restaurant_management/features/language/presentation/cubit/local_cubit.dart';
 import 'package:restaurant_management/features/restaurant_info/presentation/cubit/restaurant_cubit.dart';
 import 'package:restaurant_management/features/restaurant_info/presentation/cubit/restaurant_state.dart';
+import 'package:restaurant_management/features/restaurant_info/presentation/widgets/restaurant_info_shimmer.dart';
 
 class RestaurantInfoScreen extends StatefulWidget {
   const RestaurantInfoScreen({super.key});
@@ -88,7 +89,7 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
             return BlocBuilder<RestaurantCubit, RestaurantState>(
               builder: (context, state) {
                 if (state is RestaurantLoading) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const RestaurantInfoShimmer();
                 } else if (state is RestaurantError) {
                   return Center(
                     child: Column(
@@ -181,8 +182,32 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
                         ListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: restaurant.branches.length,
+                          itemCount:
+                              restaurant.branches.isEmpty
+                                  ? 1
+                                  : restaurant.branches.length,
                           itemBuilder: (context, index) {
+                            if (restaurant.branches.isEmpty) {
+                              return Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 24,
+                                  ),
+                                  child: Text(
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.noBranchesAvailable,
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.grey[600],
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              );
+                            }
+
                             final branch = restaurant.branches[index];
                             return BlocBuilder<LocaleCubit, Locale>(
                               builder: (context, locale) {

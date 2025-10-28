@@ -11,6 +11,7 @@ class AddressCubit extends Cubit<AddressState> {
   AddressCubit(this.repository, this.tokenStorage) : super(AddressInitial()) {
     final savedAddressLabel = tokenStorage.getSelectedAddress();
     final userId = tokenStorage.getUserId();
+
     if (savedAddressLabel != null) {
       selectedAddress = AddressModel(
         fullAddress: savedAddressLabel,
@@ -22,6 +23,10 @@ class AddressCubit extends Cubit<AddressState> {
 
   AddressModel? selectedAddress;
 
+  // ✅ الكاش المحلي للعناوين
+  List<AddressModel>? _cachedAddresses;
+  bool _addressesLoaded = false;
+
   void selectAddress(AddressModel address) {
     selectedAddress = address;
     if (state is AddressLoaded) {
@@ -29,17 +34,30 @@ class AddressCubit extends Cubit<AddressState> {
     }
   }
 
-  Future<void> getUserAddresses(String userId) async {
+  /// ✅ تحميل العناوين لمرة واحدة فقط (مع كاش)
+  Future<void> getUserAddresses(
+    String userId, {
+    bool forceRefresh = false,
+  }) async {
+    // لو فيه بيانات محملة قبل كده ومش طالب refresh، رجعها فورًا
+    if (_addressesLoaded && _cachedAddresses != null && !forceRefresh) {
+      emit(AddressLoaded(_cachedAddresses!));
+      return;
+    }
+
     emit(AddressLoading());
     try {
       final addresses = await repository.fetchAddresses(userId);
       print("Fetched ${addresses.length} addresses for userId $userId");
 
-      if (selectedAddress != null) {
+      _cachedAddresses = addresses;
+      _addressesLoaded = true;
+
+      // لو كان فيه عنوان مختار، نحافظ عليه
+      if (selectedAddress != null && addresses.isNotEmpty) {
         final stillExists = addresses.firstWhere(
           (a) => a.id == selectedAddress!.id,
-          orElse:
-              () => addresses.isNotEmpty ? addresses.first : selectedAddress!,
+          orElse: () => addresses.first,
         );
         selectedAddress = stillExists;
       }
@@ -51,6 +69,7 @@ class AddressCubit extends Cubit<AddressState> {
     }
   }
 
+  /// ✅ إضافة عنوان جديد
   Future<void> addAddress(AddressModel address) async {
     if (address.userId == null || address.userId!.isEmpty) {
       emit(AddressError("Cannot add address: userId is null or empty"));
@@ -62,14 +81,18 @@ class AddressCubit extends Cubit<AddressState> {
       final newAddress = await repository.addAddress(address);
       print("Added address: ${newAddress.id}");
 
-      final updatedAddresses = await repository.fetchAddresses(address.userId!);
-      emit(AddressLoaded(updatedAddresses));
+      // نحدث الكاش بعد الإضافة
+      _cachedAddresses = await repository.fetchAddresses(address.userId!);
+      _addressesLoaded = true;
+
+      emit(AddressLoaded(_cachedAddresses!));
     } catch (e) {
       print("Failed to add address: $e");
       emit(AddressError(e.toString()));
     }
   }
 
+  /// ✅ حذف عنوان
   Future<void> deleteAddress(String addressId, String userId) async {
     if (state is AddressLoaded) {
       final currentAddresses = List<AddressModel>.from(
@@ -82,6 +105,10 @@ class AddressCubit extends Cubit<AddressState> {
       try {
         await repository.deleteAddress(addressId, userId);
         final updatedAddresses = await repository.fetchAddresses(userId);
+
+        _cachedAddresses = updatedAddresses;
+        _addressesLoaded = true;
+
         emit(AddressLoaded(updatedAddresses));
       } catch (e) {
         print("Failed to delete address: $e");
@@ -91,6 +118,7 @@ class AddressCubit extends Cubit<AddressState> {
     }
   }
 
+  /// ✅ تحديث عنوان
   Future<void> updateAddress(AddressModel address, String userId) async {
     if (address.id == null || address.userId == null) {
       emit(AddressError("Cannot update address: id or userId is null"));
@@ -107,14 +135,28 @@ class AddressCubit extends Cubit<AddressState> {
             (state as AddressLoaded).addresses.map((a) {
               return a.id == updatedAddress.id ? updatedAddress : a;
             }).toList();
+
+        _cachedAddresses = updatedList;
+        _addressesLoaded = true;
+
         emit(AddressLoaded(updatedList));
       } else {
         final updatedAddresses = await repository.fetchAddresses(userId);
+        _cachedAddresses = updatedAddresses;
+        _addressesLoaded = true;
         emit(AddressLoaded(updatedAddresses));
       }
     } catch (e) {
       print("Failed to update address: $e");
       emit(AddressError("Failed to update address: ${e.toString()}"));
     }
+  }
+
+  /// ✅ مسح الكاش (مثلاً بعد تسجيل خروج المستخدم)
+  void clearCache() {
+    _cachedAddresses = null;
+    _addressesLoaded = false;
+    selectedAddress = null;
+    emit(AddressInitial());
   }
 }

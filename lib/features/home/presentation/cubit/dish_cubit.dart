@@ -7,12 +7,25 @@ import 'dish_state.dart';
 class DishCubit extends Cubit<DishState> {
   final DishRepository repository;
 
+  bool _allDishesLoaded = false;
+  List<DishModel>? _cachedAllDishes;
+
+  final Map<String, List<DishModel>> _cachedCategoryDishes = {}; // كاش للفئات
+
   DishCubit(this.repository) : super(DishInitial());
 
-  Future<void> getDishes() async {
+  // ✅ تحميل كل الأطباق مرة واحدة فقط
+  Future<void> getDishes({bool forceRefresh = false}) async {
+    if (_allDishesLoaded && _cachedAllDishes != null && !forceRefresh) {
+      emit(DishLoaded(_cachedAllDishes!)); // استخدم الكاش
+      return;
+    }
+
     emit(DishLoading());
     try {
       final dishes = await repository.fetchDishes();
+      _cachedAllDishes = dishes;
+      _allDishesLoaded = true;
       print("Loaded ${dishes.length} dishes");
       emit(DishLoaded(dishes));
     } catch (e) {
@@ -21,10 +34,20 @@ class DishCubit extends Cubit<DishState> {
     }
   }
 
-  Future<void> getDishesByCategory(String categoryId) async {
+  // ✅ تحميل الأطباق حسب الفئة مرة واحدة فقط
+  Future<void> getDishesByCategory(
+    String categoryId, {
+    bool forceRefresh = false,
+  }) async {
+    if (!forceRefresh && _cachedCategoryDishes.containsKey(categoryId)) {
+      emit(DishLoaded(_cachedCategoryDishes[categoryId]!)); // استخدم الكاش
+      return;
+    }
+
     emit(DishLoading());
     try {
       final dishes = await repository.fetchDishesByCategory(categoryId);
+      _cachedCategoryDishes[categoryId] = dishes;
       print("Loaded ${dishes.length} dishes for category $categoryId");
       emit(DishLoaded(dishes));
     } catch (e) {
@@ -33,9 +56,10 @@ class DishCubit extends Cubit<DishState> {
     }
   }
 
+  // ✅ استرجاع طبق معين من الكاش
   DishModel? getDishById(int id) {
-    if (state is DishLoaded) {
-      return (state as DishLoaded).dishes.firstWhere(
+    if (_cachedAllDishes != null) {
+      return _cachedAllDishes!.firstWhere(
         (dish) => dish.id == id,
         orElse: () => throw Exception("Dish not found"),
       );

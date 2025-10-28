@@ -58,6 +58,40 @@ class _DeliveryDetailsScreenState extends State<DeliveryDetailsScreen> {
       addressController.text = selected.fullAddress ?? "";
       additionalController.text = selected.additionalDirections ?? "";
     }
+
+    cityController.addListener(_updateFullAddress);
+    streetController.addListener(_updateFullAddress);
+  }
+
+  void _updateFullAddress() {
+    final city = cityController.text.trim();
+    final street = streetController.text.trim();
+
+    if (city.isNotEmpty && street.isNotEmpty) {
+      addressController.text = "$street, $city";
+    } else if (city.isNotEmpty) {
+      addressController.text = city;
+    } else if (street.isNotEmpty) {
+      addressController.text = street;
+    } else {
+      addressController.clear();
+    }
+  }
+
+  @override
+  void dispose() {
+    cityController.removeListener(_updateFullAddress);
+    streetController.removeListener(_updateFullAddress);
+
+    apartmentController.dispose();
+    buildingController.dispose();
+    cityController.dispose();
+    floorController.dispose();
+    streetController.dispose();
+    addressController.dispose();
+    additionalController.dispose();
+    notesController.dispose();
+    super.dispose();
   }
 
   @override
@@ -225,7 +259,6 @@ class _DeliveryDetailsScreenState extends State<DeliveryDetailsScreen> {
                         required: false,
                       ),
 
-                      // 🆕 ملاحظات الطلب
                       SizedBox(height: 16.h),
                       Text(
                         loc.notes,
@@ -289,18 +322,23 @@ class _DeliveryDetailsScreenState extends State<DeliveryDetailsScreen> {
                                 ),
                           );
 
-                          await widget.orderCubit.createOrder(
-                            apartmentNo:
-                                int.tryParse(apartmentController.text) ?? 0,
-                            buildingName: buildingController.text,
-                            city: cityController.text,
-                            floor: int.tryParse(floorController.text) ?? 0,
-                            fullAddress: addressController.text,
-                            street: streetController.text,
-                            userId: userId,
-                            additionalDirections: additionalController.text,
-                            notes: notesController.text,
-                          );
+                          final orderResult = await widget.orderCubit
+                              .createOrder(
+                                apartmentNo:
+                                    int.tryParse(apartmentController.text) ?? 0,
+                                buildingName: buildingController.text,
+                                city: cityController.text,
+                                floor: int.tryParse(floorController.text) ?? 0,
+                                fullAddress: addressController.text,
+                                street: streetController.text,
+                                userId: userId,
+                                additionalDirections: additionalController.text,
+                                notes: notesController.text,
+                              );
+
+                          if (orderResult) {
+                            await widget.cartCubit.clearCartLocally();
+                          }
 
                           await widget.cartCubit.getCart(showLoading: false);
 

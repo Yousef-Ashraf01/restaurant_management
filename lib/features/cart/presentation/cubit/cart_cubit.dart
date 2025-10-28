@@ -51,7 +51,12 @@ class CartCubit extends Cubit<CartState> {
     }
   }
 
-  Future<void> getCart({bool showLoading = true}) async {
+  Future<void> getCart({
+    bool showLoading = true,
+    bool forceRefresh = false,
+  }) async {
+    if (state is CartLoaded && !forceRefresh) return;
+
     if (showLoading) emit(CartLoading());
     try {
       final cart = await repository.fetchCart();
@@ -137,5 +142,9 @@ class CartCubit extends Cubit<CartState> {
     } catch (e) {
       emit(CartError(e.toString()));
     }
+  }
+
+  Future<void> clearCartLocally() async {
+    emit(CartEmpty());
   }
 }
