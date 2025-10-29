@@ -3,10 +3,12 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurant_management/core/constants/app_colors.dart';
+import 'package:restaurant_management/core/utils/catgeory_image_cache.dart';
 import 'package:restaurant_management/core/utils/image_utils.dart';
 import 'package:restaurant_management/features/home/data/models/category_model.dart';
 import 'package:restaurant_management/features/home/presentation/cubit/category_cubit.dart';
 import 'package:restaurant_management/features/home/presentation/cubit/category_state.dart';
+import 'package:restaurant_management/features/home/presentation/widgets/category_shimmer.dart';
 
 class CategorySection extends StatefulWidget {
   final int selectedCategoryIndex;
@@ -38,7 +40,7 @@ class _CategorySectionState extends State<CategorySection> {
     return BlocBuilder<CategoryCubit, CategoryState>(
       builder: (context, state) {
         if (state is CategoryLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const CategoryShimmer();
         } else if (state is CategoryLoaded) {
           final categories = [
             CategoryModel(
@@ -58,7 +60,10 @@ class _CategorySectionState extends State<CategorySection> {
             itemBuilder: (context, index) {
               final category = categories[index];
               final isSelected = widget.selectedCategoryIndex == index;
-              final imageBytes = _getCachedImage(category);
+              final imageBytes = CategoryImageCache.getImage(
+                category.id,
+                category.icon,
+              );
 
               return GestureDetector(
                 key: ValueKey(category.id),
@@ -131,7 +136,7 @@ class _CategorySectionState extends State<CategorySection> {
             },
           );
         }
-        return const Center(child: Text("No categories"));
+        return CategoryShimmer();
       },
     );
   }

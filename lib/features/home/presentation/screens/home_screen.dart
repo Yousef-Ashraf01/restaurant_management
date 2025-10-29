@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurant_management/core/network/connectivity_cubit.dart';
 import 'package:restaurant_management/core/network/token_storage.dart';
 import 'package:restaurant_management/features/banner/presentation/cubit/banner_cubit.dart';
+import 'package:restaurant_management/features/cart/presentation/cubit/cart_cubit.dart';
 import 'package:restaurant_management/features/home/presentation/cubit/category_cubit.dart';
 import 'package:restaurant_management/features/home/presentation/cubit/dish_cubit.dart';
 import 'package:restaurant_management/features/home/presentation/widgets/banner_slider_widget.dart';
@@ -41,15 +42,16 @@ class _HomeScreenState extends State<HomeScreen>
     final bannerCubit = context.read<BannerCubit>();
     final dishCubit = context.read<DishCubit>();
     final categoryCubit = context.read<CategoryCubit>();
+    final cartCubit = context.read<CartCubit>();
 
     bannerCubit.getBanners();
     categoryCubit.getCategories();
 
     await _loadUserAddress();
 
-    Future.delayed(const Duration(milliseconds: 500), () {
-      dishCubit.getDishes();
-    });
+    await cartCubit.getCart(showLoading: false);
+
+    dishCubit.getDishes();
   }
 
   Future<void> _loadUserAddress() async {

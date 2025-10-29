@@ -80,6 +80,7 @@ class OrderItemModel {
   final int quantity;
   final double totalPrice;
   final DishModel? dish;
+  final List<SelectedOption>? selectedOptions;
   final String? notes;
 
   OrderItemModel({
@@ -90,6 +91,7 @@ class OrderItemModel {
     required this.quantity,
     required this.totalPrice,
     required this.dish,
+    this.selectedOptions,
     this.notes,
   });
 
@@ -103,6 +105,11 @@ class OrderItemModel {
       totalPrice: (json["totalPrice"] ?? 0).toDouble(),
       dish: json["dish"] != null ? DishModel.fromJson(json["dish"]) : null,
       notes: json["notes"]?.toString(),
+      selectedOptions:
+          (json['selectedOptions'] as List?)
+              ?.map((e) => SelectedOption.fromJson(e))
+              .toList() ??
+          [],
     );
   }
 }
@@ -138,6 +145,55 @@ class UserModel {
       fullName: json["fullName"]?.toString() ?? "",
       phoneNumber: json["phoneNumber"]?.toString() ?? "",
       isActive: json["isActive"] ?? false,
+    );
+  }
+}
+
+class SelectedOption {
+  final int id;
+  final int orderItemId;
+  final int dishOptionId;
+  final double optionPrice;
+  final DishOption dishOption;
+
+  SelectedOption({
+    required this.id,
+    required this.orderItemId,
+    required this.dishOptionId,
+    required this.optionPrice,
+    required this.dishOption,
+  });
+
+  factory SelectedOption.fromJson(Map<String, dynamic> json) {
+    return SelectedOption(
+      id: json['id'],
+      orderItemId: json['orderItemId'],
+      dishOptionId: json['dishOptionId'],
+      optionPrice: (json['optionPrice'] ?? 0).toDouble(),
+      dishOption: DishOption.fromJson(json['dishOption']),
+    );
+  }
+}
+
+class DishOption {
+  final int id;
+  final String arbName;
+  final String engName;
+  final double price;
+
+  DishOption({
+    required this.id,
+    required this.arbName,
+    required this.engName,
+    required this.price,
+  });
+
+  factory DishOption.fromJson(Map<String, dynamic> json) {
+    return DishOption(
+      id: json['id'],
+      arbName: json['arbName'] ?? '',
+      engName: json['engName'] ?? '',
+      price: (json['price'] ?? 0).toDouble(),
     );
   }
 }

@@ -213,5 +213,8 @@
   "addNoteHere": "أضف ملاحظتك هنا",
   "sendingNotes": "جارٍ إرسال الملاحظات...",
   "subtotal": "الإجمالي الفرعي",
-  "deliveryFees": "رسوم التوصيل"
+  "deliveryFees": "رسوم التوصيل",
+  "waitingForCategories": "جارٍ تحميل التصنيفات...",
+  "unknownDish": "طبق غير معروف",
+  "noBranchesAvailable": "لا توجد فروع متاحة حاليًا"
 }

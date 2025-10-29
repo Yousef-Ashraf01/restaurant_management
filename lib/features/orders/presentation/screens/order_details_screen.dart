@@ -4,10 +4,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:restaurant_management/core/constants/app_colors.dart';
-import 'package:restaurant_management/core/utils/image_utils.dart';
+import 'package:restaurant_management/core/utils/dish_image_cache.dart';
 import 'package:restaurant_management/features/language/presentation/cubit/local_cubit.dart';
 import 'package:restaurant_management/features/orders/presentation/cubit/order_cubit.dart';
 import 'package:restaurant_management/features/orders/presentation/cubit/order_state.dart';
+import 'package:restaurant_management/features/orders/presentation/widgets/order_derails_shimmer.dart';
 
 class OrderDetailsScreen extends StatefulWidget {
   final String orderId;
@@ -82,12 +83,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       body: BlocBuilder<OrderCubit, OrderState>(
         builder: (context, state) {
           if (state is OrderDetailsLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const OrderDetailsShimmer();
           } else if (state is OrderDetailsSuccess) {
             final order = state.order;
-            final egyptTime = order.date.toLocal();
+            final utcTime = DateTime.parse(order.date.toString());
+            final egyptTime = utcTime.add(const Duration(hours: 3));
             final formattedDate = DateFormat(
-              'yyyy-MM-dd – hh:mm a',
+              'yyyy-MM-dd • hh:mm a',
             ).format(egyptTime);
 
             return SingleChildScrollView(
@@ -175,6 +177,23 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Row(
+                          //   children: [
+                          //     Icon(
+                          //       Icons.location_on_rounded,
+                          //       color: Colors.redAccent,
+                          //       size: 26,
+                          //     ),
+                          //     const SizedBox(width: 8),
+                          //     Text(
+                          //       order.fullAddress,
+                          //       style: const TextStyle(
+                          //         fontWeight: FontWeight.w600,
+                          //         fontSize: 15,
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
                           Row(
                             children: [
                               Icon(
@@ -183,11 +202,18 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                 size: 26,
                               ),
                               const SizedBox(width: 8),
-                              Text(
-                                order.fullAddress,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Text(
+                                    order.displayAddress.isNotEmpty
+                                        ? order.displayAddress
+                                        : order.fullAddress,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
@@ -254,25 +280,44 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                   ),
                                   leading: ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
-                                    child: Image.memory(
-                                      convertBase64ToImage(dish!.image ?? ''),
-                                      width: 55,
-                                      height: 55,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) => Icon(
+                                    child: Builder(
+                                      builder: (context) {
+                                        final imageBytes =
+                                            DishImageCache.getImage(
+                                              dish!.id,
+                                              dish.image ?? '',
+                                            );
+
+                                        if (imageBytes != null) {
+                                          return Image.memory(
+                                            imageBytes,
+                                            width: 55,
+                                            height: 55,
+                                            fit: BoxFit.cover,
+                                            gaplessPlayback: true,
+                                          );
+                                        } else {
+                                          return Icon(
                                             Icons.fastfood,
                                             size: 40,
                                             color: Colors.orange[600],
-                                          ),
+                                          );
+                                        }
+                                      },
                                     ),
                                   ),
                                   title: BlocBuilder<LocaleCubit, Locale>(
                                     builder: (context, locale) {
                                       return Text(
                                         locale.languageCode == 'en'
-                                            ? dish.engName
-                                            : dish.arbName,
+                                            ? (dish?.engName ??
+                                                AppLocalizations.of(
+                                                  context,
+                                                )!.unknownDish)
+                                            : (dish?.arbName ??
+                                                AppLocalizations.of(
+                                                  context,
+                                                )!.unknownDish),
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w600,
                                           fontSize: 16,
@@ -289,6 +334,72 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                     ),
                                   ),
                                 ),
+
+                                if (item.selectedOptions != null &&
+                                    item.selectedOptions!.isNotEmpty)
+                                  BlocBuilder<LocaleCubit, Locale>(
+                                    builder: (context, locale) {
+                                      return Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 16,
+                                          right: 16,
+                                          bottom: 12,
+                                        ),
+                                        child: Wrap(
+                                          spacing: 8,
+                                          runSpacing: 6,
+                                          children:
+                                              item.selectedOptions!.map((
+                                                option,
+                                              ) {
+                                                return Container(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 12,
+                                                        vertical: 8,
+                                                      ),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.orange[50],
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          24,
+                                                        ),
+                                                    border: Border.all(
+                                                      color:
+                                                          Colors
+                                                              .orange
+                                                              .shade200,
+                                                    ),
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      Text(
+                                                        locale.languageCode ==
+                                                                'en'
+                                                            ? option
+                                                                .dishOption
+                                                                .engName
+                                                            : option
+                                                                .dishOption
+                                                                .arbName,
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          color:
+                                                              AppColors.accent,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }).toList(),
+                                        ),
+                                      );
+                                    },
+                                  ),
 
                                 if (item.notes != null &&
                                     item.notes!.isNotEmpty)

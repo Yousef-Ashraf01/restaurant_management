@@ -33,11 +33,12 @@ class HomeAppBarSection extends StatelessWidget {
                 if (state is AddressLoaded && state.addresses.isNotEmpty) {
                   final selectedAddress =
                       context.read<AddressCubit>().selectedAddress ??
-                          state.addresses.first;
+                      state.addresses.first;
                   addressLabel = selectedAddress.addressLabel ?? "";
                 }
 
-                final hasAddress = state is AddressLoaded && state.addresses.isNotEmpty;
+                final hasAddress =
+                    state is AddressLoaded && state.addresses.isNotEmpty;
                 final isLoading = state is AddressLoading;
 
                 String displayText;
@@ -46,10 +47,10 @@ class HomeAppBarSection extends StatelessWidget {
                 } else if (hasAddress) {
                   displayText = addressLabel;
                 } else {
-                  displayText = AppLocalizations.of(context)!.no_addresses_found;
+                  displayText =
+                      AppLocalizations.of(context)!.no_addresses_found;
                 }
 
-                // ✅ لو مفيش عناوين، ما نكتبش Deliver to
                 if (!hasAddress && !isLoading) {
                   return Text(
                     displayText,
@@ -61,7 +62,6 @@ class HomeAppBarSection extends StatelessWidget {
                   );
                 }
 
-                // ✅ باقي الحالات: Loading أو عند وجود عناوين
                 return RichText(
                   text: TextSpan(
                     children: [
@@ -87,8 +87,6 @@ class HomeAppBarSection extends StatelessWidget {
               },
             ),
 
-
-            /// 🛒 Cart Icon + Badge
             BlocBuilder<CartCubit, CartState>(
               builder: (context, cartState) {
                 int itemCount = 0;

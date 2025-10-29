@@ -2,13 +2,13 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:restaurant_management/core/utils/banner_image_cache.dart';
 import 'package:restaurant_management/features/banner/presentation/cubit/banner_cubit.dart';
 import 'package:restaurant_management/features/banner/presentation/cubit/banner_state.dart';
 import 'package:restaurant_management/features/home/presentation/cubit/dish_cubit.dart';
 import 'package:restaurant_management/features/home/presentation/cubit/dish_details_cubit.dart';
 import 'package:restaurant_management/features/home/presentation/screens/dish_details_screen.dart';
-
-import '../../../../core/utils/image_utils.dart';
+import 'package:restaurant_management/features/home/presentation/widgets/banner_shimmer.dart';
 
 class BannerSliderWidget extends StatelessWidget {
   const BannerSliderWidget({super.key});
@@ -21,10 +21,7 @@ class BannerSliderWidget extends StatelessWidget {
         child: BlocBuilder<BannerCubit, BannerState>(
           builder: (context, state) {
             if (state is BannerLoading) {
-              return const SizedBox(
-                height: 200,
-                child: Center(child: CircularProgressIndicator()),
-              );
+              return const BannerShimmer();
             } else if (state is BannerError) {
               return SizedBox(
                 height: 200,
@@ -94,10 +91,14 @@ class BannerSliderWidget extends StatelessWidget {
                               color: Colors.grey[200],
                             ),
                             child: Image.memory(
-                              convertBase64ToImage(banner.image),
+                              BannerImageCache.getImage(
+                                banner.id,
+                                banner.image,
+                              ),
                               fit: BoxFit.cover,
                               width: double.infinity,
                               height: double.infinity,
+                              gaplessPlayback: true,
                             ),
                           ),
                         ),

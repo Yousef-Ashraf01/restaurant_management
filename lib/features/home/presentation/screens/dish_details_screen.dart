@@ -102,9 +102,9 @@ class DishDetailsScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height: 10.h),
-                            DishImage(image: dish.image),
-                            SizedBox(height: 15.h),
+                            SizedBox(height: 20.h),
+                            DishImage(image: dish.image, dishId: dish.id),
+                            SizedBox(height: 20.h),
                             DishInfo(
                               name:
                                   locale.languageCode == 'en'
@@ -182,7 +182,7 @@ class DishDetailsScreen extends StatelessWidget {
                               },
                             ),
 
-                            SizedBox(height: 60.h),
+                            SizedBox(height: 40.h),
                           ],
                         ),
                       ),

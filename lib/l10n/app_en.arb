@@ -212,6 +212,9 @@
   "addNoteHere": "Add your note here",
   "sendingNotes": "Sending notes...",
   "subtotal": "Subtotal",
-  "deliveryFees": "Delivery Fees"
+  "deliveryFees": "Delivery Fees",
+  "waitingForCategories": "Waiting for categories...",
+  "unknownDish": "Unknown dish",
+  "noBranchesAvailable": "No branches available at the moment"
 }
 
